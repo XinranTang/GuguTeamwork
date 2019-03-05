@@ -3,13 +3,13 @@
   <block class="message">
     <text class="title">消息</text>
     <view class="message-list" wx:for="{{messages}}" wx:for-item="message">
-      <view>{{message.content}}</view>
+      <view bindtap='toMessage'>{{message.content}}</view>
     </view>
   </block>
   <block class="task">
     <text class="title">任务</text>
     <view class="task-list" wx:for="{{tasks}}" wx:for-item="task">
-      <view>{{task.content}}</view>
+      <view bindtap='toTask'>{{task.content}}</view>
     </view>
   </block>
 </view>

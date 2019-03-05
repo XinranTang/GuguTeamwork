@@ -1,0 +1,9 @@
+<!--pages/process/taskList/task.wxml-->
+<view>
+  <view id="title">
+    <text>任务信息</text>
+  </view>
+  <view>名称：{{name}}</view>
+  <view>描述：{{description}}</view>
+  <view>截止时间：{{deadline}}</view>
+</view>

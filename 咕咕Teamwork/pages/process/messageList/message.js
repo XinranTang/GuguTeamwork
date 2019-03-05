@@ -1,32 +1,12 @@
-// pages/home/home.js
+// pages/process/messageList/message.js
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    messages: [
-      {
-        "content": "消息一",
-      },
-      {
-        "content": "消息二",
-      },
-      {
-        "content": "消息三",
-      }
-    ],
-    tasks:[
-      {
-        "content":"任务一",
-      },
-      {
-        "content": "任务二",
-      },
-      {
-        "content": "任务三",
-      }
-    ]
+    "person":'',
+    "description":''
   },
 
   /**
@@ -84,15 +64,7 @@ Page({
   onShareAppMessage: function () {
 
   },
-  // 页面跳转
-  toMessage:function(){
-    wx.navigateTo({
-      url: '../process/messageList/message',
-    })
-  },
-  toTask: function () {
-    wx.navigateTo({
-      url: '../process/taskList/task',
-    })
+  iKnow:function(){
+    console.log("我了解了。")
   }
 })

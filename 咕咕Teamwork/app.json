@@ -3,7 +3,9 @@
     "pages/home/home",
     "pages/index/index",
     "pages/logs/logs",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/process/messageList/message",
+    "pages/process/taskList/task"
   ],
   "window": {
     "backgroundTextStyle": "light",

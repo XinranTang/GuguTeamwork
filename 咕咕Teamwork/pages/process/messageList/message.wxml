@@ -1,0 +1,9 @@
+<!--pages/process/messageList/message.wxml-->
+<view>
+  <view id="title">
+    <text>消息信息</text>
+  </view>
+  <view>发送人：{{person}}</view>
+  <view>描述：{{description}}</view>
+  <button bindtap='iKnow'>我了解了</button>
+</view>
