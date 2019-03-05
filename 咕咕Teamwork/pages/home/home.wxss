@@ -1,0 +1,21 @@
+/* pages/home/home.wxss */
+.title{
+  font-size: 50rpx;
+  font-family: "幼圆";
+  color: #f86e3d;
+  margin: 10rpx;
+}
+.message-list{
+  margin: 10rpx;
+  background-color: white;
+  border-style: solid;
+  box-shadow:0px 0.5px 0.5px 0.5px #DDDDDD;
+  border-width: 0rpx;
+}
+.task-list{
+  margin: 10rpx;
+  background-color: white;
+  border-style: solid;
+  box-shadow:0px 0.5px 0.5px 0.5px #DDDDDD;
+  border-width: 0rpx;
+}

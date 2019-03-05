@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/mine/mine"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "咕咕Teamwork",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#a9b7b7",
+    "selectedColor": "#88caed",
+    "borderStyle": "white",
+    "position": "bottom",
+    "list": [
+      {
+        "iconPath": "images/home.png",
+        "pagePath": "pages/home/home",
+        "text": "任务"
+      },
+      {
+        "iconPath": "images/mine.png",
+        "pagePath": "pages/mine/mine",
+        "text": "个人"
+      }
+    ]
+  }
+}
