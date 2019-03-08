@@ -13,42 +13,50 @@ Page({
       {
         "name": "我的任务",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc1"
+        "func": "infoFunc1",
+        "icon":"iconfont icon-taskmanege",
       },
       {
         "name": "我的消息",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc2"
+        "func": "infoFunc2",
+        "icon": "iconfont icon-message",
       },
       {
         "name": "个人分析",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc3"
+        "func": "infoFunc3",
+        "icon": "iconfont icon-analyze"
       },
       {
         "name": "发起任务",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc4"
+        "func": "infoFunc4",
+        "icon":"iconfont icon-weibiaoti201"
       },
       {
         "name": "个人信息",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc5"
+        "func": "infoFunc5",
+        "icon": "iconfont icon-ionc--1"
       }, 
       {
         "name": "提交周报",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc6"
+        "func": "infoFunc6",
+        "icon": "iconfont icon-submit"
       },
       {
         "name": "合作文档",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc7"
+        "func": "infoFunc7",
+        "icon": "iconfont icon-team"
       },
       {
         "name": "匿名墙",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc8"
+        "func": "infoFunc8",
+        "icon": "iconfont icon-anonymous"
       }
       ]
   },

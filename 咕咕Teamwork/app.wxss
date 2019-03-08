@@ -1,4 +1,5 @@
 /**app.wxss**/
+@import "pages/iconfont/iconfont.wxss";
 .container {
   height: 100%;
   display: flex;
