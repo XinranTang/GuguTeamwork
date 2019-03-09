@@ -5,5 +5,6 @@
   </view>
   <view>发送人：{{person}}</view>
   <view>描述：{{description}}</view>
-  <button bindtap='iKnow'>我了解了</button>
+  <i-button bind:click="iKnow">我了解了</i-button>
+
 </view>

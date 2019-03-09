@@ -8,7 +8,8 @@
     "pages/process/taskList/task",
     "pages/page/myTask/myTask",
     "pages/page/myMessage/myMessage",
-    "pages/page/myAnalysis/myAnalysis"
+    "pages/page/myAnalysis/myAnalysis",
+    "pages/process/taskList/add/add"
   ],
   "window": {
     "backgroundTextStyle": "light",

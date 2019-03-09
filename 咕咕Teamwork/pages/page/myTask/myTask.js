@@ -64,5 +64,15 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  addTask:function(){
+    wx.navigateTo({
+      url: '../../process/taskList/add/add',
+    })
+  },
+  toTask:function(){
+    wx.navigateTo({
+      url: '../../process/taskList/task',
+    })
   }
 })

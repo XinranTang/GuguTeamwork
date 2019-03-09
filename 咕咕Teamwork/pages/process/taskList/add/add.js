@@ -1,35 +1,11 @@
-// pages/home/home.js
+// pages/process/taskList/add/add.js
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    messages: [
-      {
-        "content": "消息一",
-      },
-      {
-        "content": "消息二",
-      },
-      {
-        "content": "消息三",
-      }
-    ],
-    tasks:[
-      {
-        "taskTitle":"任务一",
-        "taskDeadline":"20xx-xx-xx xx:xx",
-      },
-      {
-        "taskTitle": "任务二",
-        "taskDeadline": "20xx-xx-xx xx:xx",
-      },
-      {
-        "taskTitle": "任务三",
-        "taskDeadline": "20xx-xx-xx xx:xx",
-      }
-    ]
+
   },
 
   /**
@@ -86,16 +62,5 @@ Page({
    */
   onShareAppMessage: function () {
 
-  },
-  // 页面跳转
-  toMessage:function(){
-    wx.navigateTo({
-      url: '../process/messageList/message',
-    })
-  },
-  toTask: function () {
-    wx.navigateTo({
-      url: '../process/taskList/task',
-    })
   }
 })

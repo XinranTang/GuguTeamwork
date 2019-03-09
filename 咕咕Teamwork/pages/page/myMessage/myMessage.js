@@ -64,5 +64,10 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  toMessage: function () {
+    wx.navigateTo({
+      url: '../../process/messageList/message',
+    })
   }
 })

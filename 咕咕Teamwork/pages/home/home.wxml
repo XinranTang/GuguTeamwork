@@ -9,7 +9,12 @@
   <block class="task">
     <text class="title">任务</text>
     <view class="task-list" wx:for="{{tasks}}" wx:for-item="task">
-      <view bindtap='toTask'>{{task.content}}</view>
+      <view style="margin:5rpx" bindtap='toTask'>
+        <i-card title="{{task.taskTitle}}" extra="{{task.taskDeadline}}">
+                <!-- <view slot="content">消息发送者</view>
+                <view slot="footer">尾部内容</view> -->
+        </i-card>  
+      </view>
     </view>
   </block>
 </view>
