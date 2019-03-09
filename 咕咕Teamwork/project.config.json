@@ -14,7 +14,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "2.5.2",
 	"appid": "wx8c3088cb35bde298",
-	"projectname": "%E5%92%95%E5%92%95Teamwork",
+	"projectname": "GuguTeamwork",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
