@@ -8,12 +8,30 @@
         <view class="userinfo-nickname">{{userInfo.nickName}}</view>
       </block>
     </view>
-    <view class="menu_container" style='margin:20rpx 0rpx;background:white'>
-      <view class="menu_item"wx:for="{{menus}}" wx:for-index="idx" wx:for-item="menu" bindtap='{{menu.func}}'>
-        <!-- <image class="menu_icon" src="{{menu.url}}" /> -->
-        <text class="{{menu.icon}}" style='font-size:25px;color:{{menu.color}};'></text>
-        <text class="menu_name" style='color:black;font-size:14px;'>{{menu.name}}</text>
-      </view>
+    
+    <view class = "menu-container">
+      <i-grid>
+        <i-grid-item class="menu_item"wx:for="{{menus1}}" wx:for-index="idx" wx:for-item="menu" bindtap='{{menu.func}}'>
+          <!-- <image class="menu_icon" src="{{menu.url}}" /> -->
+          <i-grid-icon>
+          <text class="{{menu.icon}}" style='font-size:25px;color:{{menu.color}};'></text>
+          </i-grid-icon>
+          <i-grid-label>
+          <text class="menu_name" style='color:black;font-size:14px;'>{{menu.name}}</text>
+          </i-grid-label>
+        </i-grid-item>
+      </i-grid>
+      <i-grid>
+        <i-grid-item class="menu_item"wx:for="{{menus2}}" wx:for-index="idx" wx:for-item="menu" bindtap='{{menu.func}}'>
+          <!-- <image class="menu_icon" src="{{menu.url}}" /> -->
+          <i-grid-icon>
+          <text class="{{menu.icon}}" style='font-size:25px;color:{{menu.color}};'></text>
+          </i-grid-icon>
+          <i-grid-label>
+          <text class="menu_name" style='color:black;font-size:14px;'>{{menu.name}}</text>
+          </i-grid-label>
+        </i-grid-item>
+      </i-grid>
     </view>
     <view class="setting_container">
       <view class="setting">

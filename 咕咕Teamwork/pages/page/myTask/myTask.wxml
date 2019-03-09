@@ -1,0 +1,26 @@
+<!--pages/page/myTask/myTask.wxml-->
+<view class = "layer">
+  <view class="caption-title">
+    <text>我的任务</text>
+  </view>
+    <i-collapse name="{{name}}">
+        <i-collapse-item title="我加入的项目" name="name1">
+            <view slot="content">
+              <i-card title="{{taskTitle}}" extra="{{taskDeadline}}" thumb="../../images/icon2.jpg">
+                <!-- <view slot="content">消息发送者</view>
+                <view slot="footer">尾部内容</view> -->
+              </i-card>  
+            </view>
+        </i-collapse-item>
+        <view style="right: 20rpx;position: absolute;"><i-icon type="add" size="42" color="#f86e3d"/></view>
+        <i-collapse-item title="我管理的项目" name="name2">
+            <view slot="content" i-class-content="green-text">
+              <i-card title="{{taskTitle}}" extra="{{taskDeadline}}" thumb="../../images/icon2.jpg">
+                <!-- <view slot="content">消息发送者</view>
+                <view slot="footer">尾部内容</view> -->
+              </i-card>  
+            </view>
+        </i-collapse-item>
+    </i-collapse>
+
+</view>

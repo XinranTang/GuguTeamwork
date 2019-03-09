@@ -1,0 +1,5 @@
+/* pages/page/myMessage/myMessage.wxss */
+.caption-title{
+  text-align: center;
+  font-size: 40rpx;
+}

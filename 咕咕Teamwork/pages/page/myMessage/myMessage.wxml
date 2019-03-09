@@ -1,0 +1,24 @@
+<!--pages/page/myMessage/myMessage.wxml-->
+<view class = "layer">
+  <view class="caption-title">
+    <text>我的消息</text>
+  </view>
+  <i-collapse name="{{name}}">
+    <i-collapse-item title="未读消息" name="name1">
+      <view slot="content">
+        <i-card title="{{messageTitle}}" extra="{{messageTime}}" thumb="../../images/icon2.jpg">
+          <view slot="content">消息发送者</view>
+          <!-- <view slot="footer">尾部内容</view> -->
+        </i-card>  
+      </view>
+    </i-collapse-item>
+    <i-collapse-item title="已读消息" name="name2">
+      <view slot="content" i-class-content="green-text">
+        <i-card title="{{messageTitle}}" extra="{{messageTime}}" thumb="../../images/icon2.jpg" full = "true">
+          <view slot="content">消息发送者</view>
+          <!-- <view slot="footer">尾部内容</view> -->
+        </i-card>  
+      </view>
+    </i-collapse-item>
+  </i-collapse>
+</view>

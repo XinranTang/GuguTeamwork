@@ -9,57 +9,61 @@ Page({
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    menus: [
+    menus1: [
       {
         "name": "我的任务",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc1",
+        "func": "intoFunc1",
         "icon":"iconfont icon-taskmanege",
       },
       {
         "name": "我的消息",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc2",
+        "func": "intoFunc2",
         "icon": "iconfont icon-message",
       },
       {
         "name": "个人分析",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc3",
+        "func": "intoFunc3",
         "icon": "iconfont icon-analyze"
       },
       {
         "name": "发起任务",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc4",
+        "func": "intoFunc4",
         "icon":"iconfont icon-weibiaoti201"
-      },
+      }
+      ],
+       menus2: [
+     
       {
         "name": "个人信息",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc5",
+        "func": "intoFunc5",
         "icon": "iconfont icon-ionc--1"
-      }, 
+      },
       {
         "name": "提交周报",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc6",
+        "func": "intoFunc6",
         "icon": "iconfont icon-submit"
       },
       {
         "name": "合作文档",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc7",
+        "func": "intoFunc7",
         "icon": "iconfont icon-team"
       },
       {
         "name": "匿名墙",
         "url": "../../images/icon2.jpg",
-        "func": "infoFunc8",
+        "func": "intoFunc8",
         "icon": "iconfont icon-anonymous"
       }
-      ]
+    ]
   },
+  
   //事件处理函数
   bindViewTap: function () {
     wx.navigateTo({
@@ -155,5 +159,20 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  intoFunc1: function(){
+    wx.navigateTo({
+      url: '../page/myTask/myTask',
+    })
+  },
+  intoFunc2: function () {
+    wx.navigateTo({
+      url: '../page/myMessage/myMessage',
+    })
+  },
+  intoFunc3: function () {
+    wx.navigateTo({
+      url: '../page/myAnalysis/myAnalysis',
+    })
   }
 })
