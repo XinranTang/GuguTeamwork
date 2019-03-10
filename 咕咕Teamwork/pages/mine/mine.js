@@ -153,6 +153,23 @@ Page({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
     })
+    wx.request({
+      url: 'https://www.fracturesr.xyz/entry',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: 'OpenId=testopenid',
+      success(res) {
+        wx.setStorage({
+          key: 'Information',
+          data: 'res.data',
+        })
+      },
+      fail() {
+        console.log("fail")
+      }
+    })
   },
   /**
    * Called when user click on the top right corner to share
@@ -173,6 +190,11 @@ Page({
   intoFunc3: function () {
     wx.navigateTo({
       url: '../page/myAnalysis/myAnalysis',
+    })
+  },
+  intoFunc4: function () {
+    wx.navigateTo({
+      url: '../page/add/add',
     })
   }
 })

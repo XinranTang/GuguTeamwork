@@ -1,0 +1,9 @@
+<!--pages/page/add/add.wxml-->
+<view class="layer">
+  <view class="padding-xl radius shadow-blur margin-top" id="addTask" bindtap='toAddTask'>
+    <view class="text-center padding">发起任务</view>
+  </view>
+  <view class="padding-xl radius shadow-blur margin-top" id="addMessage" bindtap='toAddMessage'>
+    <view class="text-center padding">发起消息</view>
+  </view>
+</view>

@@ -1,2 +1,11 @@
 <!--pages/process/taskList/add/add.wxml-->
-<text>pages/process/taskList/add/add.wxml</text>
+<view wx:if="{{hide==false}}">
+  <i-panel title="新建任务">
+    <i-input value="{{ name }}" title="任务名" placeholder="任务名称" />
+    <i-input value="{{ infor }}" type="textarea" title="详细信息" placeholder="请输入详细信息(最多100字)" maxlength="100" />
+  </i-panel>
+  <i-button bind:click="handleClick">新建</i-button>
+</view>
+<view wx:if="{{hide==true}}">
+  <canvas class='myCanvas' canvas-id="myCanvas" bindtouchstart='EventHandleStart' bindtouchend='EventHandle' binderror="canvasIdErrorCallback" disable_scroll/>
+</view>

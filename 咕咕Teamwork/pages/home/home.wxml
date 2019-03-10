@@ -3,16 +3,16 @@
   <block class="message">
     <text class="title">消息</text>
     <view class="message-list" wx:for="{{messages}}" wx:for-item="message">
-      <view bindtap='toMessage'>{{message.content}}</view>
+      <view bindtap='toMessage'>{{message.Title}}</view>
     </view>
   </block>
   <block class="task">
     <text class="title">任务</text>
     <view class="task-list" wx:for="{{tasks}}" wx:for-item="task">
       <view style="margin:5rpx" bindtap='toTask'>
-        <i-card title="{{task.taskTitle}}" extra="{{task.taskDeadline}}">
-                <!-- <view slot="content">消息发送者</view>
-                <view slot="footer">尾部内容</view> -->
+        <i-card title="{{task.Title}}" extra="{{task.DeadLine}}">
+          <view slot="content">{{task.Pusher}}</view>
+                <!-- <view slot="footer">尾部内容</view> -->
         </i-card>  
       </view>
     </view>
