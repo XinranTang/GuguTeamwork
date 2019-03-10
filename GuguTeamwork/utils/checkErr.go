@@ -6,3 +6,11 @@ func CheckErr(err error) {
 		panic(err)
 	}
 }
+
+func HasErr(err error) bool {
+	if err != nil {
+		return true
+	} else {
+		return false
+	}
+}

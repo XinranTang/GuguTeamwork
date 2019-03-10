@@ -7,7 +7,7 @@ import (
 type UserInfo struct {
 	Messages             []Message
 	Tasks                []Task
-	FlagCode             string
+	OpenId               string
 	LastTimeAccess       time.Time
 	SuccessiveAccessDays int64
 	Level                string
