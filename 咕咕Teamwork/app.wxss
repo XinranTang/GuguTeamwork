@@ -1,5 +1,6 @@
 /**app.wxss**/
 @import "pages/iconfont/iconfont.wxss";
+@import "colorui.wxss";
 .container {
   height: 100%;
   display: flex;

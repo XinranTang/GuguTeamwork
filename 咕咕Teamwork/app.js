@@ -32,6 +32,37 @@ App({
               }
             }
           })
+          // 获取本地异步缓存信息
+          wx.getStorage({
+            key: 'Information',
+            success: function(res) {
+              console.log("succeeded in get local information")
+            },
+            // 失败：即本地无当前用户信息
+            fail:function(){
+              // 向服务器发起POST
+              wx.request({
+                url: 'https://www.fracturesr.xyz/entry',
+                header: {
+                  'content-type': "application/x-www-form-urlencoded"
+                },
+                method: 'POST',
+                data: 'OpenId=testopenid',
+                success(res) {
+                  wx.setStorage({
+                    key: 'Information',
+                    data: 'res.data',
+                  })
+                },
+                fail(){
+                  console.log("fail")
+                }
+
+              })
+            }
+          })
+        }else{
+          console.log("fail to get infor")
         }
       }
     })

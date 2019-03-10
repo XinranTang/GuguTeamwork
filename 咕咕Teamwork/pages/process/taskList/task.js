@@ -5,7 +5,7 @@ Page({
    * Page initial data
    */
   data: {
-    "name":'',
+    "name":'测试',
     "deadline":'',
     "description":''
   },
@@ -14,7 +14,17 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-
+    wx.request({
+      url:'https://www.fracturesr.xyz/entry',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: 'OpenId=testopenid',
+      success(res){
+        console.log(res.data)
+      }
+    })
   },
 
   /**

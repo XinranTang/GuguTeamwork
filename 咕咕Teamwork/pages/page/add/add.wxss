@@ -1,0 +1,13 @@
+/* pages/page/add/add.wxss */
+#addTask{
+  height: 400rpx;
+  margin-left:20rpx; 
+  margin-right:20rpx; 
+  background-color: #88caed;
+}
+#addMessage{
+  height:400rpx;
+  margin-left:20rpx; 
+  margin-right:20rpx; 
+  background-color: #88caed;
+}

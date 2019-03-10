@@ -5,31 +5,8 @@ Page({
    * Page initial data
    */
   data: {
-    messages: [
-      {
-        "content": "消息一",
-      },
-      {
-        "content": "消息二",
-      },
-      {
-        "content": "消息三",
-      }
-    ],
-    tasks:[
-      {
-        "taskTitle":"任务一",
-        "taskDeadline":"20xx-xx-xx xx:xx",
-      },
-      {
-        "taskTitle": "任务二",
-        "taskDeadline": "20xx-xx-xx xx:xx",
-      },
-      {
-        "taskTitle": "任务三",
-        "taskDeadline": "20xx-xx-xx xx:xx",
-      }
-    ]
+    messages: [],
+    tasks:[]
   },
 
   /**
@@ -43,14 +20,37 @@ Page({
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
-
+    var that = this;
+    wx.request({
+      url: 'https://www.fracturesr.xyz/entry',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: 'OpenId=testopenid',
+      success(res) {
+        that.setData({
+          messages: res.data.Messages,
+          tasks: res.data.Tasks
+        })
+      }
+    })
+    // wx.getStorage({
+    //   key: 'Information',
+    //   success: function (res) {
+    //     that.setData({
+    //       messages: res.data.Messages,
+    //       tasks: res.data.Tasks
+    //     })
+    //   }
+    // })
   },
 
   /**
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-
+    
   },
 
   /**
