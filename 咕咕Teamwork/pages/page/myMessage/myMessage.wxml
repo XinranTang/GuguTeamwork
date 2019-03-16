@@ -14,7 +14,7 @@
     </i-collapse-item>
     <i-collapse-item title="已读消息" name="name2">
       <view slot="content" i-class-content="green-text" bindtap='toMessage'>
-        <i-card title="{{messageTitle}}" extra="{{messageTime}}" thumb="../../images/icon2.jpg" full = "true">
+        <i-card title="{{messageTitle}}" extra="{{messageTime}}" thumb="../../images/icon2.jpg" >
           <view slot="content">消息发送者</view>
           <!-- <view slot="footer">尾部内容</view> -->
         </i-card>  

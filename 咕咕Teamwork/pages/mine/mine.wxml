@@ -46,6 +46,11 @@
         <text class="iconfont icon-help" style="font-size:35rpx"></text>
         <text style='margin:0rpx 15rpx'>帮助</text>
       </view>
+      <!-- 测试 -->
+       <view class="setting" bindtap='toTestPage'>
+        <text class="iconfont icon-help" style="font-size:35rpx"></text>
+        <text style='margin:0rpx 15rpx'>树状图测试</text>
+      </view>
     </view>
   </view>
 </view>
