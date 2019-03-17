@@ -42,3 +42,14 @@ type TencentRes struct {
 	Errcode     int
 	Errmsg      string
 }
+
+type TaskNode struct {
+	Task  Task
+	Child []*TaskNode
+}
+
+type TaskNodeInDB struct {
+	TaskID string
+	Self   int
+	Child  string
+}

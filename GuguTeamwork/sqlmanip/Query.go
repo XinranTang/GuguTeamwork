@@ -2,6 +2,7 @@ package sqlmanip
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	"GuguTeamwork/utils"
@@ -52,4 +53,33 @@ func QueryUserInfo(db *sql.DB, openid string) (*utils.UserInfo, error) {
 	}
 
 	return &AUserInfo, nil
+}
+
+func QueryTrees(db *sql.DB) []string {
+	rows, err := db.Query("SELECT * FROM TreeName;")
+	utils.CheckErr(err)
+	var trees []string
+	var tempStr string
+	for rows.Next() {
+		err = rows.Scan(&tempStr)
+		utils.CheckErr(err)
+		trees = append(trees, tempStr)
+	}
+	return trees
+}
+
+func QueryTaskNode(db *sql.DB, treeName string) []utils.TaskNodeInDB {
+	var order = "SELECT * FROM " + treeName + ";"
+	rows, err := db.Query(order)
+	utils.CheckErr(err)
+	var nodes []utils.TaskNodeInDB
+	var node utils.TaskNodeInDB
+	for rows.Next() {
+		err = rows.Scan(&node.TaskID, &node.Self, &node.Child)
+		utils.CheckErr(err)
+		log.Println(node)
+		nodes = append(nodes, node)
+		log.Println(nodes)
+	}
+	return nodes
 }

@@ -14,7 +14,7 @@ import (
 const tryLoop = 3
 
 func Entry(w http.ResponseWriter, r *http.Request) {
-	db := sqlmanip.ConnetUserTable()
+	db := sqlmanip.ConnetUserDB()
 	defer sqlmanip.DisConnectDB(db)
 	var output []byte
 	ATencentRes := utils.GetOpenIdFromTencent(r.PostFormValue("code"))
