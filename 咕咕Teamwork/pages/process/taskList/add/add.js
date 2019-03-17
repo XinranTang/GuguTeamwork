@@ -1,7 +1,61 @@
 // pages/process/taskList/add/add.js
-var my_canvas, strat_x, strat_y, end_x, end_y;
+var app = getApp();
+var root = {
+  title:"根",
+  nodes:[
+    {
+      title:"一"
+    },
+    {
+      title:"二"
+    }
+  ]
+}
+var treeData = {
+  text: 'My Tree',
+  id: 0,
+  nodes: [
+    {
+      text: 'Parent 1',
+      id: 1,
+      nodes: [
+        {
+          text: 'Child 1',
+          id: 2,
+          nodes: [
+            {
+              text: 'Grandchild 1',
+              id: 3,
+            },
+            {
+              text: 'Grandchild 2',
+              id: 4,
+            },
+          ]
+        },
+        {
+          text: 'Child 2',
+          id: 5,
+        }
+      ]
+    },
+    {
+      text: 'Parent 2',
+      id: 6,
+      nodes: [
+        {
+          text: 'Child 1',
+          id: 7,
+        },
+        {
+          text: 'Child 2',
+          id: 8,
+        }
+      ]
+    }
+  ]
+}
 Page({
-
   /**
    * Page initial data
    */
@@ -9,22 +63,30 @@ Page({
     name: '',
     deadline: '',
     infor: '',
-    hide: false
+    hide: false,
+    x:0,
+    y:0,
+    h:220,
+    w:220,
+    treeData: treeData,
+    root:root
   },
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-
+    this.setData({
+      h : app.globalData.windowHeight,
+      w : app.globalData.windowWidth
+    })
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
-    //创建canvas实例对象，方便后续使用。
-    my_canvas = wx.createCanvasContext('myCanvas', this) 
+   
   },
 
   /**
@@ -68,26 +130,24 @@ Page({
   onShareAppMessage: function () {
 
   },
-  handleClick:function(){
-    console.log("新建任务")
+  handleClick: function(){
+    var that = this;
+    console.log("新建任务");
     this.setData({
       hide:true
-    })
+    });
   },
-  EventHandleStart: function (e) {
-    console.log(e)    
-    strat_x = e.touches[0].x; // 手指开始触摸时的x轴 x轴--->相对于画布左边的距离    
-    strat_y = e.touches[0].y;// 手指开始触摸时的y轴 y轴--->相对于画布顶部的距离  
-    },  //手指触摸结束时的事件  
-  EventHandle: function (e) {
-    console.log(e)
-    end_x = e.changedTouches[0].x; // 手指结束触摸时的x轴 x轴--->相对于画布左边的距离
-    end_y = e.changedTouches[0].y;// 手指结束触摸时的y轴 y轴--->相对于画布顶部的距离   
-    my_canvas.beginPath(); //创建一条路径      
-    my_canvas.setStrokeStyle('black');  //设置边框色    
-    my_canvas.moveTo(strat_x, strat_y) //描述路径的起点为手指触摸的x轴和y轴    
-    my_canvas.lineTo(end_x, end_y) //绘制一条直线，终点坐标为手指触摸结束后的x轴和y轴    
-    my_canvas.stroke() //画出当前路径的边框    
-    my_canvas.draw() //将之前在绘图上下文中的描述（路径、变形、样式）画到 canvas 中。  
-  }
+  handleTouchMove: function(event){
+    var that = this;
+    that.data.x = event.touches[0].pageX
+    that.data.y = event.touches[0].pageY
+    console.log(that.data.x)
+  },
+  handleLongtap: function(){
+    
+  },
+  tapItem: function (e) {
+    console.log('index接收到的itemid: ' + e.detail.itemid);
+  },
+
 })

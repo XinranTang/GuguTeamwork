@@ -5,17 +5,17 @@
   </view>
   <i-collapse name="{{name}}">
     <i-collapse-item title="未读消息" name="name1">
-      <view slot="content" bindtap='toMessage'>
-        <i-card title="{{messageTitle}}" extra="{{messageTime}}" thumb="../../images/icon2.jpg">
-          <view slot="content">消息发送者</view>
+      <view slot="content" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
+        <i-card wx:if="{{message.Status==false}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg">
+          <view slot="content">{{message.Pusher}}</view>
           <!-- <view slot="footer">尾部内容</view> -->
         </i-card>  
       </view>
     </i-collapse-item>
     <i-collapse-item title="已读消息" name="name2">
-      <view slot="content" i-class-content="green-text" bindtap='toMessage'>
-        <i-card title="{{messageTitle}}" extra="{{messageTime}}" thumb="../../images/icon2.jpg" >
-          <view slot="content">消息发送者</view>
+      <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
+        <i-card wx:if="{{message.Status==true}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg" full = "true">
+          <view slot="content">{{message.Pusher}}</view>
           <!-- <view slot="footer">尾部内容</view> -->
         </i-card>  
       </view>

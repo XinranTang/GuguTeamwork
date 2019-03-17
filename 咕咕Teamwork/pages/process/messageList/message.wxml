@@ -3,8 +3,11 @@
   <view id="title">
     <text>消息信息</text>
   </view>
-  <view>发送人：{{person}}</view>
-  <view>描述：{{description}}</view>
+  <view>消息标题：{{title}}</view>
+  <view>消息发布者：{{pusher}}</view>
+  <view>内容：{{content}}</view>
+  <view>发布时间：{{pushDate}}</view>
+  <view>阅读期限：{{finalDeleteDate}}</view>
   <i-button bind:click="iKnow">我了解了</i-button>
 
 </view>

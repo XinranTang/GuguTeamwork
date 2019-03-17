@@ -1,4 +1,5 @@
 // pages/page/myMessage/myMessage.js
+var app = getApp();
 Page({
 
   /**
@@ -6,8 +7,7 @@ Page({
    */
   data: {
     name:"name1",
-    messageTitle:"一个消息",
-    messageTime:"2019-3-9 16:18"
+    messages:[]
   },
 
   /**
@@ -21,14 +21,16 @@ Page({
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
-
+    
   },
 
   /**
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-
+    this.setData({
+      messages: app.globalData.messages
+    })
   },
 
   /**
@@ -65,7 +67,13 @@ Page({
   onShareAppMessage: function () {
 
   },
-  toMessage: function () {
+  toMessage: function (e) {
+    var self = this;
+    var dataSet = e.currentTarget.dataset;
+    var index = dataSet.index;
+
+    app.globalData.currentMessageIndex = index;
+    app.globalData.messages = self.data.messages;
     wx.navigateTo({
       url: '../../process/messageList/message',
     })

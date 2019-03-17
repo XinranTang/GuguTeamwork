@@ -3,7 +3,11 @@
   <view id="title">
     <text>任务信息</text>
   </view>
-  <view>名称：{{name}}</view>
-  <view>描述：{{description}}</view>
-  <view>截止时间：{{deadline}}</view>
+  <view>名称：{{title}}</view>
+  <view>发布者：{{pusher}}</view>
+  <view>内容：{{content}}</view>
+  <view>状态：{{status}}</view>
+  <view>发布日期：{{pushDate}}</view>
+  <view>截止日期：{{deadLine}}</view>
+  <view>优先级：{{urgency}}</view>
 </view>

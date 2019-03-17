@@ -196,10 +196,5 @@ Page({
     wx.navigateTo({
       url: '../page/add/add',
     })
-  },
-  toTestPage:function(){
-    wx.navigateTo({
-      url: '../tree/tree',
-    })
   }
 })

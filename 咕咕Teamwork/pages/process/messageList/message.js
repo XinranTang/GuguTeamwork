@@ -1,19 +1,37 @@
 // pages/process/messageList/message.js
+var app = getApp()
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    "person":'',
-    "description":''
+    "title": '测试',
+    "pusher": '',
+    "content": '',
+    "status": false,
+    "pushDate": "",
+    "finalDeleteDate": "",
+    "message": null
   },
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-
+    var self = this;
+    var list = app.globalData.messages;
+    var index = app.globalData.currentMessageIndex;
+    var currentMessage = list[index];
+    self.setData({
+      message: currentMessage,
+      title: currentMessage.Title,
+      pusher: currentMessage.Pusher,
+      content: currentMessage.Content,
+      status: currentMessage.Status,
+      pushDate: currentMessage.PushDate,
+      finalDeleteDate: currentMessage.FinalDeleteDate
+    })
   },
 
   /**
@@ -65,6 +83,12 @@ Page({
 
   },
   iKnow:function(){
-    console.log("我了解了。")
+    this.setData({
+      status:true
+    })
+    var list = app.globalData.messages;
+    var index = app.globalData.currentMessageIndex;
+    var currentMessage = list[index];
+    currentMessage.Status = true;
   }
 })

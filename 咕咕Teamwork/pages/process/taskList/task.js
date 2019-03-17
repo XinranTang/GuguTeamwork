@@ -1,29 +1,38 @@
 // pages/process/taskList/task.js
+var app = getApp()
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    "name":'测试',
-    "deadline":'',
-    "description":''
+    "title":'测试',
+    "pusher":'',
+    "content":'',
+    "status":false,
+    "pushDate":"",
+    "deadLine":"",
+    "urgency":0,
+    "task":null
   },
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    wx.request({
-      url:'https://www.fracturesr.xyz/entry',
-      header: {
-        'content-type': "application/x-www-form-urlencoded"
-      },
-      method: 'POST',
-      data: 'OpenId=testopenid',
-      success(res){
-        console.log(res.data)
-      }
+    var self = this;
+    var list = app.globalData.tasks;
+    var index = app.globalData.currentTaskIndex;
+    var currentTask = list[index];
+    self.setData({
+      task:currentTask,
+      title:currentTask.Title,
+      pusher:currentTask.Pusher,
+      content:currentTask.Content,
+      status:currentTask.Status,
+      pushDate:currentTask.PushDate,
+      deadLine:currentTask.DeadLine,
+      urgency:currentTask.Urgency
     })
   },
 

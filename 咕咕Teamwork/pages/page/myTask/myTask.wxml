@@ -5,16 +5,14 @@
   </view>
     <i-collapse name="{{name}}">
         <i-collapse-item title="我加入的项目" name="name1">
-            <view slot="content" bindtap='toTask'>
-              <i-card title="{{taskTitle}}" extra="{{taskDeadline}}" thumb="../../images/icon2.jpg">
+            <view slot="content" wx:for="{{tasks}}" bindtap='toTask' wx:for-item="task" data-data="{{item.data}}" data-index="{{index}}">
+              <i-card title="{{task.Title}}" extra="{{task.DeadLine}}" thumb="../../images/icon2.jpg">
                 <!-- <view slot="content">消息发送者</view>
                 <view slot="footer">尾部内容</view> -->
               </i-card>  
             </view>
         </i-collapse-item>
-        <view style="right: 20rpx;position: absolute;" bindtap='addTask'>
-            <i-icon type="add" size="35" color="#f86e3d"/>
-        </view>
+        <view style="right: 20rpx;position: absolute;" bindtap='addTask'><i-icon type="add" size="42" color="#f86e3d"/></view>
         <i-collapse-item title="我管理的项目" name="name2">
             <view slot="content" i-class-content="green-text" bindtap='toTask'>
               <i-card title="{{taskTitle}}" extra="{{taskDeadline}}" thumb="../../images/icon2.jpg">

@@ -1,13 +1,13 @@
 // pages/page/myTask/myTask.js
+var app = getApp();
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    name:"name1",
-    taskTitle:"任务",
-    taskDeadline:"20xx-xx-xx xx:xx"
+    tasks:[],
+    name:"name1"
   },
 
   /**
@@ -28,7 +28,9 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-
+    this.setData({
+      tasks:app.globalData.tasks
+    })
   },
 
   /**
@@ -70,7 +72,13 @@ Page({
       url: '../../process/taskList/add/add',
     })
   },
-  toTask:function(){
+  toTask:function(e){
+    var self = this;
+    var dataSet = e.currentTarget.dataset;
+    var index = dataSet.index;
+
+    app.globalData.currentTaskIndex = index;
+    app.globalData.tasks = self.data.tasks;
     wx.navigateTo({
       url: '../../process/taskList/task',
     })

@@ -2,19 +2,29 @@
 <view class="layer">
   <block class="message">
     <text class="title">消息</text>
-    <view class="message-list" wx:for="{{messages}}" wx:for-item="message">
-      <view bindtap='toMessage'>{{message.Title}}</view>
-    </view>
+    <block wx:if="{{messages.length!=0}}">
+      <view class="message-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message"  bindtap='toMessage'>
+        <view wx:if="{{message.Status==false}}">{{message.Title}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <view >当前还没有消息哦</view>
+    </block>
   </block>
   <block class="task">
     <text class="title">任务</text>
-    <view class="task-list" wx:for="{{tasks}}" wx:for-item="task">
-      <view style="margin:5rpx" bindtap='toTask'>
-        <i-card title="{{task.Title}}" extra="{{task.DeadLine}}">
-          <view slot="content">{{task.Pusher}}</view>
+    <block wx:if="{{tasks.length!=0}}">
+      <view class="task-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask'>
+        <view style="margin:5rpx">
+          <i-card title="{{task.Title}}" extra="{{task.DeadLine}}">
+            <view slot="content">{{task.Pusher}}</view>
                 <!-- <view slot="footer">尾部内容</view> -->
-        </i-card>  
+          </i-card>  
+        </view>
       </view>
-    </view>
+    </block>
+    <block wx:else>
+      <view>当前还没有任务哦</view>
+    </block>
   </block>
 </view>

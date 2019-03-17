@@ -1,4 +1,5 @@
 // pages/home/home.js
+var app = getApp()
 Page({
 
   /**
@@ -29,6 +30,8 @@ Page({
       method: 'POST',
       data: 'OpenId=testopenid',
       success(res) {
+        app.globalData.tasks = res.data.Tasks;
+        app.globalData.messages = res.data.Messages;
         that.setData({
           messages: res.data.Messages,
           tasks: res.data.Tasks
@@ -50,7 +53,10 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    
+    this.setData({
+      messages:app.globalData.messages,
+      tasks:app.globalData.tasks
+    })
   },
 
   /**
@@ -88,14 +94,26 @@ Page({
 
   },
   // 页面跳转
-  toMessage:function(){
+  toMessage:function(e){
+    var self = this;
+    var dataSet = e.currentTarget.dataset;
+    var index = dataSet.index;
+
+    app.globalData.currentMessageIndex = index;
+    app.globalData.messages = self.data.messages;
     wx.navigateTo({
       url: '../process/messageList/message',
     })
   },
-  toTask: function () {
+  toTask: function (e) {
+    var self = this;
+    var dataSet = e.currentTarget.dataset;
+    var index = dataSet.index;
+   
+    app.globalData.currentTaskIndex = index;
+    app.globalData.tasks = self.data.tasks;
     wx.navigateTo({
       url: '../process/taskList/task',
-    })
+    });
   }
 })

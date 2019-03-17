@@ -1,11 +1,19 @@
 <!--pages/process/taskList/add/add.wxml-->
 <view wx:if="{{hide==false}}">
   <i-panel title="新建任务">
-    <i-input value="{{ name }}" title="任务名" placeholder="任务名称" />
+    <i-input value="{{ name }}" type="textarea" title="任务名" placeholder="任务名称" />
     <i-input value="{{ infor }}" type="textarea" title="详细信息" placeholder="请输入详细信息(最多100字)" maxlength="100" />
   </i-panel>
   <i-button bind:click="handleClick">新建</i-button>
 </view>
 <view wx:if="{{hide==true}}">
-  <canvas class='myCanvas' canvas-id="myCanvas" bindtouchstart='EventHandleStart' bindtouchend='EventHandle' binderror="canvasIdErrorCallback" disable_scroll/>
+  <movable-area style="height: {{h}}px;width: {{w}}px;background: rgba(250,250,250,0.90);">
+    <movable-view style="height: 50px; width: 50px; background: #66ccff; border-radius:5px" bindlongtap='handleLongtap' direction="all">
+        <text>12345</text>
+      </movable-view>
+      <movable-view for="{{root.nodes}}" style="height: 50px; width: 50px; background: #66ccff; border-radius:5px" bindlongtap='handleLongtap' direction="all">
+        <text>{{item.title}}</text>
+      </movable-view>
+      <!-- <mytree model='{{ treeData }}' bind:tapitem='tapItem'></mytree> -->
+  </movable-area>
 </view>

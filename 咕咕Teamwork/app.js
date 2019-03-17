@@ -7,12 +7,35 @@ App({
     // unshift() 方法可向数组的开头添加一个或更多元素，并返回新的长度
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
-
+    var that = this
+    wx.getSystemInfo({
+      success: function (res) {
+        that.globalData.windowHeight= res.windowHeight
+        that.globalData.windowWidth = res.windowWidth
+      }
+    })
     // 登录
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log(res.code)
+        wx.request({
+          url: 'https://www.fracturesr.xyz/entry',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: 'UserCode=res.code',
+          success(res) {
+            wx.setStorage({
+              key: 'UserInfor',
+              data: 'res.data',
+            })
+            console.log(res)
+          },
+          fail() {
+            console.log("fail")
+          }
+        })
       }
     })
     // 获取用户信息
@@ -68,7 +91,17 @@ App({
       }
     })
   },
+  onLoad: function(){
+  
+     
+  },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    windowHeight:0,
+    windowWidth:0,
+    currentTaskIndex:0,
+    currentMessageIndex: 0,
+    tasks:[],
+    messages:[]
   }
 })
