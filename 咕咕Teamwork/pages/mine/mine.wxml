@@ -1,7 +1,7 @@
 <!--pages/mine/mine.wxml-->
 <view class="layer">
-  <view class="userinfo">
-    <view id="inf" style="height:300rpx;">
+  <view class="userinfo" style='background-color: {{color.Blue}}'>
+    <view class="padding-sm" id="inf" style="height:300rpx;">
       <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
       <block wx:else>
         <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
@@ -36,7 +36,7 @@
     <view class="setting_container">
       <view class="setting">
       <text class="iconfont icon-settings" style="font-size:35rpx"></text>
-        <text style='margin:0rpx 15rpx'>界面设置</text>
+        <text style='margin:0rpx 15rpx' bindtap='toPageSetting'>界面设置</text>
       </view>
       <view class="setting">
        <text class="iconfont icon-sponsor" style="font-size:35rpx"></text>

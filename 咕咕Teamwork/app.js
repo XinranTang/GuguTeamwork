@@ -30,7 +30,7 @@ App({
           success: function(res) {
             wx.setStorage({
               key: 'UserInfor',
-              data: 'res.data',
+              data: res.data,
             })
             console.log(res.data)
           },
@@ -74,7 +74,7 @@ App({
                 },
                 method: 'POST',
                 data:{
-                  'code':"testopenid"//以后需要替换
+                  'code':"res.data"
                 },
                 success(res) {
                   wx.setStorage({
@@ -106,6 +106,10 @@ App({
     currentTaskIndex:0,
     currentMessageIndex: 0,
     tasks:[],
-    messages:[]
+    messages:[],
+    color:{
+      "Blue":'#88caed',
+      'Orange':'#f86e3d'
+    }
   }
 })

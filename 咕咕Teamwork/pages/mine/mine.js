@@ -9,6 +9,7 @@ Page({
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    color:{},
     menus1: [
       {
         "name": "我的任务",
@@ -116,7 +117,9 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-
+    this.setData({
+      color:app.globalData.color
+    })
   },
 
   /**
@@ -153,21 +156,32 @@ Page({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
     })
+    var openId = '';
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function(res) {
+        openId = res.data.OpenId
+        console.log(openId)
+      },
+    })
     wx.request({
       url: 'https://www.fracturesr.xyz/entry',
       header: {
         'content-type': "application/x-www-form-urlencoded"
       },
       method: 'POST',
-      data: 'OpenId=testopenid',
+      data: {
+        openId:openId
+      },
       success(res) {
         wx.setStorage({
           key: 'Information',
-          data: 'res.data',
+          data: res.data,
         })
+        console.log("在授权后取得用户信息成功")
       },
       fail() {
-        console.log("fail")
+        console.log("在授权后取得用户信息失败")
       }
     })
   },
@@ -195,6 +209,11 @@ Page({
   intoFunc4: function () {
     wx.navigateTo({
       url: '../page/add/add',
+    })
+  },
+  toPageSetting:function(){
+    wx.navigateTo({
+      url: '../page/myPageSetting/myPageSetting',
     })
   }
 })

@@ -1,7 +1,7 @@
 <!--pages/home/home.wxml-->
 <view class="layer">
   <block class="message">
-    <text class="title">消息</text>
+    <text class="title" style='color:{{color.Orange}}'>消息</text>
     <block wx:if="{{messages.length!=0}}">
       <view class="message-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message"  bindtap='toMessage'>
         <view wx:if="{{message.Status==false}}">{{message.Title}}</view>
@@ -12,7 +12,7 @@
     </block>
   </block>
   <block class="task">
-    <text class="title">任务</text>
+    <text class="title" style='color:{{color.Orange}}'>任务</text>
     <block wx:if="{{tasks.length!=0}}">
       <view class="task-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask'>
         <view style="margin:5rpx">

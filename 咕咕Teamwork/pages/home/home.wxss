@@ -2,7 +2,6 @@
 .title{
   font-size: 50rpx;
   font-family: "幼圆";
-  color: #f86e3d;
   margin: 10rpx;
 }
 .message-list{

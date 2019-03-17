@@ -6,6 +6,7 @@ Page({
    * Page initial data
    */
   data: {
+    color:{},
     messages: [],
     tasks:[]
   },
@@ -21,32 +22,10 @@ Page({
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
-    var that = this;
-    wx.request({
-      url: 'https://www.fracturesr.xyz/entry',
-      header: {
-        'content-type': "application/x-www-form-urlencoded"
-      },
-      method: 'POST',
-      data: 'OpenId=testopenid',
-      success(res) {
-        app.globalData.tasks = res.data.Tasks;
-        app.globalData.messages = res.data.Messages;
-        that.setData({
-          messages: res.data.Messages,
-          tasks: res.data.Tasks
-        })
-      }
+    this.setData({
+      messages:app.globalData.messages,
+      tasks:app.globalData.tasks
     })
-    // wx.getStorage({
-    //   key: 'Information',
-    //   success: function (res) {
-    //     that.setData({
-    //       messages: res.data.Messages,
-    //       tasks: res.data.Tasks
-    //     })
-    //   }
-    // })
   },
 
   /**
@@ -55,7 +34,8 @@ Page({
   onShow: function () {
     this.setData({
       messages:app.globalData.messages,
-      tasks:app.globalData.tasks
+      tasks:app.globalData.tasks,
+      color: app.globalData.color
     })
   },
 

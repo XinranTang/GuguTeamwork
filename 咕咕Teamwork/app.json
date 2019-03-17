@@ -11,7 +11,8 @@
     "pages/page/myAnalysis/myAnalysis",
     "pages/process/taskList/add/add",
     "pages/page/add/add",
-    "pages/process/messageList/add/add"
+    "pages/process/messageList/add/add",
+    "pages/page/myPageSetting/myPageSetting"
   ],
   "window": {
     "backgroundTextStyle": "light",
