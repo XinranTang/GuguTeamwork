@@ -7,7 +7,8 @@ Page({
    */
   data: {
     tasks:[],
-    name:"name1"
+    name:"name1",
+    color:{}
   },
 
   /**
@@ -29,7 +30,8 @@ Page({
    */
   onShow: function () {
     this.setData({
-      tasks:app.globalData.tasks
+      tasks:app.globalData.tasks,
+      color:app.globalData.color
     })
   },
 

@@ -22,7 +22,6 @@
   },
   "tabBar": {
     "color": "black",
-    "selectedColor": "#88caed",
     "borderStyle": "white",
     "position": "bottom",
     "list": [
