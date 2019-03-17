@@ -24,13 +24,15 @@ App({
             'content-type': "application/x-www-form-urlencoded"
           },
           method: 'POST',
-          data: 'UserCode=res.code',
-          success(res) {
+          data: {
+            code:res.code
+          },
+          success: function(res) {
             wx.setStorage({
               key: 'UserInfor',
               data: 'res.data',
             })
-            console.log(res)
+            console.log(res.data)
           },
           fail() {
             console.log("fail")
@@ -71,7 +73,9 @@ App({
                   'content-type': "application/x-www-form-urlencoded"
                 },
                 method: 'POST',
-                data: 'OpenId=testopenid',
+                data:{
+                  'code':"testopenid"//以后需要替换
+                },
                 success(res) {
                   wx.setStorage({
                     key: 'Information',

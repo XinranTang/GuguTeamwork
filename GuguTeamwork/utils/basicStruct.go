@@ -7,6 +7,7 @@ import (
 type UserInfo struct {
 	Messages             []Message
 	Tasks                []Task
+	Manage               string
 	OpenId               string
 	LastTimeAccess       time.Time
 	SuccessiveAccessDays int64
@@ -14,6 +15,7 @@ type UserInfo struct {
 }
 
 type Message struct {
+	MessageID       string
 	Title           string
 	Pusher          string
 	Content         string
@@ -23,6 +25,7 @@ type Message struct {
 }
 
 type Task struct {
+	TaskID   string
 	Title    string
 	Pusher   string
 	Content  string

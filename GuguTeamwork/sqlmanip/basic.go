@@ -18,8 +18,8 @@ func DisConnectDB(db *sql.DB) {
 }
 
 func Try(db *sql.DB, openid string) bool {
-	var tempStrA, tempStrB, tempStrC string
+	var tempStrA, tempStrB, tempStrC, tempStrD string
 	var tempInt int
-	err := db.QueryRow("SELECT * FROM UserInfo WHERE OpenId LIKE ?", openid).Scan(&tempStrA, &tempStrB, &tempInt, &tempStrC)
+	err := db.QueryRow("SELECT * FROM UserInfo WHERE OpenId LIKE ?", openid).Scan(&tempStrA, &tempStrB, &tempInt, &tempStrC, &tempStrD)
 	return utils.HasErr(err)
 }

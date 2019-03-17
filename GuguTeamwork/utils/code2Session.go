@@ -19,7 +19,8 @@ func GetOpenIdFromTencent(code string) *TencentRes {
 	CheckErr(err)
 
 	var ATencentRes TencentRes
-	json.Unmarshal(object, &ATencentRes)
+	err = json.Unmarshal(object, &ATencentRes)
+	CheckErr(err)
 
 	return &ATencentRes
 }

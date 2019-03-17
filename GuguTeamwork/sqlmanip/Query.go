@@ -14,15 +14,15 @@ func QueryUserInfo(db *sql.DB, openid string) (*utils.UserInfo, error) {
 	var Astring, Bstring string
 
 	//填充登陆时间信息
-	var order = "SELECT OpenId,LastTimeAccess,SuccessiveAccessDays,Level FROM UserInfo WHERE OpenId LIKE '" + openid + "';"
-	err := db.QueryRow(order).Scan(&AUserInfo.OpenId, &Astring, &AUserInfo.SuccessiveAccessDays, &AUserInfo.Level)
+	var order = "SELECT OpenId,LastTimeAccess,SuccessiveAccessDays,Level,Manage FROM UserInfo WHERE OpenId LIKE '" + openid + "';"
+	err := db.QueryRow(order).Scan(&AUserInfo.OpenId, &Astring, &AUserInfo.SuccessiveAccessDays, &AUserInfo.Level, &AUserInfo.Manage)
 	utils.CheckErr(err)
 	AUserInfo.LastTimeAccess, err = time.Parse("2006-01-02T15:04:05Z", Astring)
 	utils.CheckErr(err)
 
 	//填充消息和任务信息
 	var AMessage utils.Message
-	order = "SELECT Title,Pusher,Content,Status,PushDate,FinalDeleteDate FROM " + openid + "_message;"
+	order = "SELECT Title,Pusher,Content,Status,PushDate,FinalDeleteDate FROM " + utils.DealWithOpenId(openid) + "_message;"
 	rows, err := db.Query(order)
 	utils.CheckErr(err)
 
@@ -37,7 +37,7 @@ func QueryUserInfo(db *sql.DB, openid string) (*utils.UserInfo, error) {
 	}
 
 	var ATask utils.Task
-	order = "SELECT Title,Pusher,Content,Status,PushDate,DeadLine,Urgency FROM " + openid + "_task;"
+	order = "SELECT Title,Pusher,Content,Status,PushDate,DeadLine,Urgency FROM " + utils.DealWithOpenId(openid) + "_task;"
 	rows, err = db.Query(order)
 	utils.CheckErr(err)
 

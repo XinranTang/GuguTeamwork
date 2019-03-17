@@ -3,8 +3,9 @@ package fetch
 import (
 	"database/sql"
 	"encoding/json"
-	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"GuguTeamwork/sqlmanip"
 	"GuguTeamwork/utils"
@@ -19,24 +20,18 @@ func Entry(w http.ResponseWriter, r *http.Request) {
 	ATencentRes := utils.GetOpenIdFromTencent(r.PostFormValue("code"))
 	if ATencentRes.Errcode != 0 {
 		var tryTime = 0
-		if ATencentRes.Errcode == 40029 {
-			log.Println("40029")
-			w.Write([]byte("40029:" + ATencentRes.Errmsg))
-			return
-		} else if ATencentRes.Errcode == 45011 {
-			log.Println("40051")
-			w.Write([]byte("40051:" + ATencentRes.Errmsg))
-			return
-		} else {
+		if ATencentRes.Errcode == -1 {
 			for ATencentRes.Errcode == -1 && tryTime < tryLoop {
 				ATencentRes = utils.GetOpenIdFromTencent(r.PostFormValue("code"))
 				tryTime++
 			}
 			if ATencentRes.Errcode == -1 {
-				log.Println("-1")
 				w.Write([]byte("-1:" + ATencentRes.Errmsg))
 				return
 			}
+		} else {
+			w.Write([]byte(strconv.Itoa(ATencentRes.Errcode) + ATencentRes.Errmsg))
+			return
 		}
 	}
 	if !try(db, ATencentRes.Openid) {
@@ -65,5 +60,17 @@ func exist(db *sql.DB, openid string) []byte {
 
 func nonexsit(db *sql.DB, openid string) []byte {
 	sqlmanip.CreateNewUser(db, openid)
-	return nil
+	var UserInfo = utils.UserInfo{
+		Messages:             nil,
+		Tasks:                nil,
+		Manage:               "",
+		OpenId:               openid,
+		LastTimeAccess:       time.Now(),
+		SuccessiveAccessDays: 1,
+		Level:                "lowLevel",
+	}
+	output, err := json.MarshalIndent(UserInfo, "", "\t\t")
+	utils.CheckErr(err)
+
+	return output
 }
