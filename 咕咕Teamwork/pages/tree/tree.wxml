@@ -11,4 +11,6 @@
 <view class="btn" bindtap="onImport">导入默认模板</view>
 <view class="btn" bindtap="onClearCanvas">清空画布</view>
 <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
-
+<switch checked bindchange="switchZoom"/>
+<switch checked bindchange="switchDel"/>
+<switch checked bindchange="switchAdd"/>

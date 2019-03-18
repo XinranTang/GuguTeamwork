@@ -215,5 +215,10 @@ Page({
     wx.navigateTo({
       url: '../page/myPageSetting/myPageSetting',
     })
+  },
+  toTree: function () {
+    wx.navigateTo({
+      url: '../tree/tree',
+    })
   }
 })

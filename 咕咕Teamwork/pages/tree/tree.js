@@ -153,6 +153,17 @@ Page({
     _this.setData({ canvasBg: null });
     CanvasDrag.clearCanvas();
   },
+  switchZoom: function (e) {
+    CanvasDrag.enableZoom(e.detail.value);
+  },
+  switchAdd: function (e) {
+    CanvasDrag.enableAdd(e.detail.value);
+  },
+  switchDel: function (e) {
+    CanvasDrag.enableDel(e.detail.value);
+  },
+
+
   /**
    * 生命周期函数--监听页面加载
    */
