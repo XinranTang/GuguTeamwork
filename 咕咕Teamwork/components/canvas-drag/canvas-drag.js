@@ -90,5 +90,31 @@ CanvasDrag.initByTree = (tree) => {
   }
 };
 
+CanvasDrag.enableZoom = (trueOrfalse) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().enableZoom(trueOrfalse);
+  }
+};
+
+CanvasDrag.enableDel = (trueOrfalse) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().enableDel(trueOrfalse);
+  }
+};
+
+CanvasDrag.enableAdd = (trueOrfalse) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().enableAdd(trueOrfalse);
+  }
+};
 
 export default CanvasDrag;

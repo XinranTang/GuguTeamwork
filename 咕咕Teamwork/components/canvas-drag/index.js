@@ -9,9 +9,13 @@ const DRAG_ICON = './icon/scale.png'; // 缩放按钮
 const ADD_ICON = './icon/add.png'
 const STROKE_COLOR = 'red';
 const ROTATE_ENABLED = false;
+var DEFAULT_FONT_SIZE = 15;
+var ZOOM_ENABLE = false;
+var ADD_ENABLE = false;
+var DEL_ENABLE = false;
 
 const DEBUG_MODE = false; // 打开调试后会渲染操作区域边框（无背景时有效）
-const dragGraph = function ({x = 30, y = 30, w, h, type, text, fontSize = 20, color = 'red', url = null, rotate = 0, sourceId = null, selected = true}, canvas, factor) {
+const dragGraph = function ({x = 30, y = 30, w, h, type, text, fontSize = DEFAULT_FONT_SIZE, color = 'red', url = null, rotate = 0, sourceId = null, selected = true}, canvas, factor) {
     if (type === 'text') {
         canvas.setFontSize(fontSize);
         const textWidth = canvas.measureText(text).width;
@@ -94,14 +98,19 @@ dragGraph.prototype = {
 
             if (this.type === 'text') {
                 this.ctx.strokeRect(this.x, this.y, textWidth, textHeight);
-                this.ctx.drawImage(DELETE_ICON, this.x - 15, this.y - 15, 30, 30);
-                this.ctx.drawImage(DRAG_ICON, this.x + textWidth - 15, this.y + textHeight - 15, 30, 30);
+                if(DEL_ENABLE)
+                  this.ctx.drawImage(DELETE_ICON, this.x - 15, this.y - 15, 30, 30);
+                if(ZOOM_ENABLE)
+                  this.ctx.drawImage(DRAG_ICON, this.x + textWidth - 15, this.y + textHeight - 15, 30, 30);
                 // 添加结点的按钮
-                this.ctx.drawImage(ADD_ICON, this.x + textWidth - 15, this.y - 15,30,30);
+                if (ADD_ENABLE)
+                  this.ctx.drawImage(ADD_ICON, this.x + textWidth - 15, this.y - 15,30,30);
             } else {
                 this.ctx.strokeRect(this.x, this.y, this.w, this.h);
-                this.ctx.drawImage(DELETE_ICON, this.x - 15, this.y - 15, 30, 30);
-                this.ctx.drawImage(DRAG_ICON, this.x + this.w - 15, this.y + this.h - 15, 30, 30);
+                if (DEL_ENABLE)
+                  this.ctx.drawImage(DELETE_ICON, this.x - 15, this.y - 15, 30, 30);
+                if (ZOOM_ENABLE)
+                  this.ctx.drawImage(DRAG_ICON, this.x + this.w - 15, this.y + this.h - 15, 30, 30);
             }
         }
         this.ctx.restore();
@@ -183,16 +192,16 @@ dragGraph.prototype = {
             this._drawBorder();
         }
 
-        if (x - transformScaleX >= 0 && y - transformScaleY >= 0 &&
+      if ( ZOOM_ENABLE&&x - transformScaleX >= 0 && y - transformScaleY >= 0 &&
             transformScaleX + scaleW - x >= 0 && transformScaleY + scaleH - y >= 0) {
             // 缩放区域
             return 'transform';
-        } else if (x - transformDelX >= 0 && y - transformDelY >= 0 &&
+        } else if (DEL_ENABLE&&x - transformDelX >= 0 && y - transformDelY >= 0 &&
             transformDelX + delW - x >= 0 && transformDelY + delH - y >= 0) {
             // 删除区域
             return 'del';
         } 
-        else if (x - transformAddX >= 0 && y - transformAddY >= 0 &&
+        else if (ADD_ENABLE&&x - transformAddX >= 0 && y - transformAddY >= 0 &&
           transformAddX + addW - x >= 0 && transformAddY + addH - y >= 0){
             return 'add';
         }
@@ -336,7 +345,7 @@ const edgeGraph = function({width = 2,color = 'black'},canvas,fromGraph,toGraph)
 edgeGraph.prototype = {
     paint(){
         // this.ctx.save();
-        // TODO：这里绘制直接是连接两个graph的中心点，之后可以加一些判断让线条根据两个graph的位置在不同端点连接
+        // 根据graph相对位置从不同端点绘制线条
         this.ctx.setLineWidth(this.width);
         this.ctx.setStrokeStyle(this.color);
         if (this.fromGraph && this.toGraph){
@@ -344,6 +353,37 @@ edgeGraph.prototype = {
           let fromY = this.fromGraph.centerY;
           let toX = this.toGraph.centerX;
           let toY = this.toGraph.centerY;
+          let UpperGraph,LowerGraph,LefterGraph,RighterGraph;
+          if (fromY < toY){
+            UpperGraph = this.fromGraph;
+            LowerGraph = this.toGraph;
+          }else{
+            UpperGraph = this.toGraph;
+            LowerGraph = this.fromGraph;
+          }
+          if(fromX<toX){
+            LefterGraph = this.fromGraph;
+            RighterGraph = this.toGraph;
+          }else{
+            LefterGraph = this.toGraph;
+            RighterGraph = this.fromGraph;
+          }
+          let delX = Math.abs(fromX-toX);
+          let delY = Math.abs(fromY-toY);
+          //x差值更大时以左右坐标为端点
+          if(delX>delY){
+            fromX = LefterGraph.centerX + LefterGraph.w/2;
+            toX = RighterGraph.centerX - RighterGraph.w/2;
+
+            fromY = LefterGraph.centerY;
+            toY = RighterGraph.centerY;
+          }else{
+            //y差值更大以上下为端点
+            fromY = UpperGraph.centerY + UpperGraph.h/2;
+            fromX = UpperGraph.centerX;
+            toY = LowerGraph.centerY - LowerGraph.h/2;
+            toX = LowerGraph.centerX;
+          }
           this.ctx.moveTo(fromX,fromY);
           this.ctx.lineTo(toX,toY);
           this.ctx.stroke();
@@ -352,7 +392,19 @@ edgeGraph.prototype = {
         else{
           return;
         }
-    }
+  },
+  /**
+   * 画一条线
+   * @param ctx
+   * @param a
+   * @param b
+   * @private
+   */
+  _draw_line(ctx, a, b) {
+    ctx.moveTo(a[0], a[1]);
+    ctx.lineTo(b[0], b[1]);
+    ctx.stroke();
+  }
 };
 
 Component({
@@ -668,7 +720,7 @@ Component({
         initByTree(tree) {
           const initX = 100, initY = 100;
           var root = tree[0];
-          console.log(root);
+          //console.log(root);
           var newgraph = new dragGraph({ x: initX, y: initY, text: root.title, type: "text" }, this.ctx, this.factor);
           this.drawArr.push(newgraph);
           // console.log("root.x="+newgraph.x);
@@ -676,6 +728,15 @@ Component({
           // 根据json生成dragGraph的同时设置dragGraph的childs,之后可以根据需求直接先用json初始化dragGraph树
           this._insertNode(root,newgraph);
           this.draw();
+        },
+        enableZoom(trueOrfalse){
+          ZOOM_ENABLE = trueOrfalse;
+        },
+        enableDel(trueOrfalse){
+          DEL_ENABLE = trueOrfalse;
+        },
+        enableAdd(trueOrfalse){
+          ADD_ENABLE = trueOrfalse;
         },
         changColor(color) {
             const selected = this.drawArr.filter((item) => item.selected);
