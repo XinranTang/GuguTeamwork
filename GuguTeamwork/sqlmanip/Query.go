@@ -2,7 +2,6 @@ package sqlmanip
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	"GuguTeamwork/utils"
@@ -55,8 +54,16 @@ func QueryUserInfo(db *sql.DB, openid string) (*utils.UserInfo, error) {
 	return &AUserInfo, nil
 }
 
+func QueryStringToString(db *sql.DB, header string, table string, openid string) string {
+	var order = "SELECT " + header + " FROM " + table + " WHERE OpenId=" + "'" + openid + "';"
+	var tempStr string
+	err := db.QueryRow(order).Scan(&tempStr)
+	utils.CheckErr(err)
+	return tempStr
+}
+
 func QueryTrees(db *sql.DB) []string {
-	rows, err := db.Query("SELECT * FROM TreeName;")
+	rows, err := db.Query("SELECT * FROM Tree;")
 	utils.CheckErr(err)
 	var trees []string
 	var tempStr string
@@ -77,9 +84,24 @@ func QueryTaskNode(db *sql.DB, treeName string) []utils.TaskNodeInDB {
 	for rows.Next() {
 		err = rows.Scan(&node.TaskID, &node.Self, &node.Child)
 		utils.CheckErr(err)
-		log.Println(node)
 		nodes = append(nodes, node)
-		log.Println(nodes)
 	}
 	return nodes
+}
+
+func QueryTaskFromID(db *sql.DB, TaskID string) *utils.Task {
+	var order = "SELECT * FROM Tasks WHERE TaskID=" + "'" + TaskID + "';"
+	rows, err := db.Query(order)
+	utils.CheckErr(err)
+	var ATask utils.Task
+	var tempStrA, tempStrB string
+	for rows.Next() {
+		err = rows.Scan(&ATask.TaskID, &ATask.Title, &ATask.Pusher, &ATask.Content, &ATask.Status, &tempStrA, &tempStrB, &ATask.Urgency)
+		utils.CheckErr(err)
+		ATask.PushDate, err = time.Parse("2006-01-02T15:04:05Z", tempStrA)
+		utils.CheckErr(err)
+		ATask.DeadLine, err = time.Parse("2006-01-02T15:04:05Z", tempStrB)
+		utils.CheckErr(err)
+	}
+	return &ATask
 }

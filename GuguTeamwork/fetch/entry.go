@@ -44,6 +44,14 @@ func Entry(w http.ResponseWriter, r *http.Request) {
 	w.Write(output)
 }
 
+func OpenIdEntry(w http.ResponseWriter, r *http.Request) {
+	db := sqlmanip.ConnetUserDB()
+	defer sqlmanip.DisConnectDB(db)
+	var output = exist(db, r.PostFormValue("OpenId"))
+	w.Header().Set("Content-type", "application/json")
+	w.Write(output)
+}
+
 func try(db *sql.DB, openid string) bool {
 	return sqlmanip.Try(db, openid)
 }

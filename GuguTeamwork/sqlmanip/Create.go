@@ -32,3 +32,7 @@ func CreateNewUser(db *sql.DB, openid string) {
 	utils.CheckErr(err)
 
 }
+
+func InsertTask(db *sql.DB, table string, task utils.Task) {
+
+}

@@ -45,7 +45,8 @@ type TencentRes struct {
 
 type TaskNode struct {
 	Task  Task
-	Child []*TaskNode
+	Self  int
+	Child []int
 }
 
 type TaskNodeInDB struct {
