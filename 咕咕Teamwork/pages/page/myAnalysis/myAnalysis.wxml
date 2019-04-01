@@ -1,2 +1,6 @@
 <!--pages/page/myAnalysis/myAnalysis.wxml-->
-<text>pages/page/myAnalysis/myAnalysis.wxml</text>
+<i-collapse name="{{name}}">
+  <i-collapse-item title="项目完成情况" name="name1">
+    
+  </i-collapse-item>
+</i-collapse>

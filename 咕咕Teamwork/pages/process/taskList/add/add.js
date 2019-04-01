@@ -69,7 +69,9 @@ Page({
     h:220,
     w:220,
     treeData: treeData,
-    root:root
+    root:root,
+    date: '2000-01-01',
+    time: '12:00',
   },
 
   /**
@@ -149,5 +151,15 @@ Page({
   tapItem: function (e) {
     console.log('index接收到的itemid: ' + e.detail.itemid);
   },
+  bindDateChange: function (e) {
+    this.setData({
+      date: e.detail.value
+    })
+  },
+  bindTimeChange: function (e) {
+    this.setData({
+      time: e.detail.value
+    })
+  }
 
 })

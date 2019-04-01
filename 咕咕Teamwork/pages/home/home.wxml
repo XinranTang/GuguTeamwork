@@ -1,30 +1,49 @@
 <!--pages/home/home.wxml-->
-<view class="layer">
-  <block class="message">
-    <text class="title" style='color:{{color.Orange}}'>消息</text>
-    <block wx:if="{{messages.length!=0}}">
-      <view class="message-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message"  bindtap='toMessage'>
-        <view wx:if="{{message.Status==false}}">{{message.Title}}</view>
-      </view>
-    </block>
-    <block wx:else>
-      <view >当前还没有消息哦</view>
-    </block>
-  </block>
-  <block class="task">
-    <text class="title" style='color:{{color.Orange}}'>任务</text>
-    <block wx:if="{{tasks.length!=0}}">
-      <view class="task-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask'>
-        <view style="margin:5rpx">
-          <i-card title="{{task.Title}}" extra="{{task.DeadLine}}">
-            <view slot="content">{{task.Pusher}}</view>
-                <!-- <view slot="footer">尾部内容</view> -->
-          </i-card>  
+<view class="VerticalBox" scroll-y style="width:380rpx">
+  <view style='font-size:30rpx;margin-left:10rpx'>{{schedule.year+"年    "+schedule.month}}</view>
+  <view class="title text-bold" style='color:{{color.Orange}}'>{{schedule.day}}</view>
+  <view style='font-size:25rpx;margin-left:10rpx'>{{schedule.weekDay}}</view>
+  <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" scroll-top="{{VerticalNavTop}}" style="height:calc(86vh)">
+    <view>
+      <view class='myTime' wx:for="{{24}}">
+        <view class="shadow" wx:if="{{index==0}}" style='height:5rpx;width:380rpx;background-color:{{color.Orange}}'></view>
+       <view id='list-{{index}}' style='display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;' >
+        <view style='font-size:18rpx;text-align:center'>{{(index%24<10?"0"+(index%24):index%24)+":00"}}
         </view>
+        <view style='display:inline;left:30rpx;background-color:#eeeeee;width:350rpx;margin:5rpx;height:50rpx;'></view>
+       </view>
       </view>
+    </view>
+  </scroll-view>
+</view>
+<view class="layer" style='position:absolute;left:400rpx;top:0rpx'>
+  <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh)" scroll-into-view="main-id-{{TabCur}}" bindscroll="VerticalMain">
+    <block class="message">
+      <text class="title" style='color:{{color.Orange}}'>消息</text>
+      <block wx:if="{{messages.length!=0}}">
+        <view class="nav-li message-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message"  bindtap='toMessage'>
+          <view class="nav-title" wx:if="{{message.Status==false}}">{{message.Title}}</view>
+        </view>
+      </block>
+      <block wx:else>
+        <view >当前还没有消息哦</view>
+      </block>
     </block>
-    <block wx:else>
-      <view>当前还没有任务哦</view>
+    <block class="task">
+      <text class="title" style='color:{{color.Orange}}'>任务</text>
+      <block wx:if="{{tasks.length!=0}}">
+        <view class="task-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask'>
+          <view style="margin:5rpx">
+            <i-card title="{{task.Title}}" extra="{{task.DeadLine}}">
+              <view slot="content">{{task.Pusher}}</view>
+                  <!-- <view slot="footer">尾部内容</view> -->
+            </i-card>  
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view>当前还没有任务哦</view>
+      </block>
     </block>
-  </block>
+  </scroll-view>
 </view>

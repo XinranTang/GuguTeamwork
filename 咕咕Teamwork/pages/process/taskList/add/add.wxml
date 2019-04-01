@@ -1,9 +1,29 @@
 <!--pages/process/taskList/add/add.wxml-->
 <view wx:if="{{hide==false}}">
-  <i-panel title="新建任务">
-    <i-input value="{{ name }}" type="textarea" title="任务名" placeholder="任务名称" />
-    <i-input value="{{ infor }}" type="textarea" title="详细信息" placeholder="请输入详细信息(最多100字)" maxlength="100" />
-  </i-panel>
+  <view class="cu-form-group margin-top">
+    <view class='title'>任务名</view>
+    <input placeholder="任务名称" class='radius' name='input'></input>
+  </view>
+  <view class="cu-form-group">
+    <view class='title'>任务内容</view>
+    <input placeholder="内容描述" class='radius' name='input'></input>
+  </view>
+  <view class="cu-form-group">
+    <view class='title'>截止日期</view>
+    <picker mode="date" value="{{date}}" start="2000-01-01" end="2050-12-31" bindchange="bindDateChange">
+      <view class="picker">
+      {{date}}
+      </view>
+    </picker>
+  </view>
+  <view class="cu-form-group">
+    <view class='title'>截止时间</view>
+    <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindTimeChange">
+      <view class="picker">
+      {{time}}
+      </view>
+    </picker>
+  </view>
   <i-button bind:click="handleClick">新建</i-button>
 </view>
 <view wx:if="{{hide==true}}">

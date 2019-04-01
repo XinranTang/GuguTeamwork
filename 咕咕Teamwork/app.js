@@ -19,13 +19,13 @@ App({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         wx.request({
-          url: 'https://www.fracturesr.xyz/entry',
+          url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
           header: {
             'content-type': "application/x-www-form-urlencoded"
           },
           method: 'POST',
           data: {
-            code:res.code
+            OpenId:"testopenid"
           },
           success: function(res) {
             wx.setStorage({

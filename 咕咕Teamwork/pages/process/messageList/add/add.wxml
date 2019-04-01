@@ -1,2 +1,27 @@
 <!--pages/process/messageList/add/add.wxml-->
-<text>pages/process/messageList/add/add.wxml</text>
+<view class="cu-form-group margin-top">
+  <view class='title'>消息标题</view>
+  <input placeholder="标题" class='radius' name='input'></input>
+</view>
+<view class="cu-form-group">
+  <view class='title'>消息内容</view>
+  <input placeholder="内容描述" class='radius' name='input'></input>
+</view>
+<view class="cu-form-group">
+  <view class='title'>截止查看日期</view>
+  <picker mode="date" value="{{date}}" start="2000-01-01" end="2050-12-31" bindchange="bindDateChange">
+    <view class="picker">
+    {{date}}
+    </view>
+  </picker>
+</view>
+<view class="cu-form-group">
+  <view class='title'>截止查看时间</view>
+  <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindTimeChange">
+    <view class="picker">
+    {{time}}
+    </view>
+  </picker>
+</view>
+<i-button bind:click="handleClick">新建</i-button>
+

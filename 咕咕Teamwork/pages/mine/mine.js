@@ -13,25 +13,21 @@ Page({
     menus1: [
       {
         "name": "我的任务",
-        "url": "../../images/icon2.jpg",
         "func": "intoFunc1",
         "icon":"iconfont icon-taskmanege",
       },
       {
         "name": "我的消息",
-        "url": "../../images/icon2.jpg",
         "func": "intoFunc2",
         "icon": "iconfont icon-message",
       },
       {
         "name": "个人分析",
-        "url": "../../images/icon2.jpg",
         "func": "intoFunc3",
         "icon": "iconfont icon-analyze"
       },
       {
         "name": "发起任务",
-        "url": "../../images/icon2.jpg",
         "func": "intoFunc4",
         "icon":"iconfont icon-weibiaoti201"
       }
@@ -40,7 +36,6 @@ Page({
      
       {
         "name": "个人信息",
-        "url": "../../images/icon2.jpg",
         "func": "intoFunc5",
         "icon": "iconfont icon-ionc--1"
       },
@@ -165,19 +160,23 @@ Page({
       },
     })
     wx.request({
-      url: 'https://www.fracturesr.xyz/entry',
+
+      //【做了改动】 url: 'https://www.fracturesr.xyz/entry',
+      url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
       header: {
         'content-type': "application/x-www-form-urlencoded"
       },
       method: 'POST',
       data: {
-        openId:openId
+        OpenId:"testopenid"
       },
       success(res) {
         wx.setStorage({
           key: 'Information',
           data: res.data,
         })
+        app.globalData.tasks=res.data.Tasks;
+        app.globalData.messages=res.data.Messages;
         console.log("在授权后取得用户信息成功")
       },
       fail() {
