@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"time"
 
 	"GuguTeamwork/sqlmanip"
@@ -26,11 +25,15 @@ func Entry(w http.ResponseWriter, r *http.Request) {
 				tryTime++
 			}
 			if ATencentRes.Errcode == -1 {
-				w.Write([]byte("-1:" + ATencentRes.Errmsg))
+				err := new(utils.TencentError)
+				err.DealWithError(w, ATencentRes)
+				utils.CheckErr(err, "Entry:tencent")
 				return
 			}
 		} else {
-			w.Write([]byte(strconv.Itoa(ATencentRes.Errcode) + ATencentRes.Errmsg))
+			err := new(utils.TencentError)
+
+			utils.CheckErr(err, "Entry:tencent")
 			return
 		}
 	}
@@ -47,6 +50,11 @@ func Entry(w http.ResponseWriter, r *http.Request) {
 func OpenIdEntry(w http.ResponseWriter, r *http.Request) {
 	db := sqlmanip.ConnetUserDB()
 	defer sqlmanip.DisConnectDB(db)
+	if !utils.CheckEmp(r.PostFormValue("OpenId")) {
+		err := new(utils.EmptyPostFormValueError)
+		err.DealWithError(w)
+		utils.CheckErr(err, "OpenIdEntry:empty para")
+	}
 	output := exist(db, r.PostFormValue("OpenId"))
 	w.Header().Set("Content-type", "application/json")
 	w.Write(output)

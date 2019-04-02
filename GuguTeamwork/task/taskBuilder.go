@@ -11,7 +11,7 @@ import (
 func BuildTask(OpenId string, Title string, Pusher string, Content string, Deadline string, Urgency string) *utils.Task {
 	var task utils.Task
 	var err error
-	task.TaskID = taskIDProducer(OpenId)
+	task.TaskID, temp := taskIDProducer(OpenId)
 	task.Title = Title
 	task.Pusher = Pusher
 	task.Content = Content
@@ -24,21 +24,21 @@ func BuildTask(OpenId string, Title string, Pusher string, Content string, Deadl
 		task.Urgency = int8(tempInt)
 		utils.CheckErr(err, "BuildTask: strconv")
 	} else {
-		Urgency = 0
+		task.Urgency = 0
 	}
 
 	//将新任务的信息同时写入数据库
 	db := sqlmanip.ConnetUserDB()
-	sqlmanip.CreateTask(db, &task, OpenId)
+	sqlmanip.CreateTaskInMainForm(db, &task, OpenId)
 	sqlmanip.DisConnectDB(db)
 
 	return &task
 }
 
-func taskIDProducer(openid string) string {
+func taskIDProducer(openid string) (string, int) {
 	db := sqlmanip.ConnetUserDB()
 	defer sqlmanip.DisConnectDB(db)
-	res, err := sqlmanip.QueryStringToString(db, Tasks, UserInfo, openid)
+	res, err := sqlmanip.QueryStringToString(db, "Tasks", "UserInfo", openid)
 	utils.CheckErr(err, "taskIDProducer:query")
 	var count int
 	for i := 0; i < len(res); i++ {
@@ -46,5 +46,5 @@ func taskIDProducer(openid string) string {
 			count++
 		}
 	}
-	return openid + "-task-" + strconv.Itoa(count+1)
+	return openid + "-task-" + strconv.Itoa(count+1), count
 }

@@ -21,6 +21,11 @@ func Trees(w http.ResponseWriter, r *http.Request) {
 	defer sqlmanip.DisConnectDB(db)
 	var trees []TreeWithId
 	var treeWithId TreeWithId
+	if !utils.CheckEmp(r.PostFormValue("OpenId")) {
+		err := new(utils.EmptyPostFormValueError)
+		err.DealWithError(w)
+		utils.CheckErr(err, "Trees:empty para")
+	}
 	tempStr, err := sqlmanip.QueryStringToString(db, "Manage", "UserInfo", r.PostFormValue("OpenId"))
 	utils.CheckErr(err, "Trees:query")
 	for _, v := range utils.ParseManage(tempStr) {
@@ -40,9 +45,15 @@ func Trees(w http.ResponseWriter, r *http.Request) {
 
 //这个处理器负责在一颗树上新建节点
 func AddNewTreeNodes(w http.ResponseWriter, r *http.Request) {
-	var task = task.BuildTask(r.PostFormValue("OpenId"), r.PostFormValue("Title"), r.PostFormValue("Pusher"), r.PostFormValue("Content"), r.PostFormValue("Deadline"), r.PostFormValue("Urgency"))
-	//还要将task填入个人的任务表，总任务表和任务负责人对应表
-	var taskNode utils.TaskNode
-	taskNode.Task = *task
-	tree.GetForest().NewTask(r.PostFormValue("TreeId"), r.PostFormValue("Parent"), &taskNode)
+	if utils.CheckEmp(r.PostFormValue("OpenId"), r.PostFormValue("Title"), r.PostFormValue("Pusher"), r.PostFormValue("Content"), r.PostFormValue("Deadline"), r.PostFormValue("Urgency"), r.PostFormValue("TreeId"), r.PostFormValue("Parent")) {
+		var task = task.BuildTask(r.PostFormValue("OpenId"), r.PostFormValue("Title"), r.PostFormValue("Pusher"), r.PostFormValue("Content"), r.PostFormValue("Deadline"), r.PostFormValue("Urgency"))
+		//还要将task填入个人的任务表，总任务表和任务负责人对应表
+		var taskNode = new(utils.TaskNode)
+		taskNode.Task = *task
+		tree.GetForest().NewTask(r.PostFormValue("TreeId"), r.PostFormValue("Parent"), taskNode)
+	} else {
+		err := new(utils.EmptyPostFormValueError)
+		err.DealWithError(w)
+		utils.CheckErr(err, "AddNewTreeNodes:empty para")
+	}
 }

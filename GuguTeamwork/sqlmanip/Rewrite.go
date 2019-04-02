@@ -17,26 +17,26 @@ func RewriteAccessInfo(db *sql.DB, openid string) {
 	Date, err := time.Parse("2006-01-02T15:04:05Z", tempStr)
 	utils.CheckErr(err, "RewriteAccessInfo:Time parsing")
 	if Date.AddDate(0, 0, 1).Format("20060102") == time.Now().Format("20060102") {
-		err = rewriteItemInt(db, UserInfo, openid, "SuccessiveAccessDays", tempInt+1)
+		err = rewriteItemInt(db, "UserInfo", openid, "SuccessiveAccessDays", tempInt+1)
 		utils.CheckErr(err, "RewriteAccessInfo:write int")
-		err = rewriteItemString(db, UserInfo, openid, "LastTimeAccess", time.Now().Format("2006-01-02T15:04:05Z"))
+		err = rewriteItemString(db, "UserInfo", openid, "LastTimeAccess", time.Now().Format("2006-01-02T15:04:05Z"))
 		utils.CheckErr(err, "RewriteAccessInfo:write string")
 	} else if Date.Format("20060102") == time.Now().Format("20060102") {
 	} else {
-		err = rewriteItemInt(db, UserInfo, openid, "SuccessiveAccessDays", 1)
+		err = rewriteItemInt(db, "UserInfo", openid, "SuccessiveAccessDays", 1)
 		utils.CheckErr(err, "RewriteAccessInfo:write int")
-		err = rewriteItemString(db, UserInfo, openid, "LastTimeAccess", time.Now().Format("2006-01-02T15:04:05Z"))
+		err = rewriteItemString(db, "UserInfo", openid, "LastTimeAccess", time.Now().Format("2006-01-02T15:04:05Z"))
 		utils.CheckErr(err, "RewriteAccessInfo:write string")
 	}
 }
 
 func rewriteItemInt(db *sql.DB, table string, openid string, header string, newValue int) error {
-	order := "UPDATE ? SET ?=? WHERE OpenId=?"
+	order := "UPDATE " + table + " SET " + header + "=? WHERE OpenId=?"
 	stmt, err := db.Prepare(order)
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(table, header, newValue, openid)
+	_, err = stmt.Exec(newValue, openid)
 	if err != nil {
 		return err
 	}
@@ -44,12 +44,12 @@ func rewriteItemInt(db *sql.DB, table string, openid string, header string, newV
 }
 
 func rewriteItemString(db *sql.DB, table string, openid string, header string, newValue string) error {
-	order := "UPDATE ? SET ?=? WHERE OpenId=?"
+	order := "UPDATE " + table + " SET " + header + "=? WHERE OpenId=?"
 	stmt, err := db.Prepare(order)
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(table, header, newValue, openid)
+	_, err = stmt.Exec(newValue, openid)
 	if err != nil {
 		return err
 	}

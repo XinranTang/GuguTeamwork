@@ -58,3 +58,12 @@ func find(str string, substr string, from int) int {
 	}
 	return -1
 }
+
+func CheckEmp(strs ...string) bool {
+	for _, v := range strs {
+		if len(v) == 0 {
+			return false
+		}
+	}
+	return true
+}
