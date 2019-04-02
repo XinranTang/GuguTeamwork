@@ -9,13 +9,13 @@ import (
 
 func ConnetUserDB() *sql.DB {
 	db, err := sql.Open("sqlite3", "./SQLite3/GuguTeamwork.db")
-	utils.CheckErr(err)
+	utils.CheckErr(err, "ConnectUserDB:open db")
 	return db
 }
 
 func ConnectTaskDB() *sql.DB {
 	db, err := sql.Open("sqlite3", "./SQLite3/TaskTrees.db")
-	utils.CheckErr(err)
+	utils.CheckErr(err, "ConnectTaskDB:open db")
 	return db
 }
 

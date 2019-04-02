@@ -25,7 +25,3 @@ func ShutdownLogger(logFile *os.File) {
 func Logger() *log.Logger {
 	return logger
 }
-
-func RecordError(err error) {
-	logger.Println(err)
-}

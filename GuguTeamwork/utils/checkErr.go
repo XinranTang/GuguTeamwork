@@ -1,8 +1,13 @@
 package utils
 
-func CheckErr(err error) {
+import (
+	"log"
+)
+
+func CheckErr(err error, info string) {
 	if err != nil {
-		RecordError(err)
+		recordError(err, info)
+		log.Println(info)
 		panic(err)
 	}
 }
@@ -13,4 +18,9 @@ func HasErr(err error) bool {
 	} else {
 		return false
 	}
+}
+
+func recordError(err error, info string) {
+	logger.Println(info)
+	logger.Println(err)
 }

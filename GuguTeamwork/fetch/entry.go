@@ -47,7 +47,7 @@ func Entry(w http.ResponseWriter, r *http.Request) {
 func OpenIdEntry(w http.ResponseWriter, r *http.Request) {
 	db := sqlmanip.ConnetUserDB()
 	defer sqlmanip.DisConnectDB(db)
-	var output = exist(db, r.PostFormValue("OpenId"))
+	output := exist(db, r.PostFormValue("OpenId"))
 	w.Header().Set("Content-type", "application/json")
 	w.Write(output)
 }
@@ -57,11 +57,13 @@ func try(db *sql.DB, openid string) bool {
 }
 
 func exist(db *sql.DB, openid string) []byte {
-	UserInfo, err := sqlmanip.QueryUserInfo(db, openid)
+	UserInfo := sqlmanip.QueryUserInfo(db, openid)
 	sqlmanip.RewriteAccessInfo(db, openid)
 
 	output, err := json.MarshalIndent(UserInfo, "", "\t\t")
-	utils.CheckErr(err)
+	utils.CheckErr(err, "exist:json")
+	//output, err = utils.Utf8ToGbk(output)
+	//utils.CheckErr(err, "exist:utf8togbk")
 
 	return output
 }
@@ -78,7 +80,9 @@ func nonexsit(db *sql.DB, openid string) []byte {
 		Level:                "lowLevel",
 	}
 	output, err := json.MarshalIndent(UserInfo, "", "\t\t")
-	utils.CheckErr(err)
+	utils.CheckErr(err, "nonexist:json")
+	//output, err = utils.Utf8ToGbk(output)
+	//utils.CheckErr(err, "nonexist:utf8togbk")
 
 	return output
 }

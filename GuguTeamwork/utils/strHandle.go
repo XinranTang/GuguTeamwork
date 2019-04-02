@@ -2,12 +2,7 @@ package utils
 
 import (
 	"strconv"
-	"strings"
 )
-
-func DealWithOpenId(openid string) string {
-	return strings.Replace(openid, "-", "_", -1)
-}
 
 func ParseTaskNodeInDBChild(Childs string) []int {
 	var head = 0
@@ -16,7 +11,7 @@ func ParseTaskNodeInDBChild(Childs string) []int {
 	for {
 		if tail != -1 {
 			child, err := strconv.Atoi(Childs[head:tail])
-			CheckErr(err)
+			CheckErr(err, "ParseTaskNodeInDBChild:strconv")
 			res = append(res, child)
 			head = tail + 1
 			tail = find(Childs, ";", head)

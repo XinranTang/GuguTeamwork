@@ -11,28 +11,25 @@ import (
 
 func CreateNewUser(db *sql.DB, openid string) {
 	//在用户表中添加新用户
-	stmt, err := db.Prepare("INSERT INTO UserInfo(OpenId, LastTimeAccess, SuccessiveAccessDays, Level, Manage) VALUES(?, ?, ?, ?, ?)")
-	utils.CheckErr(err)
-	_, err = stmt.Exec(openid, time.Now().Format("2006-01-02T15:04:05Z"), 1, "lowLevel", "")
-	utils.CheckErr(err)
-
-	//为用户创建任务表和消息表
-	var tableName = utils.DealWithOpenId(openid) + "_message"
-	var order = "CREATE TABLE " + tableName + "(Title text not null, Pusher text not null, Content text not null, Status int not null, PushDate date not null, FinalDeleteDate date not null, MessageID text not null);"
-	stmt, err = db.Prepare(order)
-	utils.CheckErr(err)
-	_, err = stmt.Exec()
-	utils.CheckErr(err)
-
-	tableName = utils.DealWithOpenId(openid) + "_task"
-	order = "CREATE TABLE " + tableName + "(Title text not null, Pusher text not null, Content text not null, Status int not null, PushDate date not null, DeadLine date not null, Urgency int, TaskID text not null);"
-	stmt, err = db.Prepare(order)
-	utils.CheckErr(err)
-	_, err = stmt.Exec()
-	utils.CheckErr(err)
-
+	stmt, err := db.Prepare("INSERT INTO UserInfo(OpenId, LastTimeAccess, SuccessiveAccessDays, Level, Manage, Messages, Tasks) VALUES(?, ?, ?, ?, ? ,? ,?)")
+	utils.CheckErr(err, "CreateNewUser:prepare")
+	_, err = stmt.Exec(openid, time.Now().Format("2006-01-02T15:04:05Z"), 1, "lowLevel", "", "", "")
+	utils.CheckErr(err, "CreateNewUser:exec")
 }
 
-func InsertTask(db *sql.DB, table string, task utils.Task) {
+func CreateTask(db *sql.DB, task *utils.Task, openid string) {
+	strTask, err := QueryStringToString(db, Tasks, UserInfo, openid)
+	utils.CheckErr(err, "CreateTask:query")
 
+	err = rewriteItemString(db, UserInfo, openid, Tasks, strTask+task.TaskID+";")
+	utils.CheckErr(err, "CreateTask:append task")
+
+	stmt, err := db.Prepare("INSERT INTO TaskToPeople(TaskID,Receiver) VALUES(?,?)")
+	utils.CheckErr(err, "CreateTask:insert into TaskToPeople prepare")
+	_, err = stmt.Exec(task.TaskID, openid)
+	utils.CheckErr(err, "CreateTask:insert into TaskToPeople exec")
+
+	stmt, err = db.Prepare("INSERT INTO Tasks(TaskID, Title, Pusher, Content, Status, PushDate, DeadLine, Urgency) Values(?,?,?,?,?,?,?,?)")
+	utils.CheckErr(err, "CreateTask:insert into Tasks prepare")
+	_, err = stmt.Exec(task.TaskID, task.Title, task.Pusher, task.Content, task.Status, task.PushDate, task.DeadLine, task.Urgency)
 }
