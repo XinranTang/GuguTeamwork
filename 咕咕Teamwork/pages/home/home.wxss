@@ -6,11 +6,11 @@
 }
 .message-list{
   padding: 30rpx;
-  border: 1px solid #70bcf6;
+  border: 1px solid #ccc;
   border-top-left-radius: 10rpx;
   border-bottom-left-radius: 10rpx;
   font-size:24rpx;
-  background-color: #88caed;
+  /* background-color: #88caed; */
   background-image: url(https://image.weilanwl.com/color2.0/cardBg.png);
   background-size: cover;
   background-position: center;
@@ -41,7 +41,7 @@
 .task-list{
   padding: 30rpx;
   margin-bottom:10rpx; 
-  border: 1px solid #70bcf6;
+  border: 1px solid #ccc;
   border-top-left-radius: 10rpx;
   border-bottom-left-radius: 10rpx;
   font-size:24rpx;

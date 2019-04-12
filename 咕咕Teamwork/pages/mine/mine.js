@@ -210,6 +210,11 @@ Page({
       url: '../page/add/add',
     })
   },
+  intoFunc5: function(){
+    wx.navigateTo({
+      url: '../page/myInfor/myInfor',
+    })
+  },
   toPageSetting:function(){
     wx.navigateTo({
       url: '../page/myPageSetting/myPageSetting',

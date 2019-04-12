@@ -1,0 +1,46 @@
+<!--pages/page/myInfor/myInfor.wxml-->
+<view wx:if="{{show}}">请先授权！</view>
+<view wx:else>
+  <view wx:if="{{complete}}">
+    <view>姓名：{{userInfo.name}}</view>
+    <view>个人能力标签：{{userInfo.ability}}</view>
+    <view>个性签名：{{userInfo.sign}}</view>
+    <view>手机号码：{{userInfo.phone}}</view>
+    <view>邮箱：{{userInfo.mail}}</view>
+    <view>位置：{{userInfo.position}}</view>
+  </view>
+  <view wx:else>
+    <view>补充用户信息！</view>
+    <form>
+      <view class="cu-form-group margin-top">
+        <view class='title'>真实姓名：</view>
+        <input placeholder="" class='radius' name='input'></input>
+      </view>
+      <view class="cu-form-group margin-top">
+        <view class='title'>个性签名：</view>
+        <input placeholder="" class='radius' name='input'></input>
+      </view>
+      <view class="cu-form-group margin-top">
+        <view class='title'>手机号码：</view>
+        <input placeholder="" class='radius' name='input'></input>
+      </view>
+      <view class="cu-form-group margin-top">
+        <view class='title'>邮箱：</view>
+        <input placeholder="" class='radius' name='input'></input>
+      </view>
+      <view class="cu-form-group margin-top">
+        <view class='title'>位置：</view>
+        <input placeholder="" class='radius' name='input'></input>
+      </view>
+      <view class="cu-form-group">
+        <view class='title'>地址选择</view>
+        <picker mode="region" bindchange="RegionChange" value="{{region}}" custom-item="{{customItem}}">
+          <view class="picker">
+            {{region[0]}}，{{region[1]}}，{{region[2]}}
+          </view>
+        </picker>
+      </view>
+      <button type='submit'></button>
+    </form>
+  </view>
+</view>

@@ -12,7 +12,8 @@
     "pages/process/taskList/add/add",
     "pages/page/add/add",
     "pages/process/messageList/add/add",
-    "pages/page/myPageSetting/myPageSetting"
+    "pages/page/myPageSetting/myPageSetting",
+    "pages/page/myInfor/myInfor"
   ],
   "window": {
     "backgroundTextStyle": "light",

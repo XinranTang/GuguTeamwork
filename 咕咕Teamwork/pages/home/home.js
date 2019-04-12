@@ -21,6 +21,15 @@ Page({
       weekDay:"",
   },
     color:{},
+    colorArr: ["#EE2C2C", "#ff7070", "#EEC900", "#4876FF", "#ff6100",
+      "#7DC67D", "#E17572", "#7898AA", "#C35CFF", "#33BCBA", "#C28F5C",
+      "#FF8533", "#6E6E6E", "#428BCA", "#5cb85c", "#FF674F", "#E9967A",
+      "#66CDAA", "#00CED1", "#9F79EE", "#CD3333", "#FFC125", "#32CD32",
+      "#00BFFF", "#68A2D5", "#FF69B4", "#DB7093", "#CD3278", "#607B8B"],
+      
+    // 存储随机颜色
+    randomColorArr: [],
+    randomColorArrT: [],
     messages: [],
     tasks:[],
     list: [
@@ -46,7 +55,8 @@ Page({
       fail:function(res){
         console.log("从本地获取日程表失败")
       }
-    })
+    });
+
   },
 
   /**
@@ -80,6 +90,35 @@ Page({
         weekDay:show_day[date.getDay()],
       },
     })
+    var self = this
+    let labLen = self.data.messages.length;
+    let labLenT = self.data.tasks.length;
+    let colorArr = self.data.colorArr;
+    let colorLen = colorArr.length;
+    let randomColorArr = [];
+    console.log("本地任务数量")
+    console.log(self.data.tasks.length)
+    //判断执行
+    do {
+      let random = colorArr[Math.floor(Math.random() * colorLen)];
+      randomColorArr.push(random);
+      labLen--;
+    } while (labLen > 0)
+
+    self.setData({
+      randomColorArr: randomColorArr
+    });
+    randomColorArr = [];
+
+    do {
+      let random = colorArr[Math.floor(Math.random() * colorLen)];
+      randomColorArr.push(random);
+      labLenT--;
+    } while (labLenT > 0)
+    self.setData({
+      randomColorArrT: randomColorArr
+    });
+    console.log(randomColorArr)
   },
 
   /**

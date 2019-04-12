@@ -102,6 +102,7 @@ App({
   },
   globalData: {
     userInfo: null,
+    userInforComplete:false,
     windowHeight:0,
     windowWidth:0,
     currentTaskIndex:0,
