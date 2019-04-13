@@ -7,6 +7,8 @@ Page({
    * 页面的初始数据
    */
   data: {
+        text_selected_node:'...',
+        isSelected:false,
         tasks:[
           {
             "title":"主题任务",
@@ -38,6 +40,70 @@ Page({
             ]
           }, 
         ],
+    oneTaskTree: {
+      "Tree": [
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid1",
+            "Title": "熟悉咕咕",
+            "Pusher": "咕咕鸡",
+            "Content": "这是一个测试任务",
+            "Status": false,
+            "PushDate": "2019-04-01T00:00:00Z",
+            "DeadLine": "2100-01-01T00:00:00Z",
+            "Urgency": 3
+          },
+          "Self": 0,
+          "Child": [
+            1,
+            2
+          ],
+          "TeamMates":[
+            "testopenid"
+          ]
+        },
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid2",
+            "Title": "跟随教学引导",
+            "Pusher": "咕咕鸡",
+            "Content": "这是一个测试子任务",
+            "Status": false,
+            "PushDate": "2019-04-01T00:00:00Z",
+            "DeadLine": "2100-01-01T00:00:00Z",
+            "Urgency": 3
+          },
+          "Self": 1,
+          "Child": [
+            0
+          ],
+          "TeamMates": [
+            "testopenid"
+          ]
+        },
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid3",
+            "Title": "尝试使用咕咕",
+            "Pusher": "咕咕鸡",
+            "Content": "这是一个测试子任务",
+            "Status": false,
+            "PushDate": "2019-04-01T00:00:00Z",
+            "DeadLine": "2100-01-01T00:00:00Z",
+            "Urgency": 3
+          },
+          "Self": 2,
+          "Child": [
+            0
+          ],
+          "TeamMates": [
+            "testopenid"
+          ]
+        }
+      ],
+      "TreeId": "testtasktree",
+      "TreeName":"testproject"
+    },
         graph: {}
   },
 
@@ -136,21 +202,34 @@ Page({
   },
 
   onImport() {
-    // 有背景
-    // let temp_theme = [{"type":"bgColor","color":"yellow"},{"type":"image","url":"../../assets/images/test.jpg","y":98.78423143832424,"x":143.78423143832424,"w":104.43153712335152,"h":104.43153712335152,"rotate":-12.58027482265038,"sourceId":null},{"type":"text","text":"helloworld","color":"blue","fontSize":24.875030530031438,"y":242.56248473498428,"x":119.57012176513672,"w":116.73966979980469,"h":34.87503053003144,"rotate":8.873370699754087}];
     // 无背景
     let temp_theme = [{ "type": "image", "url": "../../assets/images/test.jpg", "y": 103, "x": 91, "w": 120, "h": 120, "rotate": 0, "sourceId": null }, { "type": "text", "text": "helloworld", "color": "blue", "fontSize": 20, "y": 243, "x": 97, "rotate": 0 }];
 
     CanvasDrag.initByArr(temp_theme);
   },
 
+  onSetData(){
+    //这里写连接数据库获取json之类的东西
+    //然后setdata
+    //这个页面获取的是一个Tree
+
+    /*var tree = 访问服务器();
+      this.setData({oneTaskTree:tree})
+      */
+  },
   // 通过data里的数据生成树状图
   onInitByTree(){
-      CanvasDrag.initByTree(this.data.tasks);
+    this.onSetData();
+    CanvasDrag.clearCanvas();
+    CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
+    
   },
   onClearCanvas: function (event) {
     let _this = this;
-    _this.setData({ canvasBg: null });
+    _this.setData({ canvasBg: null,
+    isSelected:false,
+    text_selected_node:'{}'
+    });
     CanvasDrag.clearCanvas();
   },
   switchZoom: function (e) {
@@ -162,8 +241,28 @@ Page({
   switchDel: function (e) {
     CanvasDrag.enableDel(e.detail.value);
   },
-
-
+  onSelectedChange:function(e){
+    this.setData({
+      text_selected_node:e.detail
+      });
+      if(this.data.text_selected_node==JSON.stringify({})){
+        this.setData({
+         isSelected:false
+        });
+      }
+      else{
+        this.setData({
+          isSelected: true
+        });  
+      }
+    console.log("选中");
+  },
+  onAddNode:function(e){
+    CanvasDrag.onAddNode();
+  },
+  onDelNode:function(e){
+    CanvasDrag.onDelNode();
+  },
   /**
    * 生命周期函数--监听页面加载
    */

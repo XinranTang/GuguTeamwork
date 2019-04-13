@@ -35,6 +35,15 @@ CanvasDrag.initByArr = (arr) => {
     }
 };
 
+CanvasDrag.initByTreeArr = (arr) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().initByTreeArr(arr);
+  }
+};
+
 CanvasDrag.exportJson = () => {
     const canvasDrag = CanvasDrag();
     if (!canvasDrag) {
@@ -114,6 +123,24 @@ CanvasDrag.enableAdd = (trueOrfalse) => {
     console.error('请设置组件的id="canvas-drag"!!!');
   } else {
     return CanvasDrag().enableAdd(trueOrfalse);
+  }
+};
+
+CanvasDrag.onAddNode = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().addNewNode();
+  }
+};
+
+CanvasDrag.onDelNode = () => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().delNode();
   }
 };
 

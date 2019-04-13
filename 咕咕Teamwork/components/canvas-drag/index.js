@@ -7,15 +7,34 @@
 const DELETE_ICON = './icon/close.png'; // 删除按钮
 const DRAG_ICON = './icon/scale.png'; // 缩放按钮
 const ADD_ICON = './icon/add.png'
-const STROKE_COLOR = 'red';
+const STROKE_COLOR = 'black';
 const ROTATE_ENABLED = false;
 var DEFAULT_FONT_SIZE = 15;
 var ZOOM_ENABLE = false;
 var ADD_ENABLE = false;
 var DEL_ENABLE = false;
 
+// 服务器数据库字段名
+var TREE = 'Tree';
+var TREE_NAME = 'TreeName';
+var TREE_ID = 'TreeID';
+var TASK = 'Task';
+var TASK_ID = 'TaskID';
+var TITLE = 'Title';
+var PUSHER = 'Pusher';
+var CONTENT = 'Content';
+var STATUS = 'Status';
+var PUSH_DATE = 'PushDate';
+var DEADLINE = 'DeadLine';
+var URGENCY = 'Urgency';
+var SELF = 'Self';
+var CHILD = 'Child';
+var TEAM_MATES = 'TeamMates'
+
+
 const DEBUG_MODE = false; // 打开调试后会渲染操作区域边框（无背景时有效）
-const dragGraph = function ({x = 30, y = 30, w, h, type, text, fontSize = DEFAULT_FONT_SIZE, color = 'red', url = null, rotate = 0, sourceId = null, selected = true}, canvas, factor) {
+// attrs就是传入数据库字段
+const dragGraph = function ({x = 30, y = 30, w, h, type, text, fontSize = DEFAULT_FONT_SIZE, color = 'black', url = null, rotate = 0, sourceId = null, selected = true}, canvas, factor,taskattrs={}) {
     if (type === 'text') {
         canvas.setFontSize(fontSize);
         const textWidth = canvas.measureText(text).width;
@@ -24,6 +43,7 @@ const dragGraph = function ({x = 30, y = 30, w, h, type, text, fontSize = DEFAUL
         this.centerY = y + textHeight / 2;
         this.w = textWidth;
         this.h = textHeight;
+        this.taskattrs = taskattrs;
     } else {
         this.centerX = x + w / 2;
         this.centerY = y + h / 2;
@@ -412,6 +432,7 @@ Component({
      * 组件的属性列表
      */
     properties: {
+
         graph: {
             type: Object,
             value: {},
@@ -437,6 +458,7 @@ Component({
             type: Number,
             value: 750,
         },
+
     },
 
     /**
@@ -456,6 +478,11 @@ Component({
         if (typeof this.edgeArr === 'undefined') {
             this.edgeArr = [];
         }
+
+        if(typeof this.treeRawArr == 'undefined'){
+          this.treeRawArr = [];
+        }
+
         this.ctx = wx.createCanvasContext('canvas-label', this);
         this.draw();
     },
@@ -508,6 +535,14 @@ Component({
             });
             this.draw();
         },
+        getSelectedNode(){
+            if(this.tempGraphArr.length==0){
+              return {};
+            }
+            else{
+              return this.tempGraphArr[0];
+            }
+        },
         // 画布的绘制
         draw() {
             if (this.data.bgImage !== '') {
@@ -551,6 +586,7 @@ Component({
                 } else {
                     item.action = false;
                     item.selected = false;
+                    //记录选中的结点在treeArr中的下标
                 }
             });
             // 保存点击时元素的信息
@@ -588,6 +624,9 @@ Component({
                     }
                 }
             }
+            //传值
+          this.triggerEvent('onSelectedChange', JSON.stringify(this.getSelectedNode().taskattrs == undefined ? {} : this.getSelectedNode().taskattrs));
+            console.log(this.getSelectedNode());
             this.draw();
         },
         move(e) {
@@ -607,12 +646,12 @@ Component({
                 }
                 // 更新4个坐标点（相对于画布的坐标系）
                 currentGraph._rotateSquare();
-
                 this.draw();
             }
+            
         },
         end(e) {
-            this.tempGraphArr = [];
+            //this.tempGraphArr = [];
         },
         export() {
             return new Promise((resolve, reject) => {
@@ -684,7 +723,10 @@ Component({
                 resolve(exportArr);
             })
         },
+
         // 传入一个作为根dragGraph对象，生成一个默认的新的dragGraph和相应的edge
+        // 这是之前嵌套树的构造方式
+        // 弃用
         addNew(fromGraph){
           var newgraph = new dragGraph({ x: fromGraph.x + 10, y: fromGraph.y + 10,text:"NewNode",type:"text"},this.ctx,this.factor);
           this.drawArr.push(newgraph);
@@ -693,7 +735,36 @@ Component({
           this.edgeArr.push(newedge);
           this.draw();
         },
+        //这是一些测试本地绘图的东西
+        addNewNode(){
+          //↓↓把这部分换成访问服务器就可以了
+          var fromNode = this.tempGraphArr[0];
+          var index = fromNode.taskattrs[SELF];
+
+          var newNodeAttr = { Task: { TaskID: "tt", Title: "testadd", Pusher: "tt", Content: "tt", Status: 0, PushDate: "tt", DeadLine: "tt", Urgency: 3 },
+            Self: this.treeRawArr.length,
+            Child:[0],
+            TeamMates: ["tt"]};
+          this.treeRawArr.push(newNodeAttr);
+          if (this.treeRawArr[index][CHILD][0]==0){
+            this.treeRawArr[index][CHILD]=[];
+          }
+          this.treeRawArr[index][CHILD].push(this.treeRawArr.length-1);
+          this.clearCanvas();
+          this.setByTree();
+          //↑↑把这部分换成访问服务器就可以了
+          this.triggerEvent('onRefresh');
+        },
+
+        delNode(){
+          var selectedTaskInfo = this.tempGraphArr[0].taskattrs;
+          /*访问服务器删除的操作*/
+          /*访问服务器删除的操作*/
+          /*访问服务器删除的操作*/
+          this.triggerEvent('onRefresh');
+        },
         // fromgraph是node的json,graph是dragGraph对象，因为小程序编辑器的重构功能太烂了所以没有重命名
+        // 这是之前嵌套树的构造方式 弃用
         _insertNode(fromgraph,graph){
           var pos_x_offset = -50;
           var pos_y_offset = 100;
@@ -717,8 +788,10 @@ Component({
           }
         },
       // 传入一个json树，从根节点依次递归push进type:text的dragGraph,
+      // 这是之前嵌套树的构造方式
+      // 弃用
         initByTree(tree) {
-          const initX = 100, initY = 100;
+          const initX = 100, initY = 50;
           var root = tree[0];
           //console.log(root);
           var newgraph = new dragGraph({ x: initX, y: initY, text: root.title, type: "text" }, this.ctx, this.factor);
@@ -728,6 +801,69 @@ Component({
           // 根据json生成dragGraph的同时设置dragGraph的childs,之后可以根据需求直接先用json初始化dragGraph树
           this._insertNode(root,newgraph);
           this.draw();
+        },
+      // 包括"Tree":{} "self":n "child":[a,b,c]
+      // 传值传的都是dragGraph对象 包含task atrr json
+      _insertTreeNode(fromTaskGraph) {
+        this.drawArr.push(fromTaskGraph)
+        var pos_x_offset = -50;
+        var pos_y_offset = 80;
+        var childs = fromTaskGraph.taskattrs[CHILD];
+        console.log("childs:"+childs);
+        //非叶子节点
+        if (childs[0] != 0) {
+          for (var i = 0; i < childs.length; i++) {
+            var index = childs[i];
+            var nextTaskNodeAtrr = this.treeRawArr[index];
+            console.log(nextTaskNodeAtrr);
+            var newTaskGraph = new dragGraph({ x: fromTaskGraph.x + pos_x_offset, y: fromTaskGraph.y + pos_y_offset, text: nextTaskNodeAtrr[TASK][TITLE], type: "text" }, this.ctx, this.factor, nextTaskNodeAtrr);
+            var newedge = new edgeGraph({ width: 2, color: 'black' }, this.ctx, fromTaskGraph, newTaskGraph);
+            this.edgeArr.push(newedge);
+            this._insertTreeNode(newTaskGraph);
+            pos_x_offset += 100;
+          }
+        }
+      },
+      // 传入亮佬格式的json
+      initByTreeArr(treeArr){
+          const initX = 100, initY = 100;
+
+          // self属性可能不连续，遍历一遍散列进treeRawArr
+          for(var i =0;i<treeArr.length;i++){
+            // 这是个dict
+            var thisTask = treeArr[i];    
+            // 这是个int
+            var arrIndex = thisTask[SELF];
+            this.treeRawArr[arrIndex] = thisTask;
+          }
+        
+          var rootTaskNode = this.treeRawArr[0];
+          //console.log(rootTaskNode);
+          var newgraph = new dragGraph({ x: initX, y: initY, text: rootTaskNode[TASK][TITLE], type: "text" }, this.ctx, this.factor,rootTaskNode);
+          this._insertTreeNode(newgraph);
+          this.draw();
+        },
+      // 组件触发page的事件访问服务器更新本地的tree数组值
+      setTree(){
+        
+      },
+        setByTree(){
+          const initX = 100, initY = 100;
+          var rootTaskNode = this.treeRawArr[0];
+          //console.log(rootTaskNode);
+          var newgraph = new dragGraph({ x: initX, y: initY, text: rootTaskNode[TASK][TITLE], type: "text" }, this.ctx, this.factor, rootTaskNode);
+          this._insertTreeNode(newgraph);
+          this.draw();
+        },
+       
+        //@param self int
+        getTaskByIndex(self){
+            for(var i=0;i<this.treeRawArr.length;i++){
+              var thistask = treeRawArr[i];
+                if(self==thistask[SELF])
+                  return thistask;
+            }
+            return undefined;
         },
         enableZoom(trueOrfalse){
           ZOOM_ENABLE = trueOrfalse;
