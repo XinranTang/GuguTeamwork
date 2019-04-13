@@ -2,12 +2,24 @@ package tree
 
 import (
 	"GuguTeamwork/utils"
+	"sync"
+	"time"
 )
 
 var forest *Forest
 
+const forestFlushDuration = time.Second * 15
+
+type monitor struct {
+	Timer     *time.Timer
+	UpdateSig bool
+}
+
 type Forest struct {
-	projects map[string][]utils.TaskNode
+	Projects map[string][]utils.TaskNode
+	Monitors map[string]monitor
+	PRMMutex sync.RWMutex
+	MRMMutex sync.RWMutex
 }
 
 func BuildForest() {
@@ -18,11 +30,14 @@ func GetForest() *Forest {
 	return forest
 }
 
-func (f *Forest) InitForest() {
-	f.projects = make(map[string][]utils.TaskNode)
-	readForest(f)
+func BuildMonitor() monitor {
+	return monitor{
+		Timer:     time.NewTimer(forestFlushDuration),
+		UpdateSig: false,
+	}
 }
 
-func (f *Forest) GetProjects() map[string][]utils.TaskNode {
-	return f.projects
+func (f *Forest) InitForest() {
+	f.Projects = make(map[string][]utils.TaskNode)
+	f.Monitors = make(map[string]monitor)
 }

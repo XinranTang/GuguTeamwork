@@ -58,7 +58,7 @@ func QueryUserInfo(db *sql.DB, openid string) *utils.UserInfo {
 	return &AUserInfo
 }
 
-func QueryStringToString(db *sql.DB, header string, table string, openid string) (string, error) {
+func QueryOpenIdToString(db *sql.DB, header string, table string, openid string) (string, error) {
 	var order = "SELECT " + header + " FROM " + table + " WHERE OpenId='" + openid + "';"
 	var tempStr string
 	err := db.QueryRow(order).Scan(&tempStr)
@@ -68,8 +68,18 @@ func QueryStringToString(db *sql.DB, header string, table string, openid string)
 	return tempStr, nil
 }
 
+func QueryTaskIDToString(db *sql.DB, header string, table string, taskid string) (string, error) {
+	var order = "SELECT " + header + " FROM " + table + " WHERE TaskID='" + taskid + "';"
+	var tempStr string
+	err := db.QueryRow(order).Scan(&tempStr)
+	if err != nil {
+		return "", err
+	}
+	return tempStr, nil
+}
+
 func QueryTrees(db *sql.DB) []string {
-	rows, err := db.Query("SELECT * FROM ProjectTrees;")
+	rows, err := db.Query("SELECT TreeID FROM ProjectTrees;")
 	utils.CheckErr(err, "QueryTrees:query")
 	var trees []string
 	var tempStr string
@@ -95,14 +105,28 @@ func QueryTaskNode(db *sql.DB, treeName string) []utils.TaskNodeInDB {
 	return nodes
 }
 
-func QueryTaskFromID(db *sql.DB, TaskID string) *utils.Task {
+func QueryTaskFromID(db *sql.DB, TaskID string) (utils.Task, error) {
 	var order = "SELECT * FROM Tasks WHERE TaskID='" + TaskID + "';"
 	rows, err := db.Query(order)
-	utils.CheckErr(err, "QueryTaskFromID:query")
+	var emp = utils.Task{}
+	if err != nil {
+		return emp, err
+	}
 	var ATask utils.Task
 	for rows.Next() {
 		err = rows.Scan(&ATask.TaskID, &ATask.Title, &ATask.Pusher, &ATask.Content, &ATask.Status, &ATask.PushDate, &ATask.DeadLine, &ATask.Urgency)
-		utils.CheckErr(err, "QueryTaskFromID:scan")
+		if err != nil {
+			return emp, err
+		}
 	}
-	return &ATask
+	return ATask, nil
+}
+
+func QueryTreeName(db *sql.DB, TreeID string) (string, error) {
+	var res string
+	err := db.QueryRow("SELECT ProjectName From ProjectTrees WHERE TreeID=?", TreeID).Scan(&res)
+	if err != nil {
+		return "", err
+	}
+	return res, nil
 }

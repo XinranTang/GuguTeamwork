@@ -18,10 +18,10 @@ func CreateNewUser(db *sql.DB, openid string) {
 }
 
 func CreateTask(db *sql.DB, task *utils.Task, openid string) {
-	strTask, err := QueryStringToString(db, "Tasks", "UserInfo", openid)
+	strTask, err := QueryOpenIdToString(db, "Tasks", "UserInfo", openid)
 	utils.CheckErr(err, "CreateTask:query")
 
-	err = rewriteItemString(db, "UserInfo", openid, "Tasks", strTask+task.TaskID+";")
+	err = RewriteItemString(db, "UserInfo", openid, "Tasks", strTask+task.TaskID+";")
 	utils.CheckErr(err, "CreateTask:append task")
 
 	stmt, err := db.Prepare("INSERT INTO TaskToPeople(TaskID,Receiver) VALUES(?,?)")

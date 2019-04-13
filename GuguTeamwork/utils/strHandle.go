@@ -67,3 +67,41 @@ func CheckEmp(strs ...string) bool {
 	}
 	return true
 }
+
+func QuickMerge(ss []string) []string {
+	if len(ss) < 1024 {
+		return loopMerge(ss)
+	} else {
+		return mapMerge(ss)
+	}
+}
+
+func loopMerge(ss []string) []string {
+	res := []string{}
+	for _, i := range ss {
+		flag := true
+		for _, j := range res {
+			if i == j {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			res = append(res, i)
+		}
+	}
+	return res
+}
+
+func mapMerge(ss []string) []string {
+	res := []string{}
+	tmpMap := make(map[string]byte)
+	for _, i := range ss {
+		l := len(tmpMap)
+		tmpMap[i] = 0
+		if len(tmpMap) != l {
+			res = append(res, i)
+		}
+	}
+	return res
+}

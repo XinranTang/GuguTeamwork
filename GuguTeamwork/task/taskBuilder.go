@@ -4,19 +4,33 @@ import (
 	"strconv"
 	"time"
 
-	"GuguTeamwork/sqlmanip"
+	"GuguTeamwork/tree"
 	"GuguTeamwork/utils"
 )
 
-func BuildTask(OpenId string, Title string, Pusher string, Content string, Deadline string, Urgency string) *utils.Task {
+func BuildTask(TreeId string, OpenId string, Title string, Content string, Deadline string, Urgency string) *utils.Task {
 	var task utils.Task
 	var err error
-	task.TaskID = taskIDProducer(OpenId)
+	var size int
+	tree.GetForest().PRMMutex.RLock()
+	{
+		if v, ok := tree.GetForest().Projects[TreeId]; ok {
+			size = len(v)
+		} else {
+			size = 0
+		}
+	}
+	tree.GetForest().PRMMutex.RUnlock()
+	if size == 0 {
+		task.TaskID = TreeId
+	} else {
+		task.TaskID = TreeId + "-task-" + strconv.Itoa(size)
+	}
 	task.Title = Title
-	task.Pusher = Pusher
+	task.Pusher = OpenId
 	task.Content = Content
-	task.Status = false
-	task.PushDate = time.Now()
+	task.Status = -1
+	task.PushDate = time.Now().UTC()
 	task.DeadLine, err = time.Parse("2006-01-02T15:04:05Z", Deadline)
 	utils.CheckErr(err, "BuildTask:time parsing")
 	if Urgency != "" {
@@ -28,23 +42,9 @@ func BuildTask(OpenId string, Title string, Pusher string, Content string, Deadl
 	}
 
 	//将新任务的信息同时写入数据库
-	db := sqlmanip.ConnetUserDB()
-	sqlmanip.CreateTask(db, &task, OpenId)
-	sqlmanip.DisConnectDB(db)
+	//db := sqlmanip.ConnetUserDB()
+	//sqlmanip.CreateTask(db, &task, OpenId)
+	//sqlmanip.DisConnectDB(db)
 
 	return &task
-}
-
-func taskIDProducer(openid string) string {
-	db := sqlmanip.ConnetUserDB()
-	defer sqlmanip.DisConnectDB(db)
-	res, err := sqlmanip.QueryStringToString(db, "Tasks", "UserInfo", openid)
-	utils.CheckErr(err, "taskIDProducer:query")
-	var count int
-	for i := 0; i < len(res); i++ {
-		if res[i] == ';' {
-			count++
-		}
-	}
-	return openid + "-task-" + strconv.Itoa(count+1)
 }

@@ -16,7 +16,7 @@ func GetOpenIdFromTencent(code string) *TencentRes {
 	defer resp.Body.Close()
 
 	object, err := ioutil.ReadAll(resp.Body)
-	CheckErr(err, "Mistakes happen when parsing response")
+	CheckErr(err, "GetOpenIdFromTencent:read resp")
 
 	var ATencentRes TencentRes
 	err = json.Unmarshal(object, &ATencentRes)

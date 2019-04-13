@@ -29,7 +29,7 @@ type Task struct {
 	Title    string
 	Pusher   string
 	Content  string
-	Status   bool
+	Status   int8
 	PushDate time.Time
 	DeadLine time.Time
 	Urgency  int8
@@ -44,9 +44,10 @@ type TencentRes struct {
 }
 
 type TaskNode struct {
-	Task  Task
-	Self  int
-	Child []int
+	Task      Task
+	Self      int
+	Child     []int
+	TeamMates []string
 }
 
 type TaskNodeInDB struct {
