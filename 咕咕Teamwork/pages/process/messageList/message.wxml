@@ -9,5 +9,6 @@
   <view>发布时间：{{pushDate}}</view>
   <view>阅读期限：{{finalDeleteDate}}</view>
   <i-button bind:click="iKnow">我了解了</i-button>
+  <i-button bind:click="markDown">添加到记事本</i-button>
 
 </view>

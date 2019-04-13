@@ -90,5 +90,11 @@ Page({
     var index = app.globalData.currentMessageIndex;
     var currentMessage = list[index];
     currentMessage.Status = true;
+  },
+  markDown:function(){
+    app.globalData.markDownChoice=0;
+    wx.navigateTo({
+      url: '../../page/myMarkDown/add/add',
+    })
   }
 })

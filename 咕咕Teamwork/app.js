@@ -107,6 +107,7 @@ App({
     windowWidth:0,
     currentTaskIndex:0,
     currentMessageIndex: 0,
+    markDownChoice:2,
     tasks:[],
     messages:[],
     color:{

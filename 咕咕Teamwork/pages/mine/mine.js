@@ -22,9 +22,10 @@ Page({
         "icon": "iconfont icon-message",
       },
       {
-        "name": "个人分析",
-        "func": "intoFunc3",
-        "icon": "iconfont icon-analyze"
+        "name": "记事本",
+        "url": "../../images/icon2.jpg",
+        "func": "intoFunc6",
+        "icon": "iconfont icon-submit"
       },
       {
         "name": "发起任务",
@@ -40,19 +41,18 @@ Page({
         "icon": "iconfont icon-ionc--1"
       },
       {
-        "name": "提交周报",
-        "url": "../../images/icon2.jpg",
-        "func": "intoFunc6",
-        "icon": "iconfont icon-submit"
+        "name": "数据分析",
+        "func": "intoFunc3",
+        "icon": "iconfont icon-analyze"
       },
       {
-        "name": "合作文档",
+        "name": "合作办公",
         "url": "../../images/icon2.jpg",
         "func": "intoFunc7",
         "icon": "iconfont icon-team"
       },
       {
-        "name": "匿名墙",
+        "name": "任务社区",
         "url": "../../images/icon2.jpg",
         "func": "intoFunc8",
         "icon": "iconfont icon-anonymous"
@@ -213,6 +213,11 @@ Page({
   intoFunc5: function(){
     wx.navigateTo({
       url: '../page/myInfor/myInfor',
+    })
+  },
+  intoFunc6: function () {
+    wx.navigateTo({
+      url: '../page/myMarkDown/myMarkDown',
     })
   },
   toPageSetting:function(){

@@ -13,7 +13,9 @@
     "pages/page/add/add",
     "pages/process/messageList/add/add",
     "pages/page/myPageSetting/myPageSetting",
-    "pages/page/myInfor/myInfor"
+    "pages/page/myInfor/myInfor",
+    "pages/page/myMarkDown/myMarkDown",
+    "pages/page/myMarkDown/add/add"
   ],
   "window": {
     "backgroundTextStyle": "light",

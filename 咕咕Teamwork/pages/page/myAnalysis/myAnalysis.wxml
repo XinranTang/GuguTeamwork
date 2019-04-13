@@ -4,3 +4,8 @@
     
   </i-collapse-item>
 </i-collapse>
+<i-collapse name="{{name}}">
+  <i-collapse-item title="个人数据分析" name="name2">
+    
+  </i-collapse-item>
+</i-collapse>
