@@ -255,13 +255,15 @@ Page({
           isSelected: true
         });  
       }
-    console.log("选中");
   },
   onAddNode:function(e){
     CanvasDrag.onAddNode();
   },
   onDelNode:function(e){
     CanvasDrag.onDelNode();
+  },
+  onDoDel:function(e){
+    CanvasDrag.onDoDel();
   },
   /**
    * 生命周期函数--监听页面加载

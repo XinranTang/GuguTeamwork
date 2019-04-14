@@ -8,6 +8,7 @@ const DELETE_ICON = './icon/close.png'; // 删除按钮
 const DRAG_ICON = './icon/scale.png'; // 缩放按钮
 const ADD_ICON = './icon/add.png'
 const STROKE_COLOR = 'black';
+const DELED_COLOR = 'red';
 const ROTATE_ENABLED = false;
 var DEFAULT_FONT_SIZE = 15;
 var ZOOM_ENABLE = false;
@@ -76,6 +77,8 @@ const dragGraph = function ({x = 30, y = 30, w, h, type, text, fontSize = DEFAUL
     this.MIN_FONTSIZE = 10;
     // 增加了childs列表，里面的成员都是dragGraph对象
     this.childs = [];
+    // 增加了isDeled属性，表示被标记为删除
+    this.isDeled = false;
 };
 
 dragGraph.prototype = {
@@ -91,7 +94,8 @@ dragGraph.prototype = {
             this.ctx.setFontSize(this.fontSize);
             this.ctx.setTextBaseline('middle');
             this.ctx.setTextAlign('center');
-            this.ctx.setFillStyle(this.color);
+            //标记为删除的元素为红色
+            this.ctx.setFillStyle(this.isDeled ?DELED_COLOR:this.color);
             textWidth = this.ctx.measureText(this.text).width;
             textHeight = this.fontSize + 10;
             // 字体区域中心点不变，左上角位移
@@ -115,9 +119,10 @@ dragGraph.prototype = {
             this.ctx.setLineWidth(2);
             this.ctx.setStrokeStyle(STROKE_COLOR);
             this.ctx.lineDashOffset = 6;
-
+            //阴影
+            //this.ctx.setShadow(5, 5, 20, 'black')
             if (this.type === 'text') {
-                this.ctx.strokeRect(this.x, this.y, textWidth, textHeight);
+                this.ctx.strokeRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10);
                 if(DEL_ENABLE)
                   this.ctx.drawImage(DELETE_ICON, this.x - 15, this.y - 15, 30, 30);
                 if(ZOOM_ENABLE)
@@ -626,7 +631,6 @@ Component({
             }
             //传值
           this.triggerEvent('onSelectedChange', JSON.stringify(this.getSelectedNode().taskattrs == undefined ? {} : this.getSelectedNode().taskattrs));
-            console.log(this.getSelectedNode());
             this.draw();
         },
         move(e) {
@@ -755,13 +759,15 @@ Component({
           //↑↑把这部分换成访问服务器就可以了
           this.triggerEvent('onRefresh');
         },
-
+        //将结点标记为删除或标记为删除的结点的恢复
         delNode(){
           var selectedTaskInfo = this.tempGraphArr[0].taskattrs;
+          this.tempGraphArr[0].isDeled = !this.tempGraphArr[0].isDeled;
           /*访问服务器删除的操作*/
           /*访问服务器删除的操作*/
           /*访问服务器删除的操作*/
-          this.triggerEvent('onRefresh');
+          //this.triggerEvent('onRefresh');
+          this.draw();
         },
         // fromgraph是node的json,graph是dragGraph对象，因为小程序编辑器的重构功能太烂了所以没有重命名
         // 这是之前嵌套树的构造方式 弃用
@@ -793,10 +799,8 @@ Component({
         initByTree(tree) {
           const initX = 100, initY = 50;
           var root = tree[0];
-          //console.log(root);
           var newgraph = new dragGraph({ x: initX, y: initY, text: root.title, type: "text" }, this.ctx, this.factor);
           this.drawArr.push(newgraph);
-          // console.log("root.x="+newgraph.x);
           // TODO：这里写的感觉有点问题，之后优化成只传一个对象或者json，这里省事就先传进一个json一个dragGraph
           // 根据json生成dragGraph的同时设置dragGraph的childs,之后可以根据需求直接先用json初始化dragGraph树
           this._insertNode(root,newgraph);
@@ -809,13 +813,11 @@ Component({
         var pos_x_offset = -50;
         var pos_y_offset = 80;
         var childs = fromTaskGraph.taskattrs[CHILD];
-        console.log("childs:"+childs);
         //非叶子节点
         if (childs[0] != 0) {
           for (var i = 0; i < childs.length; i++) {
             var index = childs[i];
             var nextTaskNodeAtrr = this.treeRawArr[index];
-            console.log(nextTaskNodeAtrr);
             var newTaskGraph = new dragGraph({ x: fromTaskGraph.x + pos_x_offset, y: fromTaskGraph.y + pos_y_offset, text: nextTaskNodeAtrr[TASK][TITLE], type: "text" }, this.ctx, this.factor, nextTaskNodeAtrr);
             var newedge = new edgeGraph({ width: 2, color: 'black' }, this.ctx, fromTaskGraph, newTaskGraph);
             this.edgeArr.push(newedge);
@@ -838,19 +840,38 @@ Component({
           }
         
           var rootTaskNode = this.treeRawArr[0];
-          //console.log(rootTaskNode);
           var newgraph = new dragGraph({ x: initX, y: initY, text: rootTaskNode[TASK][TITLE], type: "text" }, this.ctx, this.factor,rootTaskNode);
           this._insertTreeNode(newgraph);
           this.draw();
         },
-      // 组件触发page的事件访问服务器更新本地的tree数组值
-      setTree(){
-        
+        //执行删除所有标记为isDeled的结点
+        //这里的删除是仅删除父节点的childs
+      onDoDel(){
+        for(var i =0;i<this.drawArr.length;i++){
+          if(this.drawArr[i].isDeled){
+            var index = this.drawArr[i].taskattrs[SELF];
+            for(var j = 0;j<this.treeRawArr.length;j++){
+              var theindex = -1;
+              //小程序没有indexOf???
+              for(var k =0;k<this.treeRawArr[j][CHILD].length;k++){
+                if(this.treeRawArr[j][CHILD][k]==index){
+                  theindex = k;
+                  break;
+                }
+              }
+              if(theindex>-1){
+                //修改CHILD
+                this.treeRawArr[j][CHILD].splice(theindex,1);
+                break;
+              }
+            }
+          }
+        }
+        this.triggerEvent("onRefresh");
       },
         setByTree(){
           const initX = 100, initY = 100;
           var rootTaskNode = this.treeRawArr[0];
-          //console.log(rootTaskNode);
           var newgraph = new dragGraph({ x: initX, y: initY, text: rootTaskNode[TASK][TITLE], type: "text" }, this.ctx, this.factor, rootTaskNode);
           this._insertTreeNode(newgraph);
           this.draw();

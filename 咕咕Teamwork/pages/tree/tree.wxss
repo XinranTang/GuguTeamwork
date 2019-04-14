@@ -1,5 +1,7 @@
 /* pages/tree.wxss */
-
+page{
+  background-color: white;
+}
 .btn{
     padding: 10rpx 20rpx;
     float:left;

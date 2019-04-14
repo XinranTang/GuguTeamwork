@@ -17,7 +17,8 @@
 <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
 <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
 <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
-<view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除结点</view>
+<view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
+<view class="btn" bindtap="onDoDel">执行删除结点</view>
 </view>
 
 <!-- <view>
