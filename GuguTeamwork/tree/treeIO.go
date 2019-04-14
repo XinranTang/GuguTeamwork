@@ -70,7 +70,7 @@ func buildTree(TaskInDBList []utils.TaskNodeInDB) []utils.TaskNode {
 }
 
 //添加新任务需要知道新任务所属的项目ID，所属的父任务ID，以及任务的相关信息
-func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode) {
+func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode) error {
 	TaskNode.Child = []int{0}
 	var i int
 	var j = len(TaskNode.Task.TaskID)
@@ -79,7 +79,10 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 	size, err := strconv.Atoi(TaskNode.Task.TaskID[i+1 : j])
 	utils.CheckErr(err, "NewTask:get size")
 	TaskNode.Self = size
+	log.Println("ready to add")
+	log.Println(TaskNode)
 
+	var flag = true
 	forest.PRMMutex.Lock()
 	{
 		for i := 0; i < len(forest.Projects[Project]); i++ {
@@ -90,11 +93,17 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 					forest.Projects[Project][i].Child = append(forest.Projects[Project][i].Child, TaskNode.Self)
 				}
 				forest.Projects[Project] = append(forest.Projects[Project], *TaskNode)
+				flag = false
 				break
 			}
 		}
 	}
 	forest.PRMMutex.Unlock()
+
+	if flag {
+		return new(utils.TreeManipError)
+	}
+
 	forest.MRMMutex.Lock()
 	{
 		tmp := forest.Monitors[Project]
@@ -102,6 +111,16 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 		forest.Monitors[Project] = tmp
 	}
 	forest.MRMMutex.Unlock()
+	return nil
+}
 
-	log.Println(f.Projects)
+func MarkNode(base []utils.TaskNode, index int, apra []bool) {
+	for _, v := range base[index].Child {
+		if v == 0 {
+			apra[index] = true
+		} else {
+			MarkNode(base, v, apra)
+			apra[index] = true
+		}
+	}
 }

@@ -27,13 +27,11 @@ func Entry(w http.ResponseWriter, r *http.Request) {
 			if ATencentRes.Errcode == -1 {
 				err := new(utils.TencentError)
 				err.DealWithError(w, ATencentRes)
-				utils.CheckErr(err, "Entry:tencent")
 				return
 			}
 		} else {
 			err := new(utils.TencentError)
-
-			utils.CheckErr(err, "Entry:tencent")
+			err.DealWithError(w, ATencentRes)
 			return
 		}
 	}
@@ -53,7 +51,7 @@ func OpenIdEntry(w http.ResponseWriter, r *http.Request) {
 	if !utils.CheckEmp(r.PostFormValue("OpenId")) {
 		err := new(utils.EmptyPostFormValueError)
 		err.DealWithError(w)
-		utils.CheckErr(err, "OpenIdEntry:empty para")
+		return
 	}
 	output := exist(db, r.PostFormValue("OpenId"))
 	w.Header().Set("Content-type", "application/json")

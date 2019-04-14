@@ -5,8 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"GuguTeamwork/sqlmanip"
 	"GuguTeamwork/task"
@@ -21,20 +23,34 @@ type ProjectTree struct {
 }
 
 type NewNodeData struct {
-	OpenId    string
-	Title     string
-	Content   string
-	Deadline  string
-	Urgency   string
-	TreeID    string
-	Parent    string
-	TeamMates []string
+	OpenId   string
+	Title    string
+	Content  string
+	Deadline string
+	Urgency  string
+	TreeID   string
+	Parent   string
 }
 
 type NewTreeData struct {
 	OpenId   string
 	Name     string
 	Brief    string
+	Deadline string
+	Urgency  string
+}
+
+type DeleteNodeData struct {
+	TreeID string
+	TaskID string
+	Parent string
+}
+
+type AlterNodeData struct {
+	TreeID   string
+	TaskID   string
+	Title    string
+	Content  string
 	Deadline string
 	Urgency  string
 }
@@ -47,7 +63,7 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 	if !utils.CheckEmp(r.PostFormValue("OpenId")) {
 		err := new(utils.EmptyPostFormValueError)
 		err.DealWithError(w)
-		utils.CheckErr(err, "Trees:empty para")
+		return
 	}
 	tempStr, err := sqlmanip.QueryOpenIdToString(db, "Manage", "UserInfo", r.PostFormValue("OpenId"))
 	utils.CheckErr(err, "Trees:query")
@@ -89,7 +105,7 @@ func NewProjectTree(w http.ResponseWriter, r *http.Request) {
 	if !utils.CheckEmp(ANewTreeData.OpenId, ANewTreeData.Name, ANewTreeData.Brief, ANewTreeData.Deadline) {
 		err := new(utils.EmptyPostFormValueError)
 		err.DealWithError(w)
-		utils.CheckErr(err, "NewProjectTree:get data")
+		return
 	}
 
 	db := sqlmanip.ConnetUserDB()
@@ -109,7 +125,16 @@ func NewProjectTree(w http.ResponseWriter, r *http.Request) {
 
 	tmp = append(tmp, utils.ParseManage(manage)...)
 	tmp = utils.QuickMerge(tmp)
-	var TreeId = ANewTreeData.OpenId + "_project_" + strconv.Itoa(len(tmp)+1)
+	sort.Slice(tmp, func(i int, j int) bool {
+		if strings.Compare(tmp[i], tmp[j]) < 0 {
+			return true
+		}
+		return false
+	})
+	l := len(tmp) - 1
+	x, err := strconv.Atoi(tmp[l][strings.Index(tmp[l], "_project_")+9:])
+	utils.CheckErr(err, "NewProjectTree:sort to produce id")
+	var TreeId = ANewTreeData.OpenId + "_project_" + strconv.Itoa(x+1)
 
 	var firstNode utils.TaskNode
 	firstNode.Task = *task.BuildTask(TreeId, ANewTreeData.OpenId, ANewTreeData.Name, ANewTreeData.Brief, ANewTreeData.Deadline, ANewTreeData.Urgency)
@@ -125,7 +150,9 @@ func NewProjectTree(w http.ResponseWriter, r *http.Request) {
 	tree.GetForest().PRMMutex.Unlock()
 	tree.GetForest().MRMMutex.Lock()
 	{
-		tree.GetForest().Monitors[TreeId] = tree.BuildMonitor()
+		tmp := tree.BuildMonitor()
+		tmp.UpdateSig = true
+		tree.GetForest().Monitors[TreeId] = tmp
 	}
 	tree.GetForest().MRMMutex.Unlock()
 }
@@ -139,22 +166,193 @@ func AddNewTreeNodes(w http.ResponseWriter, r *http.Request) {
 	utils.CheckErr(err, "AddNewTreeNodes:parse data")
 	r.Body.Close()
 
-	if utils.CheckEmp(ANewNodeData.OpenId, ANewNodeData.Title, ANewNodeData.Content, ANewNodeData.Deadline) {
-		log.Println("before suspend")
-		log.Println(tree.GetForest().Projects)
+	if utils.CheckEmp(ANewNodeData.TreeID, ANewNodeData.OpenId, ANewNodeData.Title, ANewNodeData.Content, ANewNodeData.Deadline, ANewNodeData.Parent) {
 		tree.SafeTreeManip(ANewNodeData.TreeID)
-		log.Println("after suspend")
-		log.Println(tree.GetForest().Projects)
+		log.Println("before add")
+		log.Println(tree.GetForest().Projects[ANewNodeData.TreeID])
 		var task = task.BuildTask(ANewNodeData.TreeID, ANewNodeData.OpenId, ANewNodeData.Title, ANewNodeData.Content, ANewNodeData.Deadline, ANewNodeData.Urgency)
 		var taskNode = new(utils.TaskNode)
 		taskNode.Task = *task
-		taskNode.TeamMates = ANewNodeData.TeamMates
-		log.Println(*taskNode)
-		log.Println("build complete")
-		tree.GetForest().NewTask(ANewNodeData.TreeID, ANewNodeData.Parent, taskNode)
+		err := tree.GetForest().NewTask(ANewNodeData.TreeID, ANewNodeData.Parent, taskNode)
+		//要添加的parent并不存在
+		if err != nil {
+			w.WriteHeader(300)
+			return
+		}
+		log.Println("after add")
+		log.Println(tree.GetForest().Projects[ANewNodeData.TreeID])
 	} else {
 		err := new(utils.EmptyPostFormValueError)
 		err.DealWithError(w)
-		utils.CheckErr(err, "AddNewTreeNodes:empty para")
+		return
+	}
+}
+
+//这个处理器移除树上的一个结点，如果移除的是非子节点，所有它的子节点将被移除
+func DropFromTree(w http.ResponseWriter, r *http.Request) {
+	data, err := ioutil.ReadAll(r.Body)
+	utils.CheckErr(err, "DropFromTree:read data")
+	var ADeleteNodeData DeleteNodeData
+	err = json.Unmarshal(data, &ADeleteNodeData)
+	utils.CheckErr(err, "DropFromTree:parse data")
+	r.Body.Close()
+
+	tree.SafeTreeManip(ADeleteNodeData.TreeID)
+	tree.GetForest().PRMMutex.RLock()
+	tmp := make([]utils.TaskNode, len(tree.GetForest().Projects[ADeleteNodeData.TreeID]))
+	copy(tmp, tree.GetForest().Projects[ADeleteNodeData.TreeID])
+	tree.GetForest().PRMMutex.RUnlock()
+
+	log.Println("tree before delete")
+	log.Println(tmp)
+
+	var flag = -1
+	for k, v := range tmp {
+		if v.Task.TaskID == ADeleteNodeData.TaskID {
+			flag = k
+			break
+		}
+	}
+	//想删除的节点并不存在
+	if flag == -1 {
+		w.WriteHeader(300)
+		return
+	}
+
+	for k, _ := range tmp {
+		if tmp[k].Task.TaskID == ADeleteNodeData.Parent {
+			for i, j := range tmp[k].Child {
+				if j == flag {
+					tmp[k].Child = append(tmp[k].Child[:i], tmp[k].Child[i+1:]...)
+				}
+			}
+		}
+	}
+
+	var apra = make([]bool, len(tmp))
+	var apra2 = make([]int, len(tmp))
+	for k, _ := range tmp {
+		apra2[k] = tmp[k].Self
+	}
+
+	tree.MarkNode(tmp, flag, apra)
+	apra[flag] = true
+	var count = 0
+	for k, v := range apra {
+		if v {
+			for i := k + 1; i < len(tmp); i++ {
+				tmp[i].Self--
+				apra2[i]--
+			}
+			tmp = append(tmp[:k-count], tmp[k-count+1:]...)
+			count++
+		}
+	}
+
+	for k, _ := range tmp {
+		for i, _ := range tmp[k].Child {
+			tmp[k].Child[i] = apra2[tmp[k].Child[i]]
+		}
+	}
+
+	log.Println("after delete")
+	log.Println(tmp)
+
+	tree.GetForest().PRMMutex.Lock()
+	{
+		tree.GetForest().Projects[ADeleteNodeData.TreeID] = tmp
+	}
+	tree.GetForest().PRMMutex.Unlock()
+	tree.GetForest().MRMMutex.Lock()
+	{
+		tmp := tree.GetForest().Monitors[ADeleteNodeData.TreeID]
+		tmp.UpdateSig = true
+		tree.GetForest().Monitors[ADeleteNodeData.TreeID] = tmp
+	}
+	tree.GetForest().MRMMutex.Unlock()
+}
+
+//这个处理器移除一颗树，强烈注意！！！这个操作是不可逆的，一旦执行整颗树都会从数据库里移除
+func DropTree(w http.ResponseWriter, r *http.Request) {
+	var ok bool
+	tree.GetForest().PRMMutex.Lock()
+	{
+		if _, ok = tree.GetForest().Projects[r.PostFormValue("TreeId")]; ok {
+			delete(tree.GetForest().Projects, r.PostFormValue("TreeId"))
+			delete(tree.GetForest().Monitors, r.PostFormValue("TreeId"))
+		}
+	}
+	tree.GetForest().PRMMutex.Unlock()
+	if ok {
+		return
+	}
+	err := sqlmanip.DropTree(r.PostFormValue("TreeId"))
+	if err != nil {
+		w.WriteHeader(403)
+		return
+	}
+}
+
+//这个处理器修改一个task的内部内容
+func AlterNode(w http.ResponseWriter, r *http.Request) {
+	data, err := ioutil.ReadAll(r.Body)
+	utils.CheckErr(err, "AlterNode:read data")
+	var AAlterNodeData AlterNodeData
+	err = json.Unmarshal(data, &AAlterNodeData)
+	utils.CheckErr(err, "AlterNode:parse data")
+	r.Body.Close()
+
+	if utils.CheckEmp(AAlterNodeData.TreeID, AAlterNodeData.TaskID, AAlterNodeData.Title, AAlterNodeData.Content, AAlterNodeData.Deadline) {
+		tree.SafeTreeManip(AAlterNodeData.TreeID)
+		log.Println("before alter")
+		log.Println(tree.GetForest().Projects[AAlterNodeData.TreeID])
+		var replica utils.TaskNode
+		var flag = -1
+		tree.GetForest().PRMMutex.RLock()
+		{
+			for k, v := range tree.GetForest().Projects[AAlterNodeData.TreeID] {
+				if v.Task.TaskID == AAlterNodeData.TaskID {
+					replica.Child = v.Child
+					replica.Self = v.Self
+					replica.TeamMates = v.TeamMates
+					replica.Task = v.Task
+					flag = k
+					break
+				}
+			}
+		}
+		tree.GetForest().PRMMutex.RUnlock()
+		if flag == -1 {
+			w.WriteHeader(300)
+			return
+		}
+		replica.Task.Title = AAlterNodeData.Title
+		replica.Task.Content = AAlterNodeData.Content
+		t, err := time.Parse("2006-01-02T15:04:05Z", AAlterNodeData.Deadline)
+		replica.Task.DeadLine = t
+		utils.CheckErr(err, "AlterNode:time parse")
+		if AAlterNodeData.Urgency != "" {
+			tempInt, err := strconv.Atoi(AAlterNodeData.Urgency)
+			utils.CheckErr(err, "AlterNode:parse urgency")
+			replica.Task.Urgency = int8(tempInt)
+		}
+		tree.GetForest().PRMMutex.Lock()
+		{
+			tree.GetForest().Projects[AAlterNodeData.TreeID][flag] = replica
+		}
+		tree.GetForest().PRMMutex.Unlock()
+		tree.GetForest().MRMMutex.Lock()
+		{
+			tmp := tree.GetForest().Monitors[AAlterNodeData.TreeID]
+			tmp.UpdateSig = true
+			tree.GetForest().Monitors[AAlterNodeData.TreeID] = tmp
+		}
+		tree.GetForest().MRMMutex.Unlock()
+		log.Println("after alter")
+		log.Println(tree.GetForest().Projects[AAlterNodeData.TreeID])
+	} else {
+		err := new(utils.EmptyPostFormValueError)
+		err.DealWithError(w)
+		return
 	}
 }

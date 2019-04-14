@@ -2,6 +2,7 @@ package task
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	"GuguTeamwork/tree"
@@ -15,7 +16,14 @@ func BuildTask(TreeId string, OpenId string, Title string, Content string, Deadl
 	tree.GetForest().PRMMutex.RLock()
 	{
 		if v, ok := tree.GetForest().Projects[TreeId]; ok {
-			size = len(v)
+			l := len(v) - 1
+			if l >= 1 {
+				x, err := strconv.Atoi(v[l].Task.TaskID[strings.Index(v[l].Task.TaskID, "-task-")+6:])
+				utils.CheckErr(err, "BuildTask:build task id")
+				size = x + 1
+			} else {
+				size = 1
+			}
 		} else {
 			size = 0
 		}

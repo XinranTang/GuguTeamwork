@@ -27,6 +27,9 @@ func main() {
 	mux.HandleFunc("/gugu/getManageTrees", fetch.GetTrees)
 	mux.HandleFunc("/gugu/newNode", fetch.AddNewTreeNodes)
 	mux.HandleFunc("/gugu/newProject", fetch.NewProjectTree)
+	mux.HandleFunc("/gugu/deleteNode", fetch.DropFromTree)
+	mux.HandleFunc("/gugu/deleteTree", fetch.DropTree)
+	mux.HandleFunc("/gugu/alterNode", fetch.AlterNode)
 	//静态资源服务
 	fileServer := http.FileServer(http.Dir("public"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
