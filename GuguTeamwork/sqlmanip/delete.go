@@ -1,7 +1,21 @@
 package sqlmanip
 
-//	"database/sql"
+import (
+	_ "github.com/mattn/go-sqlite3"
+)
 
-//	"GuguTeamwork/utils"
+//从数据库中删除一张树表
+func DropTree(treeid string) error {
+	db := ConnectTaskDB()
+	defer DisConnectDB(db)
 
-//	_ "github.com/mattn/go-sqlite3"
+	stmt, err := db.Prepare("DROP table ?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(treeid)
+	if err != nil {
+		return err
+	}
+	return nil
+}
