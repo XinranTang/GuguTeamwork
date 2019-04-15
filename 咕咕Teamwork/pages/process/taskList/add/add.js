@@ -277,12 +277,13 @@ Page({
             dataType: JSON,
             success: function (res) {
               var index = 'oneTaskTree.Tree'
+              var t = res.data
               that.setData({
                 oneTaskTree: {
                   Tree: [
                     {
                       "Task": {
-                        "TaskID": res.data.Manage,
+                        "TaskID": res.data,
                         "Title": json.Name,
                         "Pusher": "本机用户", // TODO:改成昵称或者真名
                         "Content": json.Brief,
@@ -307,12 +308,15 @@ Page({
               });
               that.onInitByTree();
               var arr = [];
+              var manage = "";
               wx.getStorage({
                 key: 'UserInfor',
                 success: function (res) {
                   arr = res.data.Tasks;
+                  manage=res.data.Manage;
+                  manage=manage+t;
                   arr.push({
-                    "TaskID": res.data.Manage,
+                    "TaskID": t,
                     "Title": json.Name,
                     "Pusher": "本机用户", // TODO:改成昵称或者真名
                     "Content": json.Brief,
@@ -323,6 +327,8 @@ Page({
                   })
 
                   res.data.Tasks = arr;
+                  res.data.Manage = manage;
+                  app.globalData.tasks = arr;
                   console.log(res.data.Tasks)
                   wx.setStorage({
                     key: 'UserInfor',

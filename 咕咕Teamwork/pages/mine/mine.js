@@ -178,6 +178,22 @@ Page({
         app.globalData.tasks=res.data.Tasks;
         app.globalData.messages=res.data.Messages;
         console.log("在授权后取得用户信息成功")
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: "testopenid"
+          },
+          success(res) {
+            wx.setStorage({
+              key: 'Forest',
+              data: res.data,
+            })
+          }
+        })
       },
       fail() {
         console.log("在授权后取得用户信息失败")

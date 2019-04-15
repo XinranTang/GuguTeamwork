@@ -1,5 +1,5 @@
 <!--pages/process/taskList/task.wxml-->
-<view>
+<view wx:if='{{!show}}'>
   <view id="title">
     <text>任务信息</text>
   </view>
@@ -10,4 +10,18 @@
   <view>发布日期：{{pushDate}}</view>
   <view>截止日期：{{deadLine}}</view>
   <view>优先级：{{urgency}}</view>
+</view>
+<view wx:else>
+  <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh = 'onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
+  <text>目前选择的结点数据:   </text>
+  <text >{{text_selected_node}}</text>
+  <view>
+  <view class="btn" bindtap="onClearCanvas">清空画布</view>
+  <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
+  <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
+  <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
+  <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
+  <view class="btn" bindtap="onDoDel">执行删除结点</view>
+  <view class="btn" bindtap="createTask">任务创建完成</view>
+  </view>
 </view>

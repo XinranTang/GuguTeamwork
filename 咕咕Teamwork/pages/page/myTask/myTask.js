@@ -6,7 +6,8 @@ Page({
    * Page initial data
    */
   data: {
-    tasks:[],
+    mtasks:[],
+    ctasks:[],
     name:"name1",
     color:{}
   },
@@ -29,10 +30,45 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    this.setData({
-      tasks:app.globalData.tasks,
-      color:app.globalData.color
+    var self = this;
+    self.setData({
+      // tasks:app.globalData.tasks,
+      color:app.globalData.color,
+      ctasks:[],
+      mtasks:[]
     })
+    var manage='';
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function(res) {
+        manage=res.data.Manage;
+        var arr = manage.split(";");
+        var t;
+        var a;
+        t = app.globalData.tasks;
+        console.log(t)
+        t.forEach(task => {
+          var flag = false;
+          arr.forEach(item => {
+            console.log(item)
+            if (item == task.TaskID) {
+              a = self.data.mtasks;
+              self.setData({
+                mtasks: a.concat(task)
+              })
+              flag=true;
+            }             
+          })
+          if(!flag){
+            a = self.data.ctasks;
+            self.setData({
+              ctasks: a.concat(task)
+            })
+          }
+        })
+      },
+    })
+    
   },
 
   /**
