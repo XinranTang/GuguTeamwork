@@ -11,8 +11,8 @@
 }
 .list-i {
   padding: 18rpx 0;
-  display: flex;
-  flex-direction: column;
+  /* display: flex; */
+  /* flex-direction: column; */
   width: 100%;
   height: 200rpx;
   background: #e0f6ff;

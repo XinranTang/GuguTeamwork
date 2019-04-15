@@ -1,7 +1,7 @@
 <!--pages/page/myMarkDown/add/add.wxml-->
 <view class="page">
   <view class="page-t">
-    <textarea class="content" placeholder="{{content}}" bindinput="change" value="{{content}}" maxlength="-1" style='height:200rpx'></textarea>
+    <textarea class="content" placeholder="{{holder}}" bindinput="change" value="{{content}}" maxlength="-1" style='height:200rpx'></textarea>
   </view>
   <view class="btns">
     <view class="sure" bindtap="sure">确定</view>

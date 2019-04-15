@@ -1,39 +1,47 @@
 <!--pages/process/taskList/add/add.wxml-->
 <view wx:if="{{hide==false}}">
-  <view class="cu-form-group margin-top">
+  <form  bindsubmit="handleClick" >
+    <view class="cu-form-group margin-top">
     <view class='title'>任务名</view>
-    <input placeholder="任务名称" class='radius' name='input'></input>
-  </view>
-  <view class="cu-form-group">
-    <view class='title'>任务内容</view>
-    <input placeholder="内容描述" class='radius' name='input'></input>
-  </view>
-  <view class="cu-form-group">
-    <view class='title'>截止日期</view>
-    <picker mode="date" value="{{date}}" start="2000-01-01" end="2050-12-31" bindchange="bindDateChange">
-      <view class="picker">
-      {{date}}
-      </view>
-    </picker>
-  </view>
-  <view class="cu-form-group">
-    <view class='title'>截止时间</view>
-    <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindTimeChange">
-      <view class="picker">
-      {{time}}
-      </view>
-    </picker>
-  </view>
-  <i-button bind:click="handleClick">新建</i-button>
+      <input placeholder="任务名称" class='radius' name='name'></input>
+    </view>
+    <view class="cu-form-group">
+      <view class='title'>任务内容</view>
+      <input placeholder="内容描述" class='radius' name='content'></input>
+    </view>
+    <view class="cu-form-group">
+      <view class='title'>截止日期</view>
+      <picker mode="date" value="{{date}}" start="2000-01-01" end="2050-12-31" bindchange="bindDateChange">
+        <view class="picker">
+        {{date}}
+        </view>
+      </picker>
+    </view>
+    <view class="cu-form-group">
+      <view class='title'>截止时间</view>
+      <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindTimeChange">
+        <view class="picker">
+        {{time}}
+        </view>
+      </picker>
+    </view>
+    <button formType="submit">新建</button>
+  </form>
 </view>
 <view wx:if="{{hide==true}}">
-  <movable-area style="height: {{h}}px;width: {{w}}px;background: rgba(250,250,250,0.90);">
-    <movable-view style="height: 50px; width: 50px; background: #66ccff; border-radius:5px" bindlongtap='handleLongtap' direction="all">
-        <text>12345</text>
-      </movable-view>
-      <movable-view for="{{root.nodes}}" style="height: 50px; width: 50px; background: #66ccff; border-radius:5px" bindlongtap='handleLongtap' direction="all">
-        <text>{{item.title}}</text>
-      </movable-view>
-      <!-- <mytree model='{{ treeData }}' bind:tapitem='tapItem'></mytree> -->
-  </movable-area>
+  <!-- <tree id='canvas-drag'>
+  </tree> -->
+  <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh = 'onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
+<text>目前选择的结点数据:   </text>
+<text >{{text_selected_node}}</text>
+<view>
+<view class="btn" bindtap="onClearCanvas">清空画布</view>
+<view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
+<view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
+<view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
+<view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
+<view class="btn" bindtap="onDoDel">执行删除结点</view>
+<view class="btn" bindtap="createTask">任务创建完成</view>
+</view>
+
 </view>

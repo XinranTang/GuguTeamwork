@@ -43,15 +43,16 @@
     ]
   },
   "usingComponents": {
-    "i-card": "../../dist/card/index",
-    "i-icon": "../../dist/icon/index",
+    "i-card": "../dist/card/index",
+    "i-icon": "../dist/icon/index",
     "i-button": "../dist/button/index",
     "i-grid": "../dist/grid/index",
-    "i-grid-item": "../../dist/grid-item/index",
-    "i-grid-icon": "../../dist/grid-icon/index",
-    "i-grid-label": "../../dist/grid-label/index",
-    "i-collapse": "../../dist/collapse/index",
+    "i-grid-item": "../dist/grid-item/index",
+    "i-grid-icon": "../dist/grid-icon/index",
+    "i-grid-label": "../dist/grid-label/index",
+    "i-collapse": "../dist/collapse/index",
     "i-collapse-item": "../dist/collapse-item/index",
-    "i-input": "../../dist/input/index"
+    "i-input": "../dist/input/index",
+    "i-modal": "../dist/modal/index"
   }
 }

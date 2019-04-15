@@ -6,7 +6,8 @@ Page({
    * Page initial data
    */
   data: {
-    content: '请输入文字，不能为空'
+    content: '',
+    holder:"请输入文字，不能为空"
   },
 
   /**
@@ -51,7 +52,10 @@ Page({
   sure:function() {
     var reg = /^\s*$/g;
     if (!this.data.content || reg.test(this.data.content)) {
-      console.log('不能为空');
+      wx.showToast({
+        title: '不能为空',
+        icon:'none'
+      })
       return;
     }
     this.setData({

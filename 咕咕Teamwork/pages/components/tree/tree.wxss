@@ -1,7 +1,4 @@
-/* pages/process/taskList/add/add.wxss */
-form-group .title {
-  min-width: calc(4em + 15px);
-}
+/* pages/components/tree/tree.wxss */
 page{
   background-color: white;
 }

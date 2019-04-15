@@ -3,8 +3,8 @@
   <!-- 每一条文字 -->
   <scroll-view scroll-y='true' class='lists'>
     <block wx:for="{{lists}}" wx:key="*this.id">
-      <view class="list-i" bindtap="edit" data-id="{{item.id}}">
-        <view class="content">{{item.content}}</view>
+      <view class="list-i" bindtap="edit" bindlongpress='del' data-id="{{item.id}}">
+        <view class="content text-cut">{{item.content}}</view>
         <view class='time'>创建时间：{{item.time}}</view>
       </view>
     </block>
@@ -14,3 +14,6 @@
     <image src='../../../images/edit.png'></image>
   </view>
 </view>
+<i-modal title="删除确认" visible="{{ visible }}" actions="{{ actions }}" bind:click="handleClick">
+    <view>删除后无法恢复哦</view>
+</i-modal>

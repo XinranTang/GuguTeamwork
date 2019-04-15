@@ -55,51 +55,50 @@ Page({
           },
           "Self": 0,
           "Child": [
-            1,
-            2
+            0
           ],
           "TeamMates":[
             "testopenid"
           ]
         },
-        {
-          "Task": {
-            "TaskID": "testopenidtaskid2",
-            "Title": "跟随教学引导",
-            "Pusher": "咕咕鸡",
-            "Content": "这是一个测试子任务",
-            "Status": false,
-            "PushDate": "2019-04-01T00:00:00Z",
-            "DeadLine": "2100-01-01T00:00:00Z",
-            "Urgency": 3
-          },
-          "Self": 1,
-          "Child": [
-            0
-          ],
-          "TeamMates": [
-            "testopenid"
-          ]
-        },
-        {
-          "Task": {
-            "TaskID": "testopenidtaskid3",
-            "Title": "尝试使用咕咕",
-            "Pusher": "咕咕鸡",
-            "Content": "这是一个测试子任务",
-            "Status": false,
-            "PushDate": "2019-04-01T00:00:00Z",
-            "DeadLine": "2100-01-01T00:00:00Z",
-            "Urgency": 3
-          },
-          "Self": 2,
-          "Child": [
-            0
-          ],
-          "TeamMates": [
-            "testopenid"
-          ]
-        }
+        // {
+        //   "Task": {
+        //     "TaskID": "testopenidtaskid2",
+        //     "Title": "跟随教学引导",
+        //     "Pusher": "咕咕鸡",
+        //     "Content": "这是一个测试子任务",
+        //     "Status": false,
+        //     "PushDate": "2019-04-01T00:00:00Z",
+        //     "DeadLine": "2100-01-01T00:00:00Z",
+        //     "Urgency": 3
+        //   },
+        //   "Self": 1,
+        //   "Child": [
+        //     0
+        //   ],
+        //   "TeamMates": [
+        //     "testopenid"
+        //   ]
+        // },
+        // {
+        //   "Task": {
+        //     "TaskID": "testopenidtaskid3",
+        //     "Title": "尝试使用咕咕",
+        //     "Pusher": "咕咕鸡",
+        //     "Content": "这是一个测试子任务",
+        //     "Status": false,
+        //     "PushDate": "2019-04-01T00:00:00Z",
+        //     "DeadLine": "2100-01-01T00:00:00Z",
+        //     "Urgency": 3
+        //   },
+        //   "Self": 2,
+        //   "Child": [
+        //     0
+        //   ],
+        //   "TeamMates": [
+        //     "testopenid"
+        //   ]
+        // }
       ],
       "TreeId": "testtasktree",
       "TreeName":"testproject"
@@ -269,7 +268,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.onInitByTree();
   },
 
   /**

@@ -1,5 +1,7 @@
 {
+
   "usingComponents": {
-    "mytree": "../../../components/myTree/myTree"
+    "tree": "../../../components/tree/tree",
+    "canvas-drag": "../../../../components/canvas-drag/index"
   }
 }
