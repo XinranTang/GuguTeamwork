@@ -741,10 +741,10 @@ Component({
         },
         //这是一些测试本地绘图的东西
         addNewNode(){
+          var x_offset = 20,y_offset = 20;
           //↓↓把这部分换成访问服务器就可以了
           var fromNode = this.tempGraphArr[0];
           var index = fromNode.taskattrs[SELF];
-
           var newNodeAttr = { Task: { TaskID: "tt", Title: "testadd", Pusher: "tt", Content: "tt", Status: 0, PushDate: "tt", DeadLine: "tt", Urgency: 3 },
             Self: this.treeRawArr.length,
             Child:[0],
@@ -754,10 +754,20 @@ Component({
             this.treeRawArr[index][CHILD]=[];
           }
           this.treeRawArr[index][CHILD].push(this.treeRawArr.length-1);
-          this.clearCanvas();
-          this.setByTree();
+          //直接push一个新的dragGraph对象
+          var newTaskGraph = new dragGraph({ x: fromNode.x + x_offset, y: fromNode.y + y_offset, text: newNodeAttr[TASK][TITLE], type: "text" }, this.ctx, this.factor, newNodeAttr);
+          var newedge = new edgeGraph({ width: 2, color: 'black' }, this.ctx, fromNode, newTaskGraph);
+          this.drawArr.push(newTaskGraph);
+          this.edgeArr.push(newedge);
+          this.draw();
+          // this.clearCanvas();
+          // this.setByTree();
           //↑↑把这部分换成访问服务器就可以了
-          this.triggerEvent('onRefresh');
+
+          //即时显示新增结点的话就先不调用page里的onRefresh了
+          //onRefresh我想的是一些访问服务器的刷新操作
+          //可以改成按钮之类的
+          //this.triggerEvent('onRefresh');
         },
         //将结点标记为删除或标记为删除的结点的恢复
         delNode(){
