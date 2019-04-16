@@ -1,76 +1,87 @@
 <!--pages/home/home.wxml-->
 <!-- 左侧日程表模块 -->
-<view class="VerticalBox" scroll-y style="width:380rpx">
-<!-- 日历 -->
-<picker mode="date" value="{{schedule.year+'-'+schedule.month+'-'+schedule.day}}" start="2015-09-01" end="2020-09-01" bindchange="DateChange">
-  <view style='font-size:30rpx;margin-left:10rpx'>{{schedule.year+"年    "+schedule.month}}</view>
-  <view class="title text-bold" style='color:{{color.Orange}}'>{{schedule.day}}</view>
-</picker>
-  <view style='font-size:25rpx;margin-left:10rpx'>{{schedule.weekDay}}</view>
-  <!-- 时间块 -->
-  <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="height:calc(86vh)">
-    <view>
-      <view class='myTime' wx:for="{{list}}" data-index="{{index}}" bindtap='addTask' bindlongtap='addMySchedule'>
-        <view class="shadow" wx:if="{{index==0}}" style='height:5rpx;width:380rpx;background-color:{{color.Orange}}'></view>
-        <view id='list-{{index}}' style='display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;' >
-        <view style='font-size:18rpx;text-align:center'>{{(index%24<10?"0"+(index%24):index%24)+":00"}}
-        </view>
-
-        <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:350rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
-          <!-- <view wx:if="{{list[index].choosen}}" class="" style='background-color:#cccccc'>
-            <image src='https://image.weilanwl.com/gif/wave.gif' mode='scaleToFill' class='gif-black response' style='height:50rpx;'></image>
-          </view> -->
-          <text>{{list[index].t.Title}}</text>
-        </view>
-       </view>
-      </view>
+<view style='padding:30rpx'>
+  <!-- 日历 -->
+  <picker mode="date" value="{{schedule.year+'-'+schedule.month+'-'+schedule.day}}" start="2015-09-01" end="2020-09-01" bindchange="DateChange">
+    <view style='display:flex;flex-direction: row;align-items:flex-end'>
+      <view style='font-size:30rpx;margin-left:10rpx'>{{schedule.year+"年 "+schedule.month}}</view>
+      <view class="text-bold" style='color:{{color.Orange}};font-size:45rpx'>{{schedule.day}}</view>
+      <view style='font-size:25rpx;margin-left:10rpx '>{{schedule.weekDay}}</view>
     </view>
-  </scroll-view>
-</view>
-<!-- 右侧任务与消息模块 -->
-<view class="layer" style='position:absolute;left:400rpx;top:0rpx;width:370rpx'>
-  <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh)" scroll-into-view="main-id-{{TabCur}}" bindscroll="VerticalMain">
-    <!-- 消息 -->
-    <block class="message">
-      <text class="title" style='color:{{color.Orange}}'>消息</text>
-      <view style='margin-top:10rpx;margin-bottom:10rpx'>
-        <block class="" wx:if="{{messages.length!=0}}" style="margin-top:10rpx">
-          <view class="message-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message"  bindtap='toMessage' style="background-color:{{randomColorArr[index]}}">
-            <view class="" wx:if="{{message.Status==false}}">{{message.Title}}</view>
-          </view>
-        </block>
-         <block wx:else>
-          <view>当前还没有消息哦</view>
-        </block>
-      </view>
-    </block>
-    <!-- 任务 -->
-    <block class="task" style="  margin-top:20rpx;">
-      <text class="title" style='color:{{color.Orange}}'>任务</text>
-      <view style='margin-top:10rpx;margin-bottom:10rpx'>
-        <block wx:if="{{tasks.length!=0}}">
-          <view class="task-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask' style="background-color:{{randomColorArrT[index]}}">
-            <view>
-              <view class='text-bold' style='font-size:26rpx'>{{task.Title}}</view>
-              <view>发布者：{{task.Pusher}}</view>
-              <view>截止时间：{{util.sub(task.DeadLine)}}</view>
-                    <!-- <view slot="footer">尾部内容</view> -->
+  </picker>
+
+  <view style='display:flex;flex-direction: row;margin-top:30rpx'>
+    <view class="VerticalBox" scroll-y style="width:50%">
+
+
+      <!-- 时间块 -->
+      <!-- <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="height:calc(160vh)"> -->
+      <view >
+        <view class='myTime' wx:for="{{list}}" data-index="{{index}}" bindtap='addTask' bindlongtap='addMySchedule'>
+          <view id='list-{{index}}' style='display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
+            <view style='font-size:18rpx;text-align:center'>{{(index%24==10?"0"+(index%24):index%24)+":00"}}
+            </view>
+
+            <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:350rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
+              <text>{{list[index].t.Title}}</text>
             </view>
           </view>
-        </block>
-        <block wx:else>
-          <view>当前还没有任务哦</view>
-        </block>
+        </view>
       </view>
-    </block>
-  </scroll-view>
+      <!-- </scroll-view> -->
+    </view>
+    <!-- 右侧任务与消息模块 -->
+    <view  style='padding-left:20rpx;width:50%'>
+      <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh)" scroll-into-view="main-id-{{TabCur}}" bindscroll="VerticalMain">
+        <!-- 消息 -->
+        <block class="message">
+          <text class="title" style='color:{{color.Orange}}'>消息</text>
+
+          <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view>
+          
+          <view style='margin-top:10rpx;margin-bottom:10rpx'>
+            <block class="" wx:if="{{messages.length!=0}}" style="margin-top:10rpx">
+              <view class="message-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message" bindtap='toMessage' style="background-color:{{randomColorArr[index]}}">
+                <view class="" wx:if="{{message.Status==false}}">{{message.Title}}</view>
+              </view>
+            </block>
+            <block wx:else>
+              <view>当前还没有消息哦</view>
+            </block>
+          </view>
+        </block>
+        <!-- 任务 -->
+        <block class="task" style="  margin-top:20rpx;">
+          <text class="title" style='color:{{color.Orange}}'>任务</text>
+          
+          <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view>
+
+          <view style='margin-top:10rpx;margin-bottom:10rpx'>
+            <block wx:if="{{tasks.length!=0}}">
+              <view class="task-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask' style="background-color:{{randomColorArrT[index]}}">
+                <view>
+                  <view class='text-bold' style='font-size:26rpx'>{{task.Title}}</view>
+                  <view>发布者：{{task.Pusher}}</view>
+                  <view>截止时间：{{util.sub(task.DeadLine)}}</view>
+                  <!-- <view slot="footer">尾部内容</view> -->
+                </view>
+              </view>
+            </block>
+            <block wx:else>
+              <view>当前还没有任务哦</view>
+            </block>
+          </view>
+        </block>
+      </scroll-view>
+    </view>
+  </view>
 </view>
 <wxs module="util">
-    var sub = function(val) {
-        return val.substring(0, 10)+" "+val.substring(11,16)
-    }
-    module.exports.sub = sub;
-</wxs> 
+  var sub = function(val) {
+    return val.substring(0, 10) + " " + val.substring(11, 16)
+  }
+  module.exports.sub = sub;
+</wxs>
 <!-- 弹出框模块 -->
 
 <form bindsubmit="formSubmit" wx:if="{{!hiddenmodalput}}" style='position:absolute;top:420rpx;left:90rpx;z-index: 9999;'>
@@ -86,4 +97,4 @@
   <button class='bg-grey' style="length:50%" bindtap='cancel'>取消</button>
 
 </form>
-  <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{!hiddenmodalput}}"></view>
+<view class="mask" catchtouchmove="preventTouchMove" wx:if="{{!hiddenmodalput}}"></view>

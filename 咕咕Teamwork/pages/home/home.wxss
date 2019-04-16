@@ -1,8 +1,12 @@
 /* pages/home/home.wxss */
 .title{
   font-size: 50rpx;
-  font-family: "幼圆";
-  margin: 10rpx;
+  font-family: "微软雅黑";
+}
+
+.line{
+  height: 1rpx;
+  background: #ccc
 }
 .message-list{
   padding: 30rpx;
