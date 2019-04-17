@@ -1,0 +1,9 @@
+<!--pages/page/myCommunity/topics/topics.wxml-->
+<import src="../common/nav.wxml"/>
+<import src="../common/list.wxml"/>
+
+<view class="page topics">
+  <template is="nav" data="{{ navList, activeIndex }}"/>
+  <template is="list" data="{{ postsList, hidden }}"/>
+</view>
+

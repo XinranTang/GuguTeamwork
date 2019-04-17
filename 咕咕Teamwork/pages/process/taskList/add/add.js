@@ -325,7 +325,6 @@ Page({
                     "PushDate": new Date(),
                     "DeadLine": json.Deadline
                   })
-
                   res.data.Tasks = arr;
                   res.data.Manage = manage;
                   app.globalData.tasks = arr;

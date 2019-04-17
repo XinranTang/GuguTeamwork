@@ -20,5 +20,14 @@
         </i-card>  
       </view>
     </i-collapse-item>
+    <i-collapse-item title="已发布消息" name="name3">
+      <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
+      <!-- TODO：自己发布的消息是怎么区分的 -->
+        <i-card wx:if="{{message.Status==true}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg" full = "true">
+          <view slot="content">{{message.Pusher}}</view>
+          <!-- <view slot="footer">尾部内容</view> -->
+        </i-card>  
+      </view>
+    </i-collapse-item>
   </i-collapse>
 </view>

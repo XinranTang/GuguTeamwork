@@ -1,0 +1,8 @@
+<!--pages/page/mySponsor/mySponsor.wxml-->
+<view>
+  <text>开发人员信息\n</text>
+  <text class='text-bold'>-树新风-\n</text>
+  <text>队伍编号：1485503\n参赛区域：东北赛区\n参赛类别：小程序\n指导老师：李丹程\n</text>
+  <text>队员：\n唐欣然，王绪亮，周星辰，常铂雨\n</text>
+  <text>有疑问请联系：手机 13940205916，QQ 784595821</text>
+</view>

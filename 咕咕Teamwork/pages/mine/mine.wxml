@@ -40,7 +40,7 @@
       </view>
       <view class="setting">
        <text class="iconfont icon-sponsor" style="font-size:35rpx"></text>
-        <text style='margin:0rpx 15rpx'>我要打赏</text>
+        <text style='margin:0rpx 15rpx' bindtap='toGiveMoney'>我要打赏</text>
       </view>
       <view class="setting">
         <text class="iconfont icon-help" style="font-size:35rpx"></text>

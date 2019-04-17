@@ -19,7 +19,7 @@
       <view >
         <view class='myTime' wx:for="{{list}}" data-index="{{index}}" bindtap='addTask' bindlongtap='addMySchedule'>
           <view id='list-{{index}}' style='display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
-            <view style='font-size:18rpx;text-align:center'>{{(index%24==10?"0"+(index%24):index%24)+":00"}}
+            <view style='font-size:18rpx;text-align:center'>{{(index%24<10?"0"+(index%24):index%24)+":00"}}
             </view>
 
             <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:350rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>

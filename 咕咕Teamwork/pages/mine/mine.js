@@ -245,5 +245,10 @@ Page({
     wx.navigateTo({
       url: '../tree/tree',
     })
+  },
+  toGiveMoney:function(){
+    wx.navigateTo({
+      url: '../page/mySponsor/mySponsor',
+    })
   }
 })

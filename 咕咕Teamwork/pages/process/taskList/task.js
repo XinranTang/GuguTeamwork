@@ -41,9 +41,8 @@ Page({
    */
   onShow: function () {
     var self = this;
-    var list = app.globalData.tasks;
-    var index = app.globalData.currentTaskIndex;
-    var currentTask = list[index];
+
+    var currentTask = app.globalData.currentTask;
     wx.getStorage({
       key: 'UserInfor',
       success: function (res) {

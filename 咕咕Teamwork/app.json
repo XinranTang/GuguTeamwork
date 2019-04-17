@@ -15,7 +15,10 @@
     "pages/page/myPageSetting/myPageSetting",
     "pages/page/myInfor/myInfor",
     "pages/page/myMarkDown/myMarkDown",
-    "pages/page/myMarkDown/add/add"
+    "pages/page/myMarkDown/add/add",
+    "pages/page/mySponsor/mySponsor",
+    "pages/page/myCommunity/detail/detail",
+    "pages/page/myCommunity/topics/topics"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -8,6 +8,7 @@ Page({
   data: {
     mtasks:[],
     ctasks:[],
+    tasks:[],
     name:"name1",
     color:{}
   },
@@ -32,7 +33,7 @@ Page({
   onShow: function () {
     var self = this;
     self.setData({
-      // tasks:app.globalData.tasks,
+      tasks:app.globalData.tasks,
       color:app.globalData.color,
       ctasks:[],
       mtasks:[]
@@ -110,15 +111,38 @@ Page({
       url: '../../process/taskList/add/add',
     })
   },
-  toTask:function(e){
+  toTask:function(e){// TODO: debug!!!
     var self = this;
     var dataSet = e.currentTarget.dataset;
-    var index = dataSet.index;
-
-    app.globalData.currentTaskIndex = index;
-    app.globalData.tasks = self.data.tasks;
-    wx.navigateTo({
-      url: '../../process/taskList/task',
+    var id = dataSet.id;
+    var index = e.currentTarget.dataset.index;
+    console.log(id)
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function(res) {
+        var arr = [];
+        let flag = false;
+        arr = res.data.Manage.split(";");
+        arr.forEach(each=>{
+          if(each==id){
+            flag=true;
+            app.globalData.currentTaskIndex = index;
+            app.globalData.tasks = self.data.tasks;
+            app.globalData.currentTask = self.data.mtasks[index];
+            wx.navigateTo({
+              url: '../../process/taskList/task',
+            });
+          }
+        })
+        if(!flag){
+          app.globalData.currentTaskIndex = index;
+          app.globalData.tasks = self.data.tasks;
+          app.globalData.currentTask = self.data.ctasks[index];
+          wx.navigateTo({
+            url: '../../process/taskList/task',
+          });
+        }
+      },
     })
   }
 })

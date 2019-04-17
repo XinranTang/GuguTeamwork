@@ -317,9 +317,10 @@ Page({
       var self = this;
       var dataSet = e.currentTarget.dataset;
       var index = dataSet.index;
-
+      var task = this.data.tasks[index];
       app.globalData.currentTaskIndex = index;
       app.globalData.tasks = self.data.tasks;
+      app.globalData.currentTask = task;
       wx.navigateTo({
         url: '../process/taskList/task',
       });
