@@ -15,7 +15,7 @@
 
 
       <!-- 时间块 -->
-      <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="">
+      <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="height:calc(100vh)">
         <view>
           <view class='myTime' wx:for="{{list}}" data-index="{{index}}" bindtap='addTask' bindlongtap='addMySchedule'>
             <view id='list-{{index}}' style='display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
