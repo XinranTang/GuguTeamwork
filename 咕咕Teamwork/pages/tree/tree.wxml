@@ -1,6 +1,6 @@
 <!--pages/tree.wxml-->
 
-<canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh = 'onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
+<canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
 <!-- <view class="btn" bindtap="onAddImage">添加图片</view>
 <view class="btn" bindtap="onAddTest">添加测试图片</view>
 <view class="btn" bindtap="onAddText">添加文字</view>
@@ -11,14 +11,15 @@
 <view class="btn" bindtap="onExportJSON">导出模板</view>
 <view class="btn" bindtap="onImport">导入默认模板</view> -->
 <text>目前选择的结点数据:   </text>
-<text >{{text_selected_node}}</text>
+<text>{{text_selected_node}}</text>
 <view>
-<view class="btn" bindtap="onClearCanvas">清空画布</view>
-<view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
-<view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
-<view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
-<view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
-<view class="btn" bindtap="onDoDel">执行删除结点</view>
+  <view class="btn" bindtap="onClearCanvas">清空画布</view>
+  <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
+  <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
+  <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'>编辑任务信息</view>
+  <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
+  <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
+  <view class="btn" bindtap="onDoDel">执行删除结点</view>
 </view>
 
 <!-- <view>
@@ -26,4 +27,14 @@
 <switch checked bindchange="switchDel"/>
 <switch checked bindchange="switchAdd"/>
 </view> -->
-
+<view>
+  <modal title="编辑任务信息" confirm-text="确认" hidden='{{!isEdit}}' cancel-text="取消"  bindconfirm="editConfirm" bindcancel="editCancel">
+    <label>
+      <view class="">
+        <input class="input" bindinput="" placeholder="名称" data-type='Title' value="{{edit_info['Title']}}" bindblur='editChange'  />
+        <input class="input" bindinput="" placeholder="内容" data-type='Content' value="{{edit_info['Content']}} " bindblur='editChange' />
+        <input class="input" bindinput="" placeholder="截止日期" data-type='DeadLine' value="{{edit_info['DeadLine']}} " bindblur='editChange' />
+      </view>
+    </label>
+  </modal>
+</view>
