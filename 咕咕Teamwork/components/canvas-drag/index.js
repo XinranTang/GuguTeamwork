@@ -890,9 +890,10 @@ Component({
     },
     // 更改结点即数组的信息
     changeNodeInfo(newInfo,targetNode = this.tempGraphArr[0]) {
-      console.log(newInfo.Title);
+      //console.log(newInfo.Title);
       targetNode.taskattrs[TASK][TITLE]=newInfo.Title;
-
+      targetNode.taskattrs[TASK][CONTENT]=newInfo.Content;
+      targetNode.taskattrs[TASK][DEADLINE]=newInfo.DeadLine;
       this.draw();
     },
     setByTree() {

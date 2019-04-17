@@ -305,7 +305,6 @@ Page({
     this.setData({
       edit_info:_edit_info
     });
-    console.log(this.data.edit_info);
   },
   /**
    * 生命周期函数--监听页面加载
