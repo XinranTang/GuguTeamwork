@@ -1,5 +1,22 @@
 // pages/tree.js
 
+// 服务器数据库字段名
+var TREE = 'Tree';
+var TREE_NAME = 'TreeName';
+var TREE_ID = 'TreeID';
+var TASK = 'Task';
+var TASK_ID = 'TaskID';
+var TITLE = 'Title';
+var PUSHER = 'Pusher';
+var CONTENT = 'Content';
+var STATUS = 'Status';
+var PUSH_DATE = 'PushDate';
+var DEADLINE = 'DeadLine';
+var URGENCY = 'Urgency';
+var SELF = 'Self';
+var CHILD = 'Child';
+var TEAM_MATES = 'TeamMates'
+
 import CanvasDrag from '../../components/canvas-drag/canvas-drag';
 Page({
 
@@ -7,42 +24,16 @@ Page({
    * 页面的初始数据
    */
   data: {
-        text_selected_node:'...',
-        isSelected:false,
-        tasks:[
-          {
-            "title":"主题任务",
-            "childs":
-            [
-              {
-                "title": "子任务1",
-                "childs": 
-                [
-                  {
-                    "title": "子任务1的子任务1",
-                    "childs": []
-                  },
-                  {
-                    "title": "子任务1的子任务2",
-                    "childs": []
-                  }
-                ]
-              },
-              {
-                "title": "子任务2",
-                "childs":
-                  [
-                    {
-                      "title": "子任务2的子任务1",
-                      "childs": []
-                    },
-                  ]}
-            ]
-          }, 
-        ],
+    text_selected_node: '...',
+    edit_info:{
+        Title:'',
+        DeadLine:'',
+        Content:''
+    },
+    isSelected: false,
+    isEdit: false,
     oneTaskTree: {
-      "Tree": [
-        {
+      "Tree": [{
           "Task": {
             "TaskID": "testopenidtaskid1",
             "Title": "熟悉咕咕",
@@ -57,7 +48,7 @@ Page({
           "Child": [
             0
           ],
-          "TeamMates":[
+          "TeamMates": [
             "testopenid"
           ]
         },
@@ -101,9 +92,9 @@ Page({
         // }
       ],
       "TreeId": "testtasktree",
-      "TreeName":"testproject"
+      "TreeName": "testproject"
     },
-        graph: {}
+    graph: {}
   },
 
   /**
@@ -202,12 +193,29 @@ Page({
 
   onImport() {
     // 无背景
-    let temp_theme = [{ "type": "image", "url": "../../assets/images/test.jpg", "y": 103, "x": 91, "w": 120, "h": 120, "rotate": 0, "sourceId": null }, { "type": "text", "text": "helloworld", "color": "blue", "fontSize": 20, "y": 243, "x": 97, "rotate": 0 }];
+    let temp_theme = [{
+      "type": "image",
+      "url": "../../assets/images/test.jpg",
+      "y": 103,
+      "x": 91,
+      "w": 120,
+      "h": 120,
+      "rotate": 0,
+      "sourceId": null
+    }, {
+      "type": "text",
+      "text": "helloworld",
+      "color": "blue",
+      "fontSize": 20,
+      "y": 243,
+      "x": 97,
+      "rotate": 0
+    }];
 
     CanvasDrag.initByArr(temp_theme);
   },
 
-  onSetData(){
+  onSetData() {
     //这里写连接数据库获取json之类的东西
     //然后setdata
     //这个页面获取的是一个Tree
@@ -217,106 +225,140 @@ Page({
       */
   },
   // 通过data里的数据生成树状图
-  onInitByTree(){
+  onInitByTree() {
     this.onSetData();
     CanvasDrag.clearCanvas();
     CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
-    
+
   },
-  onClearCanvas: function (event) {
+  onClearCanvas: function(event) {
     let _this = this;
-    _this.setData({ canvasBg: null,
-    isSelected:false,
-    text_selected_node:'{}'
+    _this.setData({
+      canvasBg: null,
+      isSelected: false,
+      text_selected_node: '{}'
     });
     CanvasDrag.clearCanvas();
   },
-  switchZoom: function (e) {
+  switchZoom: function(e) {
     CanvasDrag.enableZoom(e.detail.value);
   },
-  switchAdd: function (e) {
+  switchAdd: function(e) {
     CanvasDrag.enableAdd(e.detail.value);
   },
-  switchDel: function (e) {
+  switchDel: function(e) {
     CanvasDrag.enableDel(e.detail.value);
   },
-  onSelectedChange:function(e){
+  onSelectedChange: function(e) {
     this.setData({
-      text_selected_node:e.detail
+      text_selected_node: e.detail
+    });
+    if (this.data.text_selected_node == JSON.stringify({})) {
+      this.setData({
+        isSelected: false
       });
-      if(this.data.text_selected_node==JSON.stringify({})){
-        this.setData({
-         isSelected:false
-        });
-      }
-      else{
-        this.setData({
-          isSelected: true
-        });  
-      }
+    } else {
+      var obj = JSON.parse(this.data.text_selected_node);
+      this.setData({
+        isSelected: true,
+        edit_info:{
+          Title:obj[TASK][TITLE],
+          Content:obj[TASK][CONTENT],
+          DeadLine:obj[TASK][DEADLINE]
+        }
+      });
+    }
   },
-  onAddNode:function(e){
+  onAddNode: function(e) {
     CanvasDrag.onAddNode();
   },
-  onDelNode:function(e){
+  onDelNode: function(e) {
     CanvasDrag.onDelNode();
   },
-  onDoDel:function(e){
+  onDoDel: function(e) {
     CanvasDrag.onDoDel();
+  },
+  // 显示编辑框
+  onEditNode:function(e){
+    this.setData({
+      isEdit:true
+    });
+  },
+  // 编辑框确认按钮
+  editConfirm:function(e){
+    this.setData({
+      isEdit: false
+    })
+    CanvasDrag.changeNodeInfo(this.data.edit_info);
+  },
+  // 编辑框取消按钮
+  editCancel: function (e) {
+    this.setData({
+      isEdit: false
+    })
+  },
+  // 编辑框失去焦点
+  editChange:function(e){
+    var _edit_info = this.data.edit_info;
+    var type = e.target.dataset.type;
+    _edit_info[type]=e.detail.value;
+    this.setData({
+      edit_info:_edit_info
+    });
   },
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     this.onInitByTree();
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
     CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })
