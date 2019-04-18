@@ -124,6 +124,27 @@ dragGraph.prototype = {
     this.ctx.translate(this.centerX, this.centerY);
     this.ctx.rotate(this.rotate * Math.PI / 180);
     this.ctx.translate(-this.centerX, -this.centerY);
+
+    // 判断是否超出边界,出界自动弹回
+    if (this.centerX > this.toPx(750)) {
+      this.centerX = this.toPx(600);
+      this.x = this.centerX - textWidth / 2;
+    } else if (this.centerX < this.toPx(0)) {
+      this.centerX = this.toPx(100);
+      this.x = this.centerX - textWidth / 2;
+    }
+
+    if (this.centerY > this.toPx(750)) {
+      this.centerY = this.toPx(700);
+      this.y = this.centerY - textHeight / 2;
+    } else if (this.centerY < this.toPx(0)) {
+      this.centerY = this.toPx(50);
+      this.y = this.centerY - textHeight / 2;
+    }
+
+    this.ctx.setShadow(0, 0, 10, 'black');
+    this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10, 10);
+    this.ctx.setShadow(0, 0, 0, 'black');
     // 渲染元素
     if (this.type === 'text') {
       this.ctx.fillText(this.text, this.centerX, this.centerY);
@@ -132,14 +153,14 @@ dragGraph.prototype = {
     }
     // 如果是选中状态，绘制选择虚线框，和缩放图标、删除图标
     if (this.selected) {
-      this.ctx.setLineDash([2, 5]);
+      // this.ctx.setLineDash([2, 5]);
       this.ctx.setLineWidth(2);
-      this.ctx.setStrokeStyle(STROKE_COLOR);
-      this.ctx.lineDashOffset = 6;
+      // this.ctx.setStrokeStyle(STROKE_COLOR);
+      // this.ctx.lineDashOffset = 6;
       //阴影
       //this.ctx.setShadow(5, 5, 20, 'black')
       if (this.type === 'text') {
-        this.ctx.strokeRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10);
+        //this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10,10);
         if (DEL_ENABLE)
           this.ctx.drawImage(DELETE_ICON, this.x - 15, this.y - 15, 30, 30);
         if (ZOOM_ENABLE)
@@ -156,6 +177,58 @@ dragGraph.prototype = {
       }
     }
     this.ctx.restore();
+  },
+  /**
+   * 
+   * @param {CanvasContext} ctx canvas上下文
+   * @param {number} x 圆角矩形选区的左上角 x坐标
+   * @param {number} y 圆角矩形选区的左上角 y坐标
+   * @param {number} w 圆角矩形选区的宽度
+   * @param {number} h 圆角矩形选区的高度
+   * @param {number} r 圆角的半径
+   */
+  _roundRect(x, y, w, h, r) {
+    // 开始绘制
+    let ctx = this.ctx;
+    ctx.save();
+    ctx.beginPath()
+    // 因为边缘描边存在锯齿，最好指定使用 transparent 填充
+    // 这里是使用 fill 还是 stroke都可以，二选一即可
+    ctx.setFillStyle('white')
+    // ctx.setStrokeStyle('transparent')
+    // 左上角
+    ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5)
+
+    // border-top
+    ctx.moveTo(x + r, y)
+    ctx.lineTo(x + w - r, y)
+    ctx.lineTo(x + w, y + r)
+    // 右上角
+    ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2)
+
+    // border-right
+    ctx.lineTo(x + w, y + h - r)
+    ctx.lineTo(x + w - r, y + h)
+    // 右下角
+    ctx.arc(x + w - r, y + h - r, r, 0, Math.PI * 0.5)
+
+    // border-bottom
+    ctx.lineTo(x + r, y + h)
+    ctx.lineTo(x, y + h - r)
+    // 左下角
+    ctx.arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI)
+
+    // border-left
+    ctx.lineTo(x, y + r)
+    ctx.lineTo(x + r, y)
+
+    // 这里是使用 fill 还是 stroke都可以，二选一即可，但是需要与上面对应
+    ctx.fill()
+    // ctx.stroke()
+    ctx.closePath()
+    // 剪切
+    ctx.clip()
+    ctx.restore();
   },
   /**
    * 给矩形描边
@@ -578,15 +651,16 @@ Component({
         this.ctx.fillRect(0, 0, this.toPx(this.data.width), this.toPx(this.data.height));
         this.ctx.restore();
       }
-      // 绘制graph
-      this.drawArr.forEach((item) => {
-        item.paint();
-      });
       // 绘制edge
       this.edgeArr.forEach((item) => {
         item.paint();
       });
 
+      // 绘制graph
+      this.drawArr.forEach((item) => {
+        item.paint();
+      });
+      
       return new Promise((resolve) => {
         this.ctx.draw(false, () => {
           resolve();
@@ -889,11 +963,11 @@ Component({
       this.triggerEvent("onRefresh");
     },
     // 更改结点即数组的信息
-    changeNodeInfo(newInfo,targetNode = this.tempGraphArr[0]) {
+    changeNodeInfo(newInfo, targetNode = this.tempGraphArr[0]) {
       //console.log(newInfo.Title);
-      targetNode.taskattrs[TASK][TITLE]=newInfo.Title;
-      targetNode.taskattrs[TASK][CONTENT]=newInfo.Content;
-      targetNode.taskattrs[TASK][DEADLINE]=newInfo.DeadLine;
+      targetNode.taskattrs[TASK][TITLE] = newInfo.Title;
+      targetNode.taskattrs[TASK][CONTENT] = newInfo.Content;
+      targetNode.taskattrs[TASK][DEADLINE] = newInfo.DeadLine;
       this.draw();
     },
     setByTree() {
