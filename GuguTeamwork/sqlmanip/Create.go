@@ -21,7 +21,7 @@ func CreateTask(db *sql.DB, task *utils.Task, openid string) {
 	strTask, err := QueryOpenIdToString(db, "Tasks", "UserInfo", openid)
 	utils.CheckErr(err, "CreateTask:query")
 
-	err = RewriteItemString(db, "UserInfo", openid, "Tasks", strTask+task.TaskID+";")
+	err = RewriteItemString(db, "UserInfo", "OpenId", "Tasks", strTask+task.TaskID+";", openid)
 	utils.CheckErr(err, "CreateTask:append task")
 
 	stmt, err := db.Prepare("INSERT INTO TaskToPeople(TaskID,Receiver) VALUES(?,?)")

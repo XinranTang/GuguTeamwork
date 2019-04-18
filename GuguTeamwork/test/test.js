@@ -52,7 +52,6 @@ function nodeJson() {
 		"Urgency":"",
 		"TreeID":"testopenid_project_1",
 		"Parent":"testopenid_project_1-task-1",
-		"TeamMates":["testopenid"]
 	};
 	return JSON.stringify(json)
 }
@@ -71,8 +70,8 @@ function treeJson() {
 function deleteNodeJson() {
 	var json = {
 		"TreeID":"testopenid_project_1",
-		"TaskID":"testopenid_project_1-task-1",
-		"Parent":"testopenid_project_1"
+		"TaskID":"testopenid_project_1",
+		"Parent":""
 	};
 	return JSON.stringify(json)
 }

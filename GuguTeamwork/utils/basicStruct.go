@@ -55,3 +55,10 @@ type TaskNodeInDB struct {
 	Self   int
 	Child  string
 }
+
+type Ope struct {
+	TreeID       string
+	TaskID       string
+	Manip        int8
+	DeleteMember []string
+}

@@ -7,6 +7,7 @@ import (
 	"GuguTeamwork/tree"
 )
 
+//每隔这个时间清理者会扫描清除已经超时的树
 const forestScanInterval = time.Second * 5
 
 func CleanForest() {
