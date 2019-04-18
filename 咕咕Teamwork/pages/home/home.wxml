@@ -1,4 +1,4 @@
-﻿<!--pages/home/home.wxml-->
+<!--pages/home/home.wxml-->
 <!-- 左侧日程表模块 -->
 <view style='padding:30rpx'>
   <!-- 日历 -->
@@ -12,18 +12,13 @@
 
   <view style='display:flex;flex-direction: row;margin-top:30rpx'>
     <view class="VerticalBox" scroll-y style="width:50%">
-
-
       <!-- 时间块 -->
-
-      <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="">
+      <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="height:calc(100vh)">
         <view>
           <view class='myTime' wx:for="{{list}}" data-index="{{index}}" bindtap='addTask' bindlongtap='addMySchedule'>
             <view id='list-{{index}}' style='display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
               <view style='font-size:24rpx;text-align:center'>{{(index%24<10?"0"+(index%24):index%24)+":00"}}
               </view>
-
-
               <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:300rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
                 <text>{{list[index].t.Title}}</text>
               </view>
@@ -53,7 +48,7 @@
           </view>
         </block>
         <!-- 任务 -->
-        <block class="task" style="  margin-top:20rpx;">
+        <block class="task" style=" margin-top:20rpx;">
           <text class="title" style='color:{{color.Orange}}'>任务</text>
 
           <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view>
