@@ -1,6 +1,6 @@
 <!--pages/tree.wxml-->
 
-<canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
+<canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="750" height="750"></canvas-drag>
 <!-- <view class="btn" bindtap="onAddImage">添加图片</view>
 <view class="btn" bindtap="onAddTest">添加测试图片</view>
 <view class="btn" bindtap="onAddText">添加文字</view>

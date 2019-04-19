@@ -15,8 +15,8 @@ var ZOOM_ENABLE = false;
 var ADD_ENABLE = false;
 var DEL_ENABLE = false;
 
-const initX = 150,
-  initY = 100;
+var initX =150;
+var initY = 100;
 
 // 服务器数据库字段名
 var TREE = 'Tree';
@@ -127,10 +127,10 @@ dragGraph.prototype = {
 
     // 判断是否超出边界,出界自动弹回
     if (this.centerX > this.toPx(750)) {
-      this.centerX = this.toPx(600);
+      this.centerX = this.toPx(700);
       this.x = this.centerX - textWidth / 2;
     } else if (this.centerX < this.toPx(0)) {
-      this.centerX = this.toPx(100);
+      this.centerX = this.toPx(50);
       this.x = this.centerX - textWidth / 2;
     }
 
@@ -142,7 +142,7 @@ dragGraph.prototype = {
       this.y = this.centerY - textHeight / 2;
     }
 
-    this.ctx.setShadow(0, 0, 10, 'black');
+    this.ctx.setShadow(0, 0, 10, this.isDeled?'red':this.selected?'green':'gray');
     this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10, 10);
     this.ctx.setShadow(0, 0, 0, 'black');
     // 渲染元素
@@ -158,7 +158,6 @@ dragGraph.prototype = {
       // this.ctx.setStrokeStyle(STROKE_COLOR);
       // this.ctx.lineDashOffset = 6;
       //阴影
-      //this.ctx.setShadow(5, 5, 20, 'black')
       if (this.type === 'text') {
         //this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10,10);
         if (DEL_ENABLE)
@@ -452,7 +451,7 @@ dragGraph.prototype = {
 // 增加了绘制线条的类
 const edgeGraph = function({
   width = 2,
-  color = 'black'
+  color = 'gray'
 }, canvas, fromGraph, toGraph) {
   this.ctx = canvas;
   this.fromGraph = fromGraph;
@@ -490,19 +489,19 @@ edgeGraph.prototype = {
       let delX = Math.abs(fromX - toX);
       let delY = Math.abs(fromY - toY);
       //x差值更大时以左右坐标为端点
-      if (delX > delY) {
-        fromX = LefterGraph.centerX + LefterGraph.w / 2;
-        toX = RighterGraph.centerX - RighterGraph.w / 2;
+      // if (delX > delY) {
+      //   fromX = LefterGraph.centerX + LefterGraph.w / 2;
+      //   toX = RighterGraph.centerX - RighterGraph.w / 2;
 
-        fromY = LefterGraph.centerY;
-        toY = RighterGraph.centerY;
-      } else {
-        //y差值更大以上下为端点
-        fromY = UpperGraph.centerY + UpperGraph.h / 2;
-        fromX = UpperGraph.centerX;
-        toY = LowerGraph.centerY - LowerGraph.h / 2;
-        toX = LowerGraph.centerX;
-      }
+      //   fromY = LefterGraph.centerY;
+      //   toY = RighterGraph.centerY;
+      // } else {
+      //   //y差值更大以上下为端点
+      //   fromY = UpperGraph.centerY + UpperGraph.h / 2;
+      //   fromX = UpperGraph.centerX;
+      //   toY = LowerGraph.centerY - LowerGraph.h / 2;
+      //   toX = LowerGraph.centerX;
+      // }
       this.ctx.moveTo(fromX, fromY);
       this.ctx.lineTo(toX, toY);
       this.ctx.stroke();
@@ -568,7 +567,11 @@ Component({
     const sysInfo = wx.getSystemInfoSync();
     const screenWidth = sysInfo.screenWidth;
     this.factor = screenWidth / 750;
-
+    
+    //initX = this.toPx(screenWidth/2);
+    //不知道为啥获取不到屏幕正中的绘图位置，就先这样吧
+    initX = 155;
+    console.log(screenWidth+','+initX);
     if (typeof this.drawArr === 'undefined') {
       this.drawArr = [];
     }
@@ -862,10 +865,13 @@ Component({
       }, this.ctx, this.factor, newNodeAttr);
       var newedge = new edgeGraph({
         width: 2,
-        color: 'black'
+        color: 'gray'
       }, this.ctx, fromNode, newTaskGraph);
       this.drawArr.push(newTaskGraph);
       this.edgeArr.push(newedge);
+      fromNode.selected = false;
+      this.tempGraphArr[0]=newTaskGraph;
+      this.triggerEvent('onSelectedChange', JSON.stringify(this.getSelectedNode().taskattrs == undefined ? {} : this.getSelectedNode().taskattrs));
       this.draw();
       // this.clearCanvas();
       // this.setByTree();
@@ -908,7 +914,7 @@ Component({
           }, this.ctx, this.factor, nextTaskNodeAtrr);
           var newedge = new edgeGraph({
             width: 2,
-            color: 'black'
+            color:'gray'
           }, this.ctx, fromTaskGraph, newTaskGraph);
           this.edgeArr.push(newedge);
           this._insertTreeNode(newTaskGraph);
