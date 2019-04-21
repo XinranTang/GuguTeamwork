@@ -40,3 +40,12 @@ func (err *TreeManipError) Error() string {
 	err.ErrMsg = "Invalid openration on tree."
 	return err.ErrMsg
 }
+
+type OtherError struct {
+	ErrMsg string
+}
+
+func (err *OtherError) Error() string {
+	err.ErrMsg = "Simply not right"
+	return err.ErrMsg
+}

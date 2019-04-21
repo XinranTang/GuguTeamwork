@@ -18,6 +18,7 @@ func main() {
 	tree.BuildForest()
 	tree.GetForest().InitForest()
 	go cleaner.CleanForest()
+	go tree.DBFlusher()
 	go test.Report()
 	//路由服务
 	mux := http.NewServeMux()
@@ -28,7 +29,6 @@ func main() {
 	mux.HandleFunc("/gugu/newNode", fetch.AddNewTreeNodes)
 	mux.HandleFunc("/gugu/newProject", fetch.NewProjectTree)
 	mux.HandleFunc("/gugu/deleteNode", fetch.DropFromTree)
-	mux.HandleFunc("/gugu/deleteTree", fetch.DropTree)
 	mux.HandleFunc("/gugu/alterNode", fetch.AlterNode)
 	//静态资源服务
 	fileServer := http.FileServer(http.Dir("public"))

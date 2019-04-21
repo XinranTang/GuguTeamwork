@@ -6,7 +6,7 @@ import (
 
 func ParseTaskNodeInDBChild(Childs string) []int {
 	var head = 0
-	var tail = find(Childs, ";", head)
+	var tail = Find(Childs, ";", head)
 	var res []int
 	for {
 		if tail != -1 {
@@ -14,23 +14,32 @@ func ParseTaskNodeInDBChild(Childs string) []int {
 			CheckErr(err, "ParseTaskNodeInDBChild:strconv")
 			res = append(res, child)
 			head = tail + 1
-			tail = find(Childs, ";", head)
+			tail = Find(Childs, ";", head)
 		} else {
 			break
 		}
+	}
+	return res
+}
+
+func MakeTaskNodeInDBChild(childs []int) string {
+	var res = ""
+	for _, v := range childs {
+		res += strconv.Itoa(v)
+		res += ";"
 	}
 	return res
 }
 
 func ParseManage(manage string) []string {
 	var head = 0
-	var tail = find(manage, ";", head)
+	var tail = Find(manage, ";", head)
 	var res []string
 	for {
 		if tail != -1 {
 			res = append(res, manage[head:tail])
 			head = tail + 1
-			tail = find(manage, ";", head)
+			tail = Find(manage, ";", head)
 		} else {
 			break
 		}
@@ -38,7 +47,16 @@ func ParseManage(manage string) []string {
 	return res
 }
 
-func find(str string, substr string, from int) int {
+func MakeSemicolonStr(ss []string) string {
+	var res = ""
+	for _, v := range ss {
+		res += v
+		res += ";"
+	}
+	return res
+}
+
+func Find(str string, substr string, from int) int {
 	var mainSize = len([]rune(str))
 	var subSize = len([]rune(substr))
 	var flag bool

@@ -9,7 +9,7 @@ import (
 )
 
 func Report() {
-	log.Println("monitor start")
+	log.Println("monitor started")
 	monitorFile, err := os.Create("monitor.log")
 	if err != nil {
 		log.Fatalln("Fail to create log, program cracked.")
@@ -19,10 +19,7 @@ func Report() {
 	ticker := time.NewTicker(time.Second * 5)
 
 	for {
-		select {
-		case <-ticker.C:
-			logger.Println(tree.GetForest().Projects)
-		default:
-		}
+		<-ticker.C
+		logger.Println(tree.GetForest().Projects)
 	}
 }

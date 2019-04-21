@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"log"
 	"sort"
 	"strconv"
 
@@ -79,8 +78,6 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 	size, err := strconv.Atoi(TaskNode.Task.TaskID[i+1 : j])
 	utils.CheckErr(err, "NewTask:get size")
 	TaskNode.Self = size
-	log.Println("ready to add")
-	log.Println(TaskNode)
 
 	var flag = true
 	forest.PRMMutex.Lock()
@@ -111,6 +108,14 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 		forest.Monitors[Project] = tmp
 	}
 	forest.MRMMutex.Unlock()
+
+	ope := BuildOpe(Project, TaskNode.Task.TaskID, int8(1))
+	forest.ORMMutex.Lock()
+	{
+		forest.Opes.Push(ope)
+	}
+	forest.ORMMutex.Unlock()
+
 	return nil
 }
 

@@ -131,10 +131,16 @@ func NewProjectTree(w http.ResponseWriter, r *http.Request) {
 		}
 		return false
 	})
+
 	l := len(tmp) - 1
-	x, err := strconv.Atoi(tmp[l][strings.Index(tmp[l], "_project_")+9:])
-	utils.CheckErr(err, "NewProjectTree:sort to produce id")
-	var TreeId = ANewTreeData.OpenId + "_project_" + strconv.Itoa(x+1)
+	var TreeId string
+	if l >= 0 {
+		x, err := strconv.Atoi(tmp[l][strings.Index(tmp[l], "_project_")+9:])
+		utils.CheckErr(err, "NewProjectTree:sort to produce id")
+		TreeId = ANewTreeData.OpenId + "_project_" + strconv.Itoa(x+1)
+	} else {
+		TreeId = ANewTreeData.OpenId + "_project_1"
+	}
 
 	var firstNode utils.TaskNode
 	firstNode.Task = *task.BuildTask(TreeId, ANewTreeData.OpenId, ANewTreeData.Name, ANewTreeData.Brief, ANewTreeData.Deadline, ANewTreeData.Urgency)
@@ -155,6 +161,14 @@ func NewProjectTree(w http.ResponseWriter, r *http.Request) {
 		tree.GetForest().Monitors[TreeId] = tmp
 	}
 	tree.GetForest().MRMMutex.Unlock()
+	ope := tree.BuildOpe(TreeId, TreeId, int8(1))
+	tree.GetForest().ORMMutex.Lock()
+	{
+		tree.GetForest().Opes.Push(ope)
+	}
+	tree.GetForest().ORMMutex.Unlock()
+
+	w.Write([]byte(TreeId))
 }
 
 //这个处理器负责在一颗树上新建节点
@@ -219,11 +233,13 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for k, _ := range tmp {
-		if tmp[k].Task.TaskID == ADeleteNodeData.Parent {
-			for i, j := range tmp[k].Child {
-				if j == flag {
-					tmp[k].Child = append(tmp[k].Child[:i], tmp[k].Child[i+1:]...)
+	if ADeleteNodeData.Parent != "" {
+		for k, _ := range tmp {
+			if tmp[k].Task.TaskID == ADeleteNodeData.Parent {
+				for i, j := range tmp[k].Child {
+					if j == flag {
+						tmp[k].Child = append(tmp[k].Child[:i], tmp[k].Child[i+1:]...)
+					}
 				}
 			}
 		}
@@ -237,6 +253,18 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 
 	tree.MarkNode(tmp, flag, apra)
 	apra[flag] = true
+
+	for k, v := range apra {
+		if v {
+			ope := tree.BuildDeleteOpe(ADeleteNodeData.TreeID, tmp[k].Task.TaskID, int8(-1), tmp[k].TeamMates)
+			tree.GetForest().ORMMutex.Lock()
+			{
+				tree.GetForest().Opes.Push(ope)
+			}
+			tree.GetForest().ORMMutex.Unlock()
+		}
+	}
+
 	var count = 0
 	for k, v := range apra {
 		if v {
@@ -270,27 +298,6 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 		tree.GetForest().Monitors[ADeleteNodeData.TreeID] = tmp
 	}
 	tree.GetForest().MRMMutex.Unlock()
-}
-
-//这个处理器移除一颗树，强烈注意！！！这个操作是不可逆的，一旦执行整颗树都会从数据库里移除
-func DropTree(w http.ResponseWriter, r *http.Request) {
-	var ok bool
-	tree.GetForest().PRMMutex.Lock()
-	{
-		if _, ok = tree.GetForest().Projects[r.PostFormValue("TreeId")]; ok {
-			delete(tree.GetForest().Projects, r.PostFormValue("TreeId"))
-			delete(tree.GetForest().Monitors, r.PostFormValue("TreeId"))
-		}
-	}
-	tree.GetForest().PRMMutex.Unlock()
-	if ok {
-		return
-	}
-	err := sqlmanip.DropTree(r.PostFormValue("TreeId"))
-	if err != nil {
-		w.WriteHeader(403)
-		return
-	}
 }
 
 //这个处理器修改一个task的内部内容
@@ -348,6 +355,12 @@ func AlterNode(w http.ResponseWriter, r *http.Request) {
 			tree.GetForest().Monitors[AAlterNodeData.TreeID] = tmp
 		}
 		tree.GetForest().MRMMutex.Unlock()
+		ope := tree.BuildOpe(AAlterNodeData.TreeID, AAlterNodeData.TaskID, int8(0))
+		tree.GetForest().ORMMutex.Lock()
+		{
+			tree.GetForest().Opes.Push(ope)
+		}
+		tree.GetForest().ORMMutex.Unlock()
 		log.Println("after alter")
 		log.Println(tree.GetForest().Projects[AAlterNodeData.TreeID])
 	} else {
