@@ -15,6 +15,7 @@ Page({
         "name": "我的任务",
         "func": "intoFunc1",
         "icon":"iconfont icon-taskmanege",
+        "color":"black"
       },
       {
         "name": "我的消息",

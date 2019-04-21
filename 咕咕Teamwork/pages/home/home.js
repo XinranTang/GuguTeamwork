@@ -8,10 +8,15 @@ Page({
    */
   data: {
     hiddenmodalput:true,
+    hiddenDel:true,
     previourIndex:0,
     hour:0,
     choose:false,
     chooseIndex:-1,
+    editInfo:{
+      title:"",
+      content:""
+    },
     schedule:{
       timestamp:null,
       year:0,
@@ -346,11 +351,20 @@ Page({
       })
     }
   },
+  editChange:function(e){
+    var _edit_info = this.data.editInfo;
+    var type = e.target.dataset.type;
+    _edit_info[type] = e.detail.value;
+    this.setData({
+      editInfo: _edit_info
+    });
+  },
   formSubmit:function(e){
     var i = this.data.chooseIndex;
     // console.log(e)
     this.setData({
-      [`list[${i}].t`]: { Title: e.detail.value.title,Content:e.detail.value.content},
+      // [`list[${i}].t`]: { Title: e.detail.value.title,Content:e.detail.value.content},
+      [`list[${i}].t`]: { Title: this.data.editInfo.title, Content: this.data.editInfo.content },
       [`list[${i}].hasTask`]: true,
       choose: false,
       [`list[${i}].color`]: app.globalData.color.Orange,
@@ -361,7 +375,11 @@ Page({
   },
   cancel:function(){
     this.setData({
-      hiddenmodalput: true
+      hiddenmodalput: true,
+      editInfo:{
+        title:"",
+        content:""
+      }
     })
   },
   addTask:function(e){
@@ -371,7 +389,9 @@ Page({
       var self = this;
       wx.showModal({ 
         cancelText:"删除任务",
+        cancelColor:"red",
         confirmText:"确定",
+        confirmColor:"black",
         title: this.data.list[i].t.Title, 
         content: this.data.list[i].t.Content, 
         success: function (res) { 
@@ -412,6 +432,9 @@ Page({
     //   key: 'Schedule',
     //   data: [ { "Date": self.data.dateNow, 'List': self.data.list }],
     // })
+  },
+  onDel:function(e){
+
   },
   addMyTask:function(e){
 

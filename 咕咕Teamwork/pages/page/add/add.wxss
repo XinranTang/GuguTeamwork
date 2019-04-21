@@ -3,11 +3,32 @@
   height: 400rpx;
   margin-left:20rpx; 
   margin-right:20rpx; 
-  background-color: #88caed;
+  /* background-color: #88caed; */
 }
 #addMessage{
   height:400rpx;
   margin-left:20rpx; 
   margin-right:20rpx; 
+  /* background-color: #88caed; */
+}
+
+.title{
+  color:white;
+  font-size:40rpx;
+  font-weight: 700
+}
+
+.imagebg{
+  position: absolute;
+  bottom: 0px; 
+  width:400rpx;
+  height:300rpx
+}
+
+.viewbg{
   background-color: #88caed;
+}
+
+.clicked{
+   background-color: hsl(201, 74%, 80%);
 }

@@ -1,9 +1,12 @@
 <!--pages/page/add/add.wxml-->
+<!-- 图比较大就用了图床 -->
 <view class="layer">
-  <view class="padding-xl radius shadow-blur margin-top" id="addTask" bindtap='toAddTask'>
-    <view class="text-center padding">发起任务</view>
+  <view class="radius shadow-blur margin-top viewbg" hover-class="clicked" id="addTask" style="position:relative;display:flex;flex-direction: column" bindtap='toAddTask'>
+    <view class="text-center padding title" style="">「发起任务」</view>
+      <image src='https://s2.ax1x.com/2019/04/21/EFBhvD.png' mode ="" class = "imagebg" style=""></image>
   </view>
-  <view class="padding-xl radius shadow-blur margin-top" id="addMessage" bindtap='toAddMessage'>
-    <view class="text-center padding">发起消息</view>
+  <view class="radius shadow-blur margin-top viewbg" hover-class="clicked" id="addMessage" bindtap='toAddMessage'>
+    <view class="text-center padding title" style="">「发起消息」</view>
+    <image src='https://s2.ax1x.com/2019/04/21/EFB5Ke.png' mode ="" class = "imagebg" style="right:0"></image>
   </view>
 </view>

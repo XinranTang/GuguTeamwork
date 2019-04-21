@@ -20,7 +20,7 @@
               <view style='font-size:24rpx;text-align:center'>{{(index%24<10?"0"+(index%24):index%24)+":00"}}
               </view>
               <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:300rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
-                <text>{{list[index].t.Title}}</text>
+                <text style="font-size:25rpx">{{list[index].t.Title}}</text>
               </view>
             </view>
           </view>
@@ -81,7 +81,7 @@
 </wxs>
 <!-- 弹出框模块 -->
 
-<form bindsubmit="formSubmit" wx:if="{{!hiddenmodalput}}" style='position:absolute;top:420rpx;left:90rpx;z-index: 9999;'>
+<!-- <form bindsubmit="formSubmit" wx:if="{{!hiddenmodalput}}" style='position:absolute;top:420rpx;left:90rpx;z-index: 9999;'>
   <view class="cu-form-group margin-top">
     <view class='title'>日程主题</view>
     <input placeholder=" " class='radius' name='title'></input>
@@ -93,5 +93,17 @@
   <button class='bg-grey' style="length:50%" form-type='submit'>添加</button>
   <button class='bg-grey' style="length:50%" bindtap='cancel'>取消</button>
 
-</form>
-<view class="mask" catchtouchmove="preventTouchMove" wx:if="{{!hiddenmodalput}}"></view>
+</form> -->
+
+<view wx:if='{{!hiddenmodalput}}'>
+  <modal title="添加日程" confirm-text="确认" cancel-text="取消"  bindconfirm="formSubmit" bindcancel="cancel">
+    <label>
+      <view class="">
+        <input class="input" bindinput="" placeholder="日程主题" data-type='title' bindblur='editChange' />
+        <input class="input" bindinput="" placeholder="内容" data-type='content'  bindblur='editChange'/>
+      </view>
+    </label>
+  </modal>
+</view>
+
+<!-- <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{!hiddenmodalput}}"></view> -->
