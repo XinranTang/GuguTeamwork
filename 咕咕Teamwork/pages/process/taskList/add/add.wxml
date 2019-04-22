@@ -1,47 +1,51 @@
 <!--pages/process/taskList/add/add.wxml-->
 <view wx:if="{{hide==false}}">
-  <form  bindsubmit="handleClick" >
-    <view class="cu-form-group margin-top">
-    <view class='title'>任务名</view>
-      <input placeholder="任务名称" class='radius' name='name'></input>
+  <form bindsubmit="handleClick" style=' '>
+
+    <view class="st-radius-view" style='padding-left:30rpx;padding-right:30rpx'>
+      <view class="cu-form-group margin-top">
+        <view class='title'>任务名</view>
+        <input placeholder="任务名称" class='radius' name='name'></input>
+      </view>
+      <view class="cu-form-group">
+        <view class='title'>任务内容</view>
+        <input placeholder="内容描述" class='radius' name='content'></input>
+      </view>
+      <view class="cu-form-group">
+        <view class='title'>截止日期</view>
+        <picker mode="date" value="{{date}}" start="2000-01-01" end="2050-12-31" bindchange="bindDateChange">
+          <view class="picker">
+            {{date}}
+          </view>
+        </picker>
+      </view>
+      <view class="cu-form-group">
+        <view class='title'>截止时间</view>
+        <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindTimeChange">
+          <view class="picker">
+            {{time}}
+          </view>
+        </picker>
+      </view>
     </view>
-    <view class="cu-form-group">
-      <view class='title'>任务内容</view>
-      <input placeholder="内容描述" class='radius' name='content'></input>
-    </view>
-    <view class="cu-form-group">
-      <view class='title'>截止日期</view>
-      <picker mode="date" value="{{date}}" start="2000-01-01" end="2050-12-31" bindchange="bindDateChange">
-        <view class="picker">
-        {{date}}
-        </view>
-      </picker>
-    </view>
-    <view class="cu-form-group">
-      <view class='title'>截止时间</view>
-      <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="bindTimeChange">
-        <view class="picker">
-        {{time}}
-        </view>
-      </picker>
-    </view>
-    <button formType="submit">新建</button>
+
+    <button class="st-button no-border" formType="submit">新建</button>
   </form>
 </view>
 <view wx:if="{{hide==true}}">
   <!-- <tree id='canvas-drag'>
   </tree> -->
-  <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh = 'onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
-<text>目前选择的结点数据:   </text>
-<text >{{text_selected_node}}</text>
-<view>
-<view class="btn" bindtap="onClearCanvas">清空画布</view>
-<view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
-<view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
-<view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
-<view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
-<view class="btn" bindtap="onDoDel">执行删除结点</view>
-<view class="btn" bindtap="createTask">任务创建完成</view>
-</view>
+  <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
+  <text>目前选择的结点数据:   </text>
+  <text>{{text_selected_node}}</text>
+  <view>
+    <view class="btn" bindtap="onClearCanvas">清空画布</view>
+    <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
+    <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
+    <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
+    <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
+    <view class="btn" bindtap="onDoDel">执行删除结点</view>
+    <view class="btn" bindtap="createTask">任务创建完成</view>
+  </view>
 
 </view>

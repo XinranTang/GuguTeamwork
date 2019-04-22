@@ -239,3 +239,28 @@ body,html{
     margin-left:30rpx;
 }
 
+.st-radius-view{
+  margin-left:30rpx;
+  margin-right:30rpx;
+  margin-top:30rpx;
+  position:relative;
+  border-radius:20rpx;
+  box-shadow: 0px 3px 10px 1px #cccccc99;
+}
+
+.st-button{
+   display: flex;
+  align-items: center;
+  justify-content: center;
+  height:100rpx;
+  margin: 40rpx;
+  border-radius: 50rpx;
+  color: white;
+  font-size: 35rpx;
+  background-color: #88caed;
+  box-shadow: 0px 3px 10px 1px #88caed99;
+}
+
+.no-border::after{
+  border: none;
+}

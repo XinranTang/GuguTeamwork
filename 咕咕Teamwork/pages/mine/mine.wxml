@@ -9,38 +9,42 @@
       </block>
     </view>
     
-    <view class = "menu-container">
-      <i-grid>
-        <i-grid-item class="menu_item"wx:for="{{menus1}}" wx:for-index="idx" wx:for-item="menu" bindtap='{{menu.func}}'>
+    <view class = "" style="display:flex;flex-direction: column;margin-bottom:20rpx;margin-top:20rpx;background-color:white">
+      <view style="margin-bottom:10rpx;margin-top:10rpx">
+        <view class = "i-grid-item-no-line" wx:for="{{menus1}}" wx:for-index="idx" wx:for-item="menu" bindtap='{{menu.func}}'>
+          <!-- <image class="menu_icon" src="{{menu.url}}" /> -->
+          <i-grid-icon>
+          <view>
+          <text class="{{menu.icon}}" style="font-size:25px;color:{{menu.color}};"></text>
+          </view>
+          </i-grid-icon>
+          <i-grid-label>
+          <text class="icon-name" style=''>{{menu.name}}</text>
+          </i-grid-label>
+        </view>
+      </view>
+      <view>
+        <view class="i-grid-item-no-line" wx:for="{{menus2}}" wx:for-index="idx" wx:for-item="menu" bindtap='{{menu.func}}'>
           <!-- <image class="menu_icon" src="{{menu.url}}" /> -->
           <i-grid-icon>
           <text class="{{menu.icon}}" style='font-size:25px;color:{{menu.color}};'></text>
           </i-grid-icon>
           <i-grid-label>
-          <text class="menu_name" style='color:black;font-size:14px;'>{{menu.name}}</text>
+          <text class="icon-name" style=''>{{menu.name}}</text>
           </i-grid-label>
-        </i-grid-item>
-      </i-grid>
-      <i-grid>
-        <i-grid-item class="menu_item"wx:for="{{menus2}}" wx:for-index="idx" wx:for-item="menu" bindtap='{{menu.func}}'>
-          <!-- <image class="menu_icon" src="{{menu.url}}" /> -->
-          <i-grid-icon>
-          <text class="{{menu.icon}}" style='font-size:25px;color:{{menu.color}};'></text>
-          </i-grid-icon>
-          <i-grid-label>
-          <text class="menu_name" style='color:black;font-size:14px;'>{{menu.name}}</text>
-          </i-grid-label>
-        </i-grid-item>
-      </i-grid>
+        </view>
+      </view>
     </view>
     <view class="setting_container">
       <view class="setting">
       <text class="iconfont icon-settings" style="font-size:35rpx"></text>
         <text style='margin:0rpx 15rpx' bindtap='toPageSetting'>界面设置</text>
+         <text class = "notes" style='' bindtap='toPageSetting'>更改应用皮肤</text>
       </view>
       <view class="setting">
        <text class="iconfont icon-sponsor" style="font-size:35rpx"></text>
         <text style='margin:0rpx 15rpx' bindtap='toGiveMoney'>我要打赏</text>
+        <text class = "notes" style='' bindtap='toPageSetting'>帮助穷苦大学生</text>
       </view>
       <view class="setting">
         <text class="iconfont icon-help" style="font-size:35rpx"></text>
