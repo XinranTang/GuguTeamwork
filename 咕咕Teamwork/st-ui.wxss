@@ -1,0 +1,74 @@
+.st-radius-view{
+  margin-left:30rpx;
+  margin-right:30rpx;
+  position:relative;
+  border-radius:20rpx;
+  background-color:#FFFFFF;
+  box-shadow: 0px 3px 10px 1px #cccccc99;
+}
+
+.st-button{
+   display: flex;
+  align-items: center;
+  justify-content: center;
+  height:90rpx;
+  margin: 40rpx;
+  border-radius: 50rpx;
+  color: white;
+  font-size: 35rpx;
+  background-color: #88caed;
+  box-shadow: 0px 3px 5px 1px #88caed99;
+}
+
+.no-border::after{
+  border: none;
+}
+
+.vertical{
+  display: flex;
+  flex-direction: column;
+}
+
+.horizontal{
+  display: flex;
+  flex-direction: row;
+}
+
+.st-date{
+  font-size:25rpx;
+  color: #aaaaaa;
+  align-self: center;
+}
+
+.st-icon-square{
+  padding:15rpx;
+  color: white;
+  background: rgb(136,202,237)
+}
+
+.st-icon-square-tiny{
+  padding:10rpx;
+  color: white;
+  background: rgb(136,202,237)
+}
+
+.st-view-padding{
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+}
+
+.st-bg-view{
+  position: relative;
+  padding-top:40rpx;
+  width:750rpx;
+  height:800rpx;
+}
+
+.st-bg-image{
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background-color: #88caed;
+}

@@ -25,6 +25,7 @@ Page({
    */
   data: {
     text_selected_node: '...',
+    selected_node:{},
     edit_info:{
         Title:'',
         DeadLine:'',
@@ -255,7 +256,8 @@ Page({
     });
     if (this.data.text_selected_node == JSON.stringify({})) {
       this.setData({
-        isSelected: false
+        isSelected: false,
+        selected_node:{}
       });
     } else {
       var obj = JSON.parse(this.data.text_selected_node);
@@ -265,7 +267,8 @@ Page({
           Title:obj[TASK][TITLE],
           Content:obj[TASK][CONTENT],
           DeadLine:obj[TASK][DEADLINE]
-        }
+        },
+        selected_node:obj
       });
     }
   },
@@ -303,7 +306,10 @@ Page({
     var type = e.target.dataset.type;
     _edit_info[type]=e.detail.value;
     this.setData({
-      edit_info:_edit_info
+      edit_info:_edit_info,
+      selected_node:{
+        'Task':_edit_info
+      }
     });
   },
   /**

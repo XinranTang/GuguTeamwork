@@ -1,4 +1,5 @@
 <!--components/canvas-drag/index.wxml-->
+
 <canvas canvas-id='canvas-label' 
 disable-scroll="true"
 bindtouchstart="start"

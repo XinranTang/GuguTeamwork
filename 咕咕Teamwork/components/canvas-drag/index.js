@@ -15,8 +15,10 @@ var ZOOM_ENABLE = false;
 var ADD_ENABLE = false;
 var DEL_ENABLE = false;
 
+var SELECT_COLOR = '#88caed';
+
 var initX =150;
-var initY = 100;
+var initY = 50;
 
 // 服务器数据库字段名
 var TREE = 'Tree';
@@ -142,7 +144,7 @@ dragGraph.prototype = {
       this.y = this.centerY - textHeight / 2;
     }
 
-    this.ctx.setShadow(0, 0, 10, this.isDeled?'red':this.selected?'green':'gray');
+    this.ctx.setShadow(0, 0, 10, this.isDeled?'red':this.selected?SELECT_COLOR:'gray');
     this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10, 10);
     this.ctx.setShadow(0, 0, 0, 'black');
     // 渲染元素
@@ -834,10 +836,10 @@ Component({
     addNewNode(newNodeAttr = {
       Task: {
         TaskID: "tt",
-        Title: "testadd",
+        Title: "新任务",
         Pusher: "tt",
-        Content: "tt",
-        Status: 0,
+        Content: "这是一个新任务",
+        Status: false,
         PushDate: "tt",
         DeadLine: "tt",
         Urgency: 3

@@ -19,15 +19,13 @@
   border-bottom: 3px solid #fff;
 }
 .content {
-  padding: 0 28rpx;
-  height: 118rpx;
-  line-height: 118rpx;
-  border-bottom: 1px solid skyblue;
+  height: auto;
+  line-height: auto;
+  color: #222222;
 }
 .time {
-  padding: 0 28rpx;
   line-height: 88rpx;
-  color: #88f;
+  color: rgb(124, 124, 124);
 }
 .add {
   position: absolute;
@@ -38,11 +36,17 @@
   justify-content: center;
   width: 100rpx;
   height: 100rpx;
-  background: #b3fbdb;
-  border: 1px solid #888;
+  background-color: #88caed;
+  /* background: #b3fbdb; */
+  /* border: 1px solid #888; */
   border-radius: 50%;
 }
 .add image {
   width: 48rpx;
   height: 48rpx;
+  color: white;
+}
+
+.st-shadow{
+    box-shadow: 0px 3px 5px 1px #88caed99;
 }

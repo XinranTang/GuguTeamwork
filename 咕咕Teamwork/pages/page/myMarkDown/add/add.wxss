@@ -1,10 +1,12 @@
 /* pages/page/myMarkDown/add/add.wxss */
-.page {
+.this-page {
   display: flex;
   flex-direction: column;
+  padding:30rpx;
+  height: 60%;
 }
 .page-t {
-  width: 100%;
+  width: auto;
   height: 90%;
 }
 .content {

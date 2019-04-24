@@ -1,8 +1,8 @@
 <!--pages/page/myMessage/myMessage.wxml-->
 <view class = "layer">
-  <view class="caption-title">
+  <!-- <view class="caption-title">
     <text>我的消息</text>
-  </view>
+  </view> -->
   <i-collapse name="{{name}}">
     <i-collapse-item title="未读消息" name="name1">
       <view slot="content" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">

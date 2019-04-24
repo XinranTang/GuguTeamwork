@@ -1,6 +1,7 @@
 <!--pages/tree.wxml-->
-
-<canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="750" height="750"></canvas-drag>
+<view class="st-radius-view" style='margin-top:40rpx'>
+  <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="750" height="750"></canvas-drag>
+</view>
 <!-- <view class="btn" bindtap="onAddImage">添加图片</view>
 <view class="btn" bindtap="onAddTest">添加测试图片</view>
 <view class="btn" bindtap="onAddText">添加文字</view>
@@ -10,28 +11,45 @@
 <view class="btn" bindtap="onChangeBgImage">改变背景照片</view>
 <view class="btn" bindtap="onExportJSON">导出模板</view>
 <view class="btn" bindtap="onImport">导入默认模板</view> -->
-<text>目前选择的结点数据:   </text>
-<text>{{text_selected_node}}</text>
-<view>
-  <view class="btn" bindtap="onClearCanvas">清空画布</view>
-  <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
-  <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
-  <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'>编辑任务信息</view>
-  <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
-  <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
-  <view class="btn" bindtap="onDoDel">执行删除结点</view>
-</view>
+<view class="vertical">
 
+  <view class="vertical" style="margin:30rpx 45rpx 30rpx 45rpx;height:100rpx">
+    <view hidden='{{!isSelected}}'>
+      <view class="horizontal">
+        <text style="width:50%">任务名：{{selected_node['Task']['Title']}}</text>
+        <text style="width:50%;text-align:right" class="st-date">{{selected_node['Task']['Pusher']}} {{selected_node['Task']['PushDate']}}</text>
+      </view>
+      <view class="horizontal">
+        <text style="width:50%">紧急程度：{{selected_node['Task']['Urgency']}}</text>
+        <text style="width:50%;text-align:right" class="st-date">{{selected_node['Task']['DeadLine']}}</text>
+      </view>
+      <view class="horizontal">
+        <text style="width:100%">{{selected_node['Task']['Content']}}</text>
+      </view>
+      <!-- <text>{{text_selected_node}}</text> -->
+    </view>
+  </view>
+
+  <view style='margin-left:45rpx;margin-right:45rpx'>
+    <view class="btn" bindtap="onClearCanvas">清空</view>
+    <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
+    <view class="btn" bindtap="onInitByTree">生成</view>
+    <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'>编辑</view>
+    <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加</view>
+    <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复</view>
+    <view class="btn" bindtap="onDoDel">执行删除</view>
+  </view>
+</view>
 <!-- <view>
 <switch checked bindchange="switchZoom"/>
 <switch checked bindchange="switchDel"/>
 <switch checked bindchange="switchAdd"/>
 </view> -->
 <view>
-  <modal title="编辑任务信息" confirm-text="确认" hidden='{{!isEdit}}' cancel-text="取消"  bindconfirm="editConfirm" bindcancel="editCancel">
+  <modal title="编辑任务信息" confirm-text="确认" hidden='{{!isEdit}}' cancel-text="取消" bindconfirm="editConfirm" bindcancel="editCancel">
     <label>
       <view class="">
-        <input class="input" bindinput="" placeholder="名称" data-type='Title' value="{{edit_info['Title']}}" bindblur='editChange'  />
+        <input class="input" bindinput="" placeholder="名称" data-type='Title' value="{{edit_info['Title']}}" bindblur='editChange' />
         <input class="input" bindinput="" placeholder="内容" data-type='Content' value="{{edit_info['Content']}} " bindblur='editChange' />
         <input class="input" bindinput="" placeholder="截止日期" data-type='DeadLine' value="{{edit_info['DeadLine']}} " bindblur='editChange' />
       </view>

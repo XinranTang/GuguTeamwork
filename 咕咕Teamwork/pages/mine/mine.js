@@ -15,23 +15,30 @@ Page({
         "name": "我的任务",
         "func": "intoFunc1",
         "icon":"iconfont icon-taskmanege",
-        "color":"black"
+        //天蓝色
+        "color":"#31A4E5"
       },
       {
         "name": "我的消息",
         "func": "intoFunc2",
         "icon": "iconfont icon-message",
+        //橙黄色
+        "color":"#FFB100",
       },
       {
         "name": "记事本",
         "url": "../../images/icon2.jpg",
         "func": "intoFunc6",
-        "icon": "iconfont icon-submit"
+        "icon": "iconfont icon-submit",
+        //翡翠绿
+        "color":"#01C7B3",
       },
       {
         "name": "发起任务",
         "func": "intoFunc4",
-        "icon":"iconfont icon-weibiaoti201"
+        "icon":"iconfont icon-weibiaoti201",
+        //樱桃红
+        "color":"#FF6461",
       }
       ],
        menus2: [
@@ -39,12 +46,16 @@ Page({
       {
         "name": "个人信息",
         "func": "intoFunc5",
-        "icon": "iconfont icon-ionc--1"
+        "icon": "iconfont icon-ionc--1",
+        //湖蓝
+        "color":"#00C7E3"
       },
       {
         "name": "数据分析",
         "func": "intoFunc3",
-        "icon": "iconfont icon-analyze"
+        "icon": "iconfont icon-analyze",
+        //翡翠绿
+         "color": "#01C7B3",
       },
       {
         "name": "合作办公",
@@ -56,7 +67,8 @@ Page({
         "name": "任务社区",
         "url": "../../images/icon2.jpg",
         "func": "intoFunc8",
-        "icon": "iconfont icon-anonymous"
+        "icon": "iconfont icon-anonymous",
+        "color":"#B671FA",
       }
     ]
   },

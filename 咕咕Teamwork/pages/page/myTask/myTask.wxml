@@ -1,8 +1,8 @@
 <!--pages/page/myTask/myTask.wxml-->
 <view class = "layer">
-  <view class="caption-title">
+  <!-- <view class="caption-title">
     <text>我的任务</text>
-  </view>
+  </view> -->
     <i-collapse name="{{name}}">
         <i-collapse-item title="我加入的项目" name="name1">
             <view slot="content" wx:for="{{ctasks}}" bindtap='toTask' wx:for-item="task" data-data="{{task.data}}" data-index="{{index}}" data-id="{{task.TaskID}}">
