@@ -31,7 +31,11 @@ Page({
         DeadLine:'',
         Content:''
     },
+    //解决Canvas层级太高的问题
+    canvasImg:"",
+    //是否有选中结点
     isSelected: false,
+    //是否在编辑框
     isEdit: false,
     oneTaskTree: {
       "Tree": [{
@@ -283,6 +287,7 @@ Page({
   },
   // 显示编辑框
   onEditNode:function(e){
+    this.saveCanvas();
     this.setData({
       isEdit:true
     });
@@ -312,6 +317,19 @@ Page({
       }
     });
   },
+
+  saveCanvas:function(e){
+    CanvasDrag.export()
+      .then((filePath) => {
+        console.log(filePath);
+        this.setData({
+          canvasImg:filePath,
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -330,7 +348,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
-    CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
+    // CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
+    console.log(wx.canIUse('canvasContext.setShadow'));
   },
 
   /**

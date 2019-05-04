@@ -1,5 +1,5 @@
 <!--pages/page/myInfor/myInfor.wxml-->
-<view class="st-bg-view">
+
 <view class="st-bg-image"></view>
 <view wx:if="{{show}}">请先授权！</view>
 <view wx:else>
@@ -50,5 +50,4 @@
       <button class="st-button no-border" formType="submit">提交</button>
     </form>
   </view>
-</view>
 </view>

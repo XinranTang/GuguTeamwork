@@ -1,11 +1,11 @@
 <!--pages/page/myMarkDown/add/add.wxml-->
-<view class="st-bg-view">
-  <view class="st-bg-image"></view>
-  <view class="this-page st-radius-view">
+<view class="st-bg-image"></view>
+  
+
+<view class="this-page st-radius-view">
     <view class="page-t">
       <textarea class="content" placeholder="{{holder}}" bindinput="change" value="{{content}}" maxlength="-1" style='height:200rpx'></textarea>
     </view>
   </view>
   <view class="no-border st-button" style="margin-bottom:30rpx" bindtap="sure">确定</view>
   <view class="no-border st-button" style="margin-top:0rpx" bindtap="cancel">取消</view>
-</view>

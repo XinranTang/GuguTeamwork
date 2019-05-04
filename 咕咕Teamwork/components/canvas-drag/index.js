@@ -115,7 +115,8 @@ dragGraph.prototype = {
       this.ctx.setTextAlign('center');
       //标记为删除的元素为红色
       this.ctx.setFillStyle(this.isDeled ? DELED_COLOR : this.color);
-      textWidth = this.ctx.measureText(this.text).width;
+      //textWidth = this.ctx.measureText(this.text).width;
+      textWidth = this.w;
       textHeight = this.fontSize + 10;
       // 字体区域中心点不变，左上角位移
       this.x = this.centerX - textWidth / 2;
