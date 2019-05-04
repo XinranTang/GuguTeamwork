@@ -499,6 +499,7 @@ Page({
       var dataSet = e.currentTarget.dataset;
       var index = dataSet.index;
       var task = this.data.tasks[index];
+      console.log(e.currentTarget.dataset)
       app.globalData.currentTaskIndex = index;
       app.globalData.tasks = self.data.tasks;
       app.globalData.currentTask = task;

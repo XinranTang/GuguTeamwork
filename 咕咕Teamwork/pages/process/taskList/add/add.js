@@ -1,4 +1,20 @@
 // pages/process/taskList/add/add.js
+// 服务器数据库字段名
+var TREE = 'Tree';
+var TREE_NAME = 'TreeName';
+var TREE_ID = 'TreeID';
+var TASK = 'Task';
+var TASK_ID = 'TaskID';
+var TITLE = 'Title';
+var PUSHER = 'Pusher';
+var CONTENT = 'Content';
+var STATUS = 'Status';
+var PUSH_DATE = 'PushDate';
+var DEADLINE = 'DeadLine';
+var URGENCY = 'Urgency';
+var SELF = 'Self';
+var CHILD = 'Child';
+var TEAM_MATES = 'TeamMates'
 var app = getApp();
 import CanvasDrag from '../../../../components/canvas-drag/canvas-drag';
 var util = require('../../../../utils/util.js')
@@ -18,7 +34,15 @@ Page({
     date: '2000-01-01',
     time: '12:00',
     text_selected_node: '...',
+    createTask:false,
+    tempT:{},
+    edit_info: {
+      Title: '',
+      DeadLine: '',
+      Content: ''
+    },
     isSelected: false,
+    isEdit:false,
     oneTaskTree: {
       "Tree": [
         
@@ -189,10 +213,16 @@ Page({
       this.setData({
         isSelected: false
       });
-    }
-    else {
+    } else {
+      var obj = JSON.parse(this.data.text_selected_node);
       this.setData({
-        isSelected: true
+        isSelected: true,
+        edit_info: {
+          Title: obj[TASK][TITLE],
+          Content: obj[TASK][CONTENT],
+          DeadLine: obj[TASK][DEADLINE]
+        },
+        selected_node: obj
       });
     }
   },
@@ -216,7 +246,26 @@ Page({
    * Lifecycle function--Called when page hide
    */
   onHide: function () {
-
+    // if(this.data.createTask==false){
+    //   wx.showModal({
+    //     title: '任务还未创建完成',
+    //     content: '确定要退出任务创建？',
+    //     showCancel: true,//是否显示取消按钮
+    //     cancelText: "否",//默认是“取消”
+    //     cancelColor: 'red',//取消文字的颜色
+    //     confirmText: "是",//默认是“确定”
+    //     confirmColor: 'black',//确定文字的颜色
+    //     success: function (res) {
+    //       if (res.cancel) {
+    //         //点击取消,默认隐藏弹框
+    //       } else {
+    //         wx.navigateBack({
+              
+    //         })
+    //       }
+    //     },
+    //   })
+    // }
   },
 
   /**
@@ -279,6 +328,9 @@ Page({
               var index = 'oneTaskTree.Tree'
               var t = res.data
               that.setData({
+                tempT:{
+                  't':t,
+                  'json':json},
                 oneTaskTree: {
                   Tree: [
                     {
@@ -307,34 +359,7 @@ Page({
                 hide: true
               });
               that.onInitByTree();
-              var arr = [];
-              var manage = "";
-              wx.getStorage({
-                key: 'UserInfor',
-                success: function (res) {
-                  arr = res.data.Tasks;
-                  manage=res.data.Manage;
-                  manage=manage+t;
-                  arr.push({
-                    "TaskID": t,
-                    "Title": json.Name,
-                    "Pusher": "本机用户", // TODO:改成昵称或者真名
-                    "Content": json.Brief,
-                    "Status": 0,
-                    "Urgency": json.Urgency,
-                    "PushDate": new Date(),
-                    "DeadLine": json.Deadline
-                  })
-                  res.data.Tasks = arr;
-                  res.data.Manage = manage;
-                  app.globalData.tasks = arr;
-                  console.log(res.data.Tasks)
-                  wx.setStorage({
-                    key: 'UserInfor',
-                    data: res.data,
-                  })
-                },
-              })
+              
             },
             fail: function (res) {
               wx.showToast({
@@ -370,7 +395,68 @@ Page({
     })
   },
   createTask: function () {
-    
+    var self = this;
+    var arr = [];
+    var manage = "";
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function (res) {
+        arr = res.data.Tasks;
+        manage = res.data.Manage;
+        var t = self.data.tempT.t;
+        var json = self.data.tempT.json;
+        manage = manage + t;
+        arr.push({
+          "TaskID": t,
+          "Title": json.Name,
+          "Pusher": "本机用户", // TODO:改成昵称或者真名
+          "Content": json.Brief,
+          "Status": 0,
+          "Urgency": json.Urgency,
+          "PushDate": new Date(),
+          "DeadLine": json.Deadline
+        })
+        res.data.Tasks = arr;
+        res.data.Manage = manage;
+        app.globalData.tasks = arr;
+        console.log(res.data.Tasks)
+        wx.setStorage({
+          key: 'UserInfor',
+          data: res.data,
+        })
+      },
+    })
+  },
+  // 显示编辑框
+  onEditNode: function (e) {
+    this.setData({
+      isEdit: true
+    });
+  },
+  // 编辑框确认按钮
+  editConfirm: function (e) {
+    this.setData({
+      isEdit: false
+    })
+    CanvasDrag.changeNodeInfo(this.data.edit_info);
+  },
+  // 编辑框取消按钮
+  editCancel: function (e) {
+    this.setData({
+      isEdit: false
+    })
+  },
+  // 编辑框失去焦点
+  editChange: function (e) {
+    var _edit_info = this.data.edit_info;
+    var type = e.target.dataset.type;
+    _edit_info[type] = e.detail.value;
+    this.setData({
+      edit_info: _edit_info,
+      selected_node: {
+        'Task': _edit_info
+      }
+    });
   }
 
 })
