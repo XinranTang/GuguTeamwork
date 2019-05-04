@@ -8,7 +8,7 @@ import (
 )
 
 //每隔这个时间清理者会扫描清除已经超时的树
-const forestScanInterval = time.Second * 5
+const forestScanInterval = time.Second * 10
 
 func CleanForest() {
 	log.Println("cleaner started.")

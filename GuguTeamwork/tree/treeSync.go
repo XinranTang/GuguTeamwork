@@ -9,7 +9,7 @@ import (
 )
 
 //每隔这个时间会将新的信息刷到数据库内
-const dBFlushInterval = time.Second * 15
+const dBFlushInterval = time.Minute * 1
 
 func DBFlusher() {
 	log.Println("Flusher started")
@@ -45,6 +45,12 @@ func DBFlusher() {
 			}
 		}
 		forest.ORMMutex.RUnlock()
+		log.Println("check")
+		log.Println(forest.Opes.IsEmp())
+		for _, v := range opes {
+			log.Print(*v)
+		}
+		log.Println("")
 
 		db := sqlmanip.ConnectTaskDB()
 		for k, v := range update {
@@ -56,6 +62,8 @@ func DBFlusher() {
 		err := sqlmanip.FlushTaskData(db, opes, update)
 		utils.CheckErr(err, "DBFlusher:flush tasks")
 		sqlmanip.DisConnectDB(db)
+		//清空opes
+		opes = opes[0:0]
 
 		log.Println("Flush success")
 	}
