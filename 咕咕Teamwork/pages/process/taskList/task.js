@@ -40,6 +40,7 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
+    console.log(app.globalData.currentTask)
     var self = this;
 
     var currentTask = app.globalData.currentTask;

@@ -44,10 +44,22 @@
     <view class="btn" bindtap="onClearCanvas">清空画布</view>
     <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
     <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
-    <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加一个测试结点</view>
-    <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复结点</view>
+    <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'>编辑</view>
+    <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加</view>
+    <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复</view>
     <view class="btn" bindtap="onDoDel">执行删除结点</view>
     <view class="btn" bindtap="createTask">任务创建完成</view>
   </view>
 
+</view>
+<view>
+  <modal title="编辑任务信息" confirm-text="确认" hidden='{{!isEdit}}' cancel-text="取消" bindconfirm="editConfirm" bindcancel="editCancel">
+    <label>
+      <view class="">
+        <input class="input" bindinput="" placeholder="名称" data-type='Title' value="{{edit_info['Title']}}" bindblur='editChange' />
+        <input class="input" bindinput="" placeholder="内容" data-type='Content' value="{{edit_info['Content']}} " bindblur='editChange' />
+        <input class="input" bindinput="" placeholder="截止日期" data-type='DeadLine' value="{{edit_info['DeadLine']}} " bindblur='editChange' />
+      </view>
+    </label>
+  </modal>
 </view>

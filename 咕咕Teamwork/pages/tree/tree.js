@@ -232,7 +232,7 @@ Page({
   // 通过data里的数据生成树状图
   onInitByTree() {
     this.onSetData();
-    CanvasDrag.clearCanvas();
+    this.onClearCanvas();
     CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
 
   },
@@ -350,6 +350,7 @@ Page({
   onShow: function() {
     // CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
     console.log(wx.canIUse('canvasContext.setShadow'));
+    console.log(wx.canIUse('canvasContext.shadowColor'));
   },
 
   /**

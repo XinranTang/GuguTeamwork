@@ -1,6 +1,6 @@
 'use strict';
 // api 路径
-var HOST = 'https://cnodejs.org/api/v1';
+var HOST = 'https://www.fracturesr.xyz';
 // get /topics 主题首页
 var topics = HOST + '/topics';
 //get /topic/:id 主题详情

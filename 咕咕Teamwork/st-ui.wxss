@@ -1,4 +1,5 @@
 .st-radius-view{
+  margin-top:30rpx;
   margin-left:30rpx;
   margin-right:30rpx;
   position:relative;
