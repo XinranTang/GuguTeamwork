@@ -18,13 +18,14 @@
     "pages/page/myMarkDown/add/add",
     "pages/page/mySponsor/mySponsor",
     "pages/page/myCommunity/detail/detail",
-    "pages/page/myCommunity/topics/topics"
+    "pages/page/myCommunity/topics/topics",
+    "pages/page/help/help"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#88caed",
+    "navigationBarBackgroundColor": "white",
     "navigationBarTitleText": "咕咕Teamwork",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "color": "black",

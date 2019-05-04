@@ -1,0 +1,27 @@
+<!--pages/page/help/help.wxml-->
+<view class="container" style="background:url('../../../images/back.jpg');background-size:150% 100%;">
+	    <view class="section">
+      <view class="section__title">
+      1. 项目和任务的关系？
+      </view>
+      <view class="detail">
+      项目是由多个任务构成的。其中，一个任务可以有多个子任务。
+      </view>
+      <view class="section__title">
+      2. 如何管理个人日程？
+      </view>
+      <view class="detail">
+      团队中分配的任务会自动同步到您的个人日程表上。您还可以从首页右侧的消息栏中直接拖拽待办事项到时间线上。
+      </view>
+     <view class="section__title">
+      3. 如何使用数据分析功能？ 
+      </view>
+      <view class="detail">
+      (1)个人情况分析：点击个人页面上的“个人分析”按钮即可。
+      </view> 
+      <view class="detail">
+      (2)团队项目分析：进入项目具体信息界面，点击“任务分析”按钮。
+      </view> 
+      </view>
+</view>
+

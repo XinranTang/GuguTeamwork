@@ -249,6 +249,11 @@ Page({
       url: '../page/myMarkDown/myMarkDown',
     })
   },
+  intoFunc8:function(){
+    wx.navigateTo({
+      url: '../page/myCommunity/topics/topics',
+    })
+  },
   toPageSetting:function(){
     wx.navigateTo({
       url: '../page/myPageSetting/myPageSetting',
@@ -262,6 +267,11 @@ Page({
   toGiveMoney:function(){
     wx.navigateTo({
       url: '../page/mySponsor/mySponsor',
+    })
+  },
+  toHelp:function(){
+    wx.navigateTo({
+      url: '../page/help/help',
     })
   }
 })
