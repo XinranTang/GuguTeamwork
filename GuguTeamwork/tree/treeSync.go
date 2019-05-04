@@ -45,12 +45,6 @@ func DBFlusher() {
 			}
 		}
 		forest.ORMMutex.RUnlock()
-		log.Println("check")
-		log.Println(forest.Opes.IsEmp())
-		for _, v := range opes {
-			log.Print(*v)
-		}
-		log.Println("")
 
 		db := sqlmanip.ConnectTaskDB()
 		for k, v := range update {
