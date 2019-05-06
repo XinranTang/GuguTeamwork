@@ -18,7 +18,7 @@
   color: white;
   font-size: 35rpx;
   background-color: rgb(135, 201, 237);
-  box-shadow: 0px 3px 5px 1px rgba(135, 201, 237, 0.6);
+  box-shadow: 0px 3px 5px 1px rgba(135, 201, 237, 0.3);
 }
 
 .no-border::after{
@@ -80,4 +80,15 @@
 
 .st-buttom-z{
   z-index: 0;
+}
+
+.st-text-tag{
+  border-radius: 14rpx;
+  background-color: #F96E3D;
+  color: white;
+  padding-left: 15rpx;
+  padding-right:15rpx;
+  padding-top:5rpx;
+  padding-bottom: 5rpx;
+  font-size: 28rpx;
 }

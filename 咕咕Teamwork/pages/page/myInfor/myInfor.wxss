@@ -1,1 +1,10 @@
 /* pages/page/myInfor/myInfor.wxss */
+
+.info-view{
+  padding:35rpx;
+}
+
+.line{
+  margin-top:10rpx;
+  margin-bottom: 10rpx;
+}

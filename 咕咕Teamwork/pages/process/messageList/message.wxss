@@ -1,1 +1,6 @@
 /* pages/process/messageList/message.wxss */
+
+.line{
+  margin-top:10rpx;
+  margin-bottom: 10rpx;
+}
