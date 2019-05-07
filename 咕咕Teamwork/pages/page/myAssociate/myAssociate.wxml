@@ -1,0 +1,17 @@
+<!--pages/page/myAssociate/myAssociate.wxml-->
+<view class='whole'>
+  <!-- 好友信息（如果有则显示，没有则显示邀请按钮)-->
+ <!--<view class="friendinfo" wx:if="false">
+    <cover-image class="userinfo-avatar" src="{{userInfo.avatarUrl}}"></cover-image>
+    <cover-text class="userinfo-nickname">{{userInfo.nickName}}</cover-text>
+  </view>--> 
+  <!-- 邀请按钮-->
+  <view class="share" wx:if="{{yaoqing}}">
+    <button  open-type='share' class='sharebutton'>
+      <image style='width:100%;height:100%;z-index:9998;' src="http://ucardstorevideo.b0.upaiyun.com/perfectCP/share.svg"></image>   
+    </button>
+    <cover-text class="userinfo-nickname">邀请</cover-text>
+  </view>
+
+
+</view>

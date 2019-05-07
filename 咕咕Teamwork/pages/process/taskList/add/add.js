@@ -457,6 +457,35 @@ Page({
         'Task': _edit_info
       }
     });
-  }
+  },
+onShareAppMessage: function (res) {
+    const that = this
+    console.log('this.data', this.data.cpId)
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    return {
+      title: '邀请您加入我的项目',
+      path: '/pages/home/home',
+      imageUrl:'/images/image_gugu_secretary.jpg',
+      success: function (res) {
+        console.log('res.shareTickets[0]' + res.shareTickets[0])
+        wx.showShareMenu({
+          withShareTicket:true
+        })
+        wx.getShareInfo({
+          shareTicket: res.shareTickets[0],
+          success: function (res) { 'success' + console.log(res) },
+          fail: function (res) { 'fail' + console.log(res) },
+          complete: function (res) { 'complete' + console.log(res) }
+        })
+      },
+      fail: function (res) {
+        // 分享失败
+        console.log(res)
+      }
+    }
 
+  }
 })

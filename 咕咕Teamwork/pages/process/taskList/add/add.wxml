@@ -28,6 +28,7 @@
           </view>
         </picker>
       </view>
+      <button open-type='share' class='sharebutton'>邀请好友</button>
     </view>
 
     <button class="st-button no-border" formType="submit">新建</button>
