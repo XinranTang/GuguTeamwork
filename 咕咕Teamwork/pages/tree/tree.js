@@ -16,6 +16,7 @@ var URGENCY = 'Urgency';
 var SELF = 'Self';
 var CHILD = 'Child';
 var TEAM_MATES = 'TeamMates'
+var PARENT = 'Parent'
 
 import CanvasDrag from '../../components/canvas-drag/canvas-drag';
 Page({
@@ -51,50 +52,50 @@ Page({
           },
           "Self": 0,
           "Child": [
+            1,2
+          ],
+          "TeamMates": [
+            "testopenid"
+          ]
+        },
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid2",
+            "Title": "跟随教学引导",
+            "Pusher": "咕咕鸡",
+            "Content": "这是一个测试子任务",
+            "Status": false,
+            "PushDate": "2019-04-01T00:00:00Z",
+            "DeadLine": "2100-01-01T00:00:00Z",
+            "Urgency": 3
+          },
+          "Self": 1,
+          "Child": [
             0
           ],
           "TeamMates": [
             "testopenid"
           ]
         },
-        // {
-        //   "Task": {
-        //     "TaskID": "testopenidtaskid2",
-        //     "Title": "跟随教学引导",
-        //     "Pusher": "咕咕鸡",
-        //     "Content": "这是一个测试子任务",
-        //     "Status": false,
-        //     "PushDate": "2019-04-01T00:00:00Z",
-        //     "DeadLine": "2100-01-01T00:00:00Z",
-        //     "Urgency": 3
-        //   },
-        //   "Self": 1,
-        //   "Child": [
-        //     0
-        //   ],
-        //   "TeamMates": [
-        //     "testopenid"
-        //   ]
-        // },
-        // {
-        //   "Task": {
-        //     "TaskID": "testopenidtaskid3",
-        //     "Title": "尝试使用咕咕",
-        //     "Pusher": "咕咕鸡",
-        //     "Content": "这是一个测试子任务",
-        //     "Status": false,
-        //     "PushDate": "2019-04-01T00:00:00Z",
-        //     "DeadLine": "2100-01-01T00:00:00Z",
-        //     "Urgency": 3
-        //   },
-        //   "Self": 2,
-        //   "Child": [
-        //     0
-        //   ],
-        //   "TeamMates": [
-        //     "testopenid"
-        //   ]
-        // }
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid3",
+            "Title": "尝试使用咕咕",
+            "Pusher": "咕咕鸡",
+            "Content": "这是一个测试子任务",
+            "Status": false,
+            "PushDate": "2019-04-01T00:00:00Z",
+            "DeadLine": "2100-01-01T00:00:00Z",
+            "Urgency": 3
+          },
+          "Self": 2,
+          "Child": [
+            0
+          ],
+          "TeamMates": [
+            "testopenid"
+          ]
+        }
       ],
       "TreeId": "testtasktree",
       "TreeName": "testproject"
@@ -274,7 +275,9 @@ Page({
         },
         selected_node:obj
       });
+      console.log(this.data.selected_node[SELF] + "的父亲结点是:" + this.data.selected_node[PARENT] + ",它的id是" + CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT])[TASK][TASK_ID]);
     }
+   
   },
   onAddNode: function(e) {
     CanvasDrag.onAddNode();
