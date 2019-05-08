@@ -35,8 +35,8 @@ var DEADLINE = 'DeadLine';
 var URGENCY = 'Urgency';
 var SELF = 'Self';
 var CHILD = 'Child';
-var TEAM_MATES = 'TeamMates'
-
+var TEAM_MATES = 'TeamMates';
+var PARENT = 'Parent';
 
 const DEBUG_MODE = false; // 打开调试后会渲染操作区域边框（无背景时有效）
 // attrs就是传入数据库字段
@@ -851,6 +851,7 @@ Component({
       },
       Self: this.treeRawArr.length,
       Child: [0],
+      Parent: -1,
       TeamMates: ["tt"]
     }) {
       var x_offset = 20,
@@ -858,6 +859,7 @@ Component({
       //↓↓把这部分换成访问服务器就可以了
       var fromNode = this.tempGraphArr[0];
       var index = fromNode.taskattrs[SELF];
+      newNodeAttr['Parent'] = index;
       this.treeRawArr.push(newNodeAttr);
       if (this.treeRawArr[index][CHILD][0] == 0) {
         this.treeRawArr[index][CHILD] = [];
@@ -940,6 +942,15 @@ Component({
         this.treeRawArr[arrIndex] = thisTask;
       }
 
+      //初始化Parent
+
+      for(var i = 0;i <this.treeRawArr.length;i++){
+        var childs = this.treeRawArr[i][CHILD];
+        for(var j =0;j<childs.length;j++){
+          this.treeRawArr[childs[j]][PARENT]=i;
+        }
+      }
+
       var rootTaskNode = this.treeRawArr[0];
       var newgraph = new dragGraph({
         x: initX,
@@ -1000,7 +1011,7 @@ Component({
     //@param self int
     getTaskByIndex(self) {
       for (var i = 0; i < this.treeRawArr.length; i++) {
-        var thistask = treeRawArr[i];
+        var thistask = this.treeRawArr[i];
         if (self == thistask[SELF])
           return thistask;
       }

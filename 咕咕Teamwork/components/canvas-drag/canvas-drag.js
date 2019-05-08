@@ -162,4 +162,13 @@ CanvasDrag.changeNodeInfo = (newInfo) => {
   }
 };
 
+CanvasDrag.getTaskByIndex = (index) => {
+  const canvasDrag = CanvasDrag();
+  if (!canvasDrag) {
+    console.error('请设置组件的id="canvas-drag"!!!');
+  } else {
+    return CanvasDrag().getTaskByIndex(index);
+  }
+};
+
 export default CanvasDrag;
