@@ -15,6 +15,8 @@ var URGENCY = 'Urgency';
 var SELF = 'Self';
 var CHILD = 'Child';
 var TEAM_MATES = 'TeamMates'
+var PARENT = 'Parent'
+
 var app = getApp();
 import CanvasDrag from '../../../../components/canvas-drag/canvas-drag';
 var util = require('../../../../utils/util.js')
@@ -226,6 +228,29 @@ Page({
   onAddNode: function (e) {
     var self = this;
     CanvasDrag.onAddNode();
+    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    console.log(text_selected_node)
+    var json = {
+      "OpenId": self.data.user,
+      "Title": text_selected_node.Title,
+      "Content": text_selected_node.Content,
+      "Deadline": text_selected_node.DeadLine,
+      "Urgency": text_selected_node.Urgenncy,
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "Parent": text_selected_node.Parent,
+    };
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/newNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("任务结点添加成功")
+      }
+    })
   },
   onDelNode: function (e) {
     CanvasDrag.onDelNode();
@@ -237,7 +262,7 @@ Page({
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
       "TaskID": text_selected_node.TaskID,
-      "Parent": ""
+      "Parent": text_selected_node.Parent
     };
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',
