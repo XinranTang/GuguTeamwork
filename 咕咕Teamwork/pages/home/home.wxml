@@ -1,4 +1,5 @@
 <!--pages/home/home.wxml-->
+<text>{{inffff}}</text>
 <!-- 左侧日程表模块 -->
 <view style='padding:30rpx'>
   <!-- 日历 -->

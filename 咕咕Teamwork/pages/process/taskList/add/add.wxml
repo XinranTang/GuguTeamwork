@@ -43,8 +43,6 @@
   <text>{{text_selected_node}}</text>
   <view>
     <view class="btn" bindtap="onClearCanvas">清空画布</view>
-    <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view>
-    <view class="btn" bindtap="onInitByTree">通过data数据生成树</view>
     <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'>编辑</view>
     <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加</view>
     <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复</view>

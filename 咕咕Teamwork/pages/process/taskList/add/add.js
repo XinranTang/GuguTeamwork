@@ -24,6 +24,7 @@ Page({
    */
   data: {
     name: '',
+    user: "",
     deadline: '',
     infor: '',
     hide: false,
@@ -31,10 +32,11 @@ Page({
     y:0,
     h:220,
     w:220,
-    date: '2000-01-01',
+    date: '2019-01-01',
     time: '12:00',
     text_selected_node: '...',
     createTask:false,
+    clicked:false,
     tempT:{},
     edit_info: {
       Title: '',
@@ -56,10 +58,15 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function (options) {
-    this.setData({
-      h : app.globalData.windowHeight,
-      w : app.globalData.windowWidth
+  onLoad: function (e) {
+    var self = this;
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function(res) {
+        self.setData({
+          user:res.data.OpenId
+        })
+      },
     })
   },
 
@@ -169,20 +176,10 @@ Page({
 
     CanvasDrag.initByArr(temp_theme);
   },
-
-  onSetData() {
-    //这里写连接数据库获取json之类的东西
-    //然后setdata
-    //这个页面获取的是一个Tree
-
-    /*var tree = 访问服务器();
-      this.setData({oneTaskTree:tree})
-      */
-  },
   // 通过data里的数据生成树状图
   onInitByTree() {
     console.log(this.data.oneTaskTree)
-    this.onSetData();
+    // this.onSetData();
     CanvasDrag.clearCanvas();
     CanvasDrag.initByTreeArr(this.data.oneTaskTree.Tree);
 
@@ -227,6 +224,7 @@ Page({
     }
   },
   onAddNode: function (e) {
+    var self = this;
     CanvasDrag.onAddNode();
   },
   onDelNode: function (e) {
@@ -234,6 +232,25 @@ Page({
   },
   onDoDel: function (e) {
     CanvasDrag.onDoDel();
+    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    console.log(text_selected_node)
+    var json = {
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "TaskID": text_selected_node.TaskID,
+      "Parent": ""
+    };
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("任务结点删除成功")
+      }
+    })
   },
   /**
    * Lifecycle function--Called when page show
@@ -246,33 +263,35 @@ Page({
    * Lifecycle function--Called when page hide
    */
   onHide: function () {
-    // if(this.data.createTask==false){
-    //   wx.showModal({
-    //     title: '任务还未创建完成',
-    //     content: '确定要退出任务创建？',
-    //     showCancel: true,//是否显示取消按钮
-    //     cancelText: "否",//默认是“取消”
-    //     cancelColor: 'red',//取消文字的颜色
-    //     confirmText: "是",//默认是“确定”
-    //     confirmColor: 'black',//确定文字的颜色
-    //     success: function (res) {
-    //       if (res.cancel) {
-    //         //点击取消,默认隐藏弹框
-    //       } else {
-    //         wx.navigateBack({
-              
-    //         })
-    //       }
-    //     },
-    //   })
-    // }
+   
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
   onUnload: function () {
-
+    var self = this;
+    if (this.data.createTask == false) {
+          if(this.data.clicked==true){
+              var json = {
+                "TreeID": self.data.oneTaskTree.TreeId,
+                "TaskID": self.data.oneTaskTree.TreeName,
+                "Parent": ""
+              };
+              wx.request({
+                url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+                header: {
+                  'content-type': "application/x-www-form-urlencoded"
+                },
+                method: 'POST',
+                data: JSON.stringify(json),
+                dataType: JSON,
+                success: function (res) {
+                  console.log("任务取消创建成功")
+                }
+              })
+            }
+          }
   },
 
   /**
@@ -295,16 +314,44 @@ Page({
   onShareAppMessage: function () {
 
   },
+  /**
+   * 任务创建逻辑：
+   * 用户首先填写任务名等
+   * 然后发邀请给好友【这里怎么邀请呢？】 暂时方案是发送数据给服务器，生成带有信息的小程序码，用户扫描后就能进入任务
+   * 在任务创建过程中是不会给管理者显示邀请的用户的【有点问题】
+   * 点击新建按钮后，连接服务器，服务器新建一棵树后返回Task ID【这里如果不想建立任务退出了的话怎么办呢？】【连接服务器请求删除（问一下删除的接口）】
+   * 新建完了用户可以开始构建任务树，点击任务创建完成，进入createTask
+   * 
+   * 用户在添加每一个结点后点击结点都跳出一个框，填写具体的一些信息【但是这里有限制，比如截止时间不能比整个项目的截止时间迟】
+   * 
+   */
+  // 用户点击新建按钮
   handleClick: function(e){
-    
     var that = this;
     var openid = '';
+    var start_date = new Date(that.data.date.replace(/-/g, "/"))
+    var current_date = new Date()
+    that.setData({
+      clicked:true
+    })
+    // 输入检查
     if(e.detail.value.name==null||e.detail.value.name.length==0){
       wx.showToast({
         title: '请输入任务名',
         icon:'none'
       })
+    } else if (e.detail.value.content == null || e.detail.value.content.length == 0) {
+      wx.showToast({
+        title: '请输入任务信息',
+        icon: 'none'
+      })
+    }else if(current_date.getTime()>=start_date.getTime()){
+      wx.showToast({
+        title: '截止时间无效',
+        icon:'none'
+      })
     }else{
+      // 本地储存调UserInfor
       wx.getStorage({
         key: 'UserInfor',
         success: function (res) {
@@ -316,6 +363,7 @@ Page({
             "Deadline": that.data.date + "T" + that.data.time + ":00Z",
             "Urgency": "3"
           };
+          // 连接服务器    【这里的请求服务器，是直接给我添加了一棵树吗？？这里有一点】
           wx.request({
             url: 'https://www.fracturesr.xyz/gugu/newProject',
             header: {
@@ -325,6 +373,7 @@ Page({
             data: JSON.stringify(json),
             dataType: JSON,
             success: function (res) {
+              // 服务器请求成功，设置页面数据
               var index = 'oneTaskTree.Tree'
               var t = res.data
               that.setData({
@@ -353,8 +402,9 @@ Page({
                       ]
                     },
                   ],
-                  "TreeId": "testtasktree",
-                  "TreeName": "testproject"
+                  // 树的名字和ID等于根节点任务的名字和ID
+                  "TreeId": res.data,
+                  "TreeName": json.Name
                 },
                 hide: true
               });
@@ -394,6 +444,15 @@ Page({
       time: e.detail.value
     })
   },
+/**
+ * createTask逻辑
+ * 这里表示用户确定任务创建完成了，点击按钮以后应该让用户回到上一层界面
+ * 获取本地UserInfor储存，把新任务（根节点）添加到用户的Tasks和Manage字符串里面【只用添加根结点就可以了吗？】【马上去任务显示的界面看一下管理任务的那棵树是怎么从本地找的】
+ * 【这里不能传一整课树】
+ * 【每一步都要跟服务器连接改，这里在本地添加一棵整的就可以】
+ * 
+ */
+  // 用户点击了树形图里的任务创建完成按钮，正式创建任务
   createTask: function () {
     var self = this;
     var arr = [];
@@ -424,10 +483,16 @@ Page({
           key: 'UserInfor',
           data: res.data,
         })
+        wx.navigateBack({
+          
+        })
       },
     })
   },
   // 显示编辑框
+  /**
+   * 这里能不能不用modal，因为要添加小组成员
+   */
   onEditNode: function (e) {
     this.setData({
       isEdit: true
@@ -435,10 +500,32 @@ Page({
   },
   // 编辑框确认按钮
   editConfirm: function (e) {
+    var self = this;
     this.setData({
       isEdit: false
     })
+    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    var json={
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "TaskID": text_selected_node.TaskID,
+      "Title": text_selected_node.Title,
+      "Content": text_selected_node.Content,
+      "Deadline": text_selected_node.DeadLine,
+      "Urgency": text_selected_node.Urgency
+    }
     CanvasDrag.changeNodeInfo(this.data.edit_info);
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/alterNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("把结点编辑信息传给服务器成功")
+      }
+    })
   },
   // 编辑框取消按钮
   editCancel: function (e) {
@@ -459,32 +546,24 @@ Page({
     });
   },
 onShareAppMessage: function (res) {
-    const that = this
+    const that = this;
+    var boss = "";
     console.log('this.data', this.data.cpId)
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function(res) {
+        boss = res.data.OpenId
+      },
+    })
     if (res.from === 'button') {
       // 来自页面内转发按钮
       console.log(res.target)
     }
     return {
       title: '邀请您加入我的项目',
-      path: '/pages/home/home',
+      path: '/pages/home/home?boss='+boss,
+      // path:'/pages/process/taskList/add/add',
       imageUrl:'/images/image_gugu_secretary.jpg',
-      success: function (res) {
-        console.log('res.shareTickets[0]' + res.shareTickets[0])
-        wx.showShareMenu({
-          withShareTicket:true
-        })
-        wx.getShareInfo({
-          shareTicket: res.shareTickets[0],
-          success: function (res) { 'success' + console.log(res) },
-          fail: function (res) { 'fail' + console.log(res) },
-          complete: function (res) { 'complete' + console.log(res) }
-        })
-      },
-      fail: function (res) {
-        // 分享失败
-        console.log(res)
-      }
     }
 
   }

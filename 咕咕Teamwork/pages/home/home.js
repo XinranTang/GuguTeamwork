@@ -53,6 +53,7 @@ Page({
     self.setData({
       dateNow:sdate
     })
+    console.log(options.id)
     wx.getStorage({
       key: 'Schedule',
       success: function (res) {
@@ -74,7 +75,10 @@ Page({
         console.log("从本地获取日程表失败")
       }
     });
-
+    wx.showShareMenu({
+      // 要求小程序返回分享目标信息
+      withShareTicket: true
+    }); 
   },
 
   /**
