@@ -58,5 +58,6 @@
     "i-collapse-item": "../dist/collapse-item/index",
     "i-input": "../dist/input/index",
     "i-modal": "../dist/modal/index"
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

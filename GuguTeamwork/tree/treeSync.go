@@ -9,26 +9,28 @@ import (
 )
 
 //每隔这个时间会将新的信息刷到数据库内
-const dBFlushInterval = time.Minute * 1
+const dBFlushInterval = time.Second * 80
 
 func DBFlusher() {
 	log.Println("Flusher started")
 	var collector []string
-	var update = make(map[string][]utils.TaskNode)
+	var update map[string][]utils.TaskNode
 	var opes []*utils.Ope
 	var ticker = time.NewTicker(dBFlushInterval)
 
 	for {
 		<-ticker.C
-		forest.MRMMutex.RLock()
+		update = make(map[string][]utils.TaskNode)
+		forest.MRMMutex.Lock()
 		{
 			for k, v := range forest.Monitors {
 				if v.UpdateSig == true {
 					collector = append(collector, k)
+					v.UpdateSig = false
 				}
 			}
 		}
-		forest.MRMMutex.RUnlock()
+		forest.MRMMutex.Unlock()
 		forest.ORMMutex.RLock()
 		forest.PRMMutex.RLock()
 		for _, v := range collector {
@@ -45,7 +47,7 @@ func DBFlusher() {
 			}
 		}
 		forest.ORMMutex.RUnlock()
-
+		collector = collector[0:0]
 		db := sqlmanip.ConnectTaskDB()
 		for k, v := range update {
 			err := sqlmanip.FlushTreeData(db, k, v)

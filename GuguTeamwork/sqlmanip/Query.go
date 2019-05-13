@@ -58,6 +58,23 @@ func QueryUserInfo(db *sql.DB, openid string) *utils.UserInfo {
 	return &AUserInfo
 }
 
+func QueryPrivateInfo(db *sql.DB, openid string) *utils.PrivateInfo {
+	var AInfo utils.PrivateInfo
+
+	var order = "SELECT * FROM user_infor WHERE ID='" + openid + "';"
+	err := db.QueryRow(order).Scan(
+		&AInfo.ID,
+		&AInfo.Name,
+		&AInfo.Sign,
+		&AInfo.Sex,
+		&AInfo.Phone,
+		&AInfo.Mail,
+		&AInfo.Position,
+		&AInfo.Ability)
+	utils.CheckErr(err, "QueryPrivateInfo:query")
+	return &AInfo
+}
+
 func QueryOpenIdToString(db *sql.DB, header string, table string, openid string) (string, error) {
 	var order = "SELECT " + header + " FROM " + table + " WHERE OpenId='" + openid + "';"
 	var tempStr string
