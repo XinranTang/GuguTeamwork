@@ -167,6 +167,11 @@ Page({
     var dataSet = e.currentTarget.dataset;
     var index = dataSet.index;
     app.globalData.color.Blue = this.data.ColorList[index].color;
+    //修改topbar颜色
+    wx.setNavigationBarColor({
+      backgroundColor: this.data.ColorList[index].color,
+      frontColor: "#ffffff"
+    });
     if(index ==0){
       index = 1;
     }
@@ -178,6 +183,10 @@ Page({
     var dataSet = e.currentTarget.dataset;
     var index = dataSet.index;
     app.globalData.color.Blue = this.data.ColorList[index].light;
+    wx.setNavigationBarColor({
+      backgroundColor: app.globalData.color.Blue,
+      frontColor: '#ffffff'
+    });
     if (index == 0) {
       index = 1;
     }

@@ -1,0 +1,71 @@
+/* pages/page/myAssociate/myAssociate.wxss */
+page{
+  height: 100%;
+}
+.backImage{
+  width:100%;
+  height:100%;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+} 
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height:50%;
+}
+.userinfoB {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height:50%;
+  padding-top: 80rpx;
+}
+.userinfo-avatar {
+  width: 260rpx;
+  height: 260rpx;
+  margin-top: 180rpx;
+  border-radius: 50%;
+  z-index: 9998;
+}
+.userinfo-nickname {
+  color: #aaa;
+  z-index: 9998;
+}
+.share{
+  background-color:  white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height:50%;
+}
+.sharebutton{
+  width: 260rpx;
+  height: 260rpx;
+  margin-top: 250rpx;
+  border-radius: 50%;
+  z-index: 9998;
+}
+.start{
+  background-color:  white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height:50%;
+}
+.startbutton{
+  width: 200rpx;
+  height: 200rpx;
+  margin-top: -550rpx;
+  border-radius: 50%;
+  z-index: 9998;
+}
+.startbutton-text{
+ 
+   padding-top: 200rpx;
+
+}

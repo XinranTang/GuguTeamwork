@@ -158,6 +158,7 @@ Page({
 
   },
   getUserInfo: function (e) {
+    var self = this;
     console.log(e)
     app.globalData.userInfo = e.detail.userInfo
     this.setData({
@@ -207,12 +208,30 @@ Page({
             })
           }
         })
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/personal',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: "testopenid"
+          },
+          success(res) {
+            wx.setStorage({
+              key: 'Personal',
+              data: res.data,
+            })
+            app.globalData.personal = res.data
+          }
+        })
       },
       fail() {
         console.log("在授权后取得用户信息失败")
       }
     })
   },
+
   /**
    * Called when user click on the top right corner to share
    */
@@ -247,6 +266,11 @@ Page({
   intoFunc6: function () {
     wx.navigateTo({
       url: '../page/myMarkDown/myMarkDown',
+    })
+  },
+  intoFunc7: function () {
+    wx.navigateTo({
+      url: '../page/myAssociate/myAssociate',
     })
   },
   intoFunc8:function(){

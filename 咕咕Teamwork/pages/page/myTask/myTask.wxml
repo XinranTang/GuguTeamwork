@@ -1,25 +1,54 @@
 <!--pages/page/myTask/myTask.wxml-->
-<view class = "layer">
-  <!-- <view class="caption-title">
-    <text>我的任务</text>
-  </view> -->
-    <i-collapse name="{{name}}">
-        <i-collapse-item title="我加入的项目" name="name1">
-            <view slot="content" wx:for="{{ctasks}}" bindtap='toTask' wx:for-item="task" data-data="{{task.data}}" data-index="{{index}}" data-id="{{task.TaskID}}">
-              <i-card title="{{task.Title}}" extra="{{task.DeadLine}}" thumb="../../images/icon2.jpg">
-                <!-- <view slot="content">消息发送者</view>
-                <view slot="footer">尾部内容</view> -->
-              </i-card>  
+<wxs src="../../../wxs/sub.wxs" module="tools" />
+<view class="st-bg-image"></view>
+<view class="layer st-radius-view task-all">
+  <i-collapse name="{{name}}">
+    <view style="right: 30rpx;top:25rpx;position: absolute" bindtap='addTask'>
+      <!-- <i-icon type="add" size="30" color="{{color.Orange}}" /> -->
+      <text class="st-text-tag">创建</text>
+    </view>
+    <i-collapse-item title="我管理的项目" name="name2">
+        <view slot="content" wx:for='{{mtasks}}' i-class-content="green-text" bindtap='toTask' wx:for-item="task" data-data="{{item.data}}" data-id="{{task.TaskID}}" data-index="{{index}}">
+          <view id="each-task" class="horizontal task-view">
+            <view>
+              <image class="task-image" src='/images/icon2.jpg'></image>
             </view>
-        </i-collapse-item>
-        <view style="right: 20rpx;position: absolute" bindtap='addTask'><i-icon type="add" size="42" color="{{color.Orange}}"/></view>
-        <i-collapse-item title="我管理的项目" name="name2">
-            <view slot="content" wx:for='{{mtasks}}' i-class-content="green-text" bindtap='toTask' wx:for-item="task" data-data="{{item.data}}" data-id="{{task.TaskID}}" data-index="{{index}}">
-              <i-card title="{{task.Title}}" extra="{{task.DeadLine}}" thumb="../../images/icon2.jpg">
-                <!-- <view slot="content">消息发送者</view>
-                <view slot="footer">尾部内容</view> -->
-              </i-card>  
+            <view class="vertiacl task-content" style="">
+              <view class="horizontal" style="height:50%">
+                <view class="task-title">{{task.Title}}</view>
+              </view>
+              <view class="horizontal" style="height:50%;align-items:flex-end">
+                <text class="iconfont icon-ionc--1"></text>
+                <view slot="content" class="task-pusher" style="width:50%">{{task.Pusher}}</view>
+                <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">截止时间:{{tools.sub(task.DeadLine,0,10)}}</view>
+              </view>
             </view>
-        </i-collapse-item>
-    </i-collapse>
+          </view>
+        </view>
+    </i-collapse-item>
+
+
+    <i-collapse-item title="我加入的项目" name="name1">
+      <view slot="content" wx:for="{{ctasks}}" bindtap='toTask' wx:for-item="task" data-data="{{task.data}}" data-index="{{index}}" data-id="{{task.TaskID}}">
+        <view id="each-task" class="horizontal task-view">
+          <view>
+            <image class="task-image" src='/images/icon2.jpg'></image>
+          </view>
+          <view class="vertiacl task-content" style="">
+            <view class="horizontal" style="height:50%">
+              <view class="task-title">{{task.Title}}</view>
+            </view>
+            <view class="horizontal" style="height:50%;align-items:flex-end">
+              <text class="iconfont icon-ionc--1"></text>
+              <view slot="content" class="task-pusher" style="width:50%">{{task.Pusher}}</view>
+              <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">截止时间:{{tools.sub(task.DeadLine,0,10)}}</view>
+            </view>
+          </view>
+        </view>
+
+      </view>
+    </i-collapse-item>
+
+  
+  </i-collapse>
 </view>

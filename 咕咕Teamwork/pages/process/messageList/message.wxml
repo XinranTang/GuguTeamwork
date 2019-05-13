@@ -1,14 +1,13 @@
 <!--pages/process/messageList/message.wxml-->
-<view>
-  <view id="title">
-    <text>消息信息</text>
-  </view>
-  <view>消息标题：{{title}}</view>
-  <view>消息发布者：{{pusher}}</view>
-  <view>内容：{{content}}</view>
-  <view>发布时间：{{pushDate}}</view>
-  <view>阅读期限：{{finalDeleteDate}}</view>
-  <i-button bind:click="iKnow">我了解了</i-button>
-  <i-button bind:click="markDown">添加到记事本</i-button>
-
+<view class="st-bg-image"></view>
+<view class="vertical st-radius-view" style="padding:30rpx">
+  <view class="line">消息标题：{{title}}</view>
+  <view class="line">消息发布者：{{pusher}}</view>
+  <view class="line">内容：{{content}}</view>
+  <view class="line">发布时间：{{pushDate}}</view>
+  <view class="line">阅读期限：{{finalDeleteDate}}</view>
 </view>
+
+ <button class="st-button no-border" bindtap="iKnow">我了解了</button>
+  <button class="st-button no-border" bindtap="markDown">添加到记事本</button>
+

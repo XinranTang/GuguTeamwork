@@ -1,32 +1,87 @@
 <!--pages/page/myMessage/myMessage.wxml-->
-<view class = "layer">
+<wxs src="../../../wxs/sub.wxs" module="tools" />
+<view class="st-bg-image"></view>
+
+<view class="layer msg-all st-radius-view">
   <!-- <view class="caption-title">
     <text>我的消息</text>
   </view> -->
   <i-collapse name="{{name}}">
     <i-collapse-item title="未读消息" name="name1">
       <view slot="content" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
-        <i-card wx:if="{{message.Status==false}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg">
-          <view slot="content">{{message.Pusher}}</view>
-          <!-- <view slot="footer">尾部内容</view> -->
-        </i-card>  
+        <!-- <i-card wx:if="{{message.Status==false}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg"> -->
+        <view id="each-message" class="horizontal msg-view" wx:if="{{message.Status==false}}">
+          <view>
+            <image class="msg-image" src='/images/icon2.jpg'></image>
+          </view>
+          <view class="vertiacl msg-content" style="">
+            <view class="horizontal" style="height:50%">
+              <view class="msg-title">{{message.Title}}</view>
+            </view>
+            <view class="horizontal" style="height:50%;align-items:flex-end">
+              <text class="iconfont icon-ionc--1"></text>
+              <view slot="content" class="msg-pusher" style="width:50%">{{message.Pusher}}</view>
+              <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">{{tools.sub(message.PushDate,0,10)}}</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 多放一个测试效果 -->
+        <!-- <view id="each-message" class="horizontal msg-view" wx:if="{{message.Status==false}}">
+          <view>
+            <image class="msg-image" src='/images/icon2.jpg'></image>
+          </view>
+          <view class="vertiacl msg-content" style="">
+            <view class="horizontal" style="height:50%">
+              <view class="msg-title">{{message.Title}}</view>
+            </view>
+            <view class="horizontal" style="height:50%;align-items:flex-end">
+              <text class="iconfont icon-ionc--1"></text>
+              <view slot="content" class="msg-pusher" style="width:50%">{{message.Pusher}}</view>
+              <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">{{tools.sub(message.PushDate,0,10)}}</view>
+            </view>
+          </view>
+        </view> -->
+
+        <!-- </i-card>   -->
       </view>
     </i-collapse-item>
     <i-collapse-item title="已读消息" name="name2">
       <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
-        <i-card wx:if="{{message.Status==true}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg" full = "true">
-          <view slot="content">{{message.Pusher}}</view>
-          <!-- <view slot="footer">尾部内容</view> -->
-        </i-card>  
+       <view id="each-message" class="horizontal msg-view" wx:if="{{message.Status==true}}">
+          <view>
+            <image class="msg-image" src='/images/icon2.jpg'></image>
+          </view>
+          <view class="vertiacl msg-content" style="">
+            <view class="horizontal" style="height:50%">
+              <view class="msg-title">{{message.Title}}</view>
+            </view>
+            <view class="horizontal" style="height:50%;align-items:flex-end">
+              <text class="iconfont icon-ionc--1"></text>
+              <view slot="content" class="msg-pusher" style="width:50%">{{message.Pusher}}</view>
+              <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">{{tools.sub(message.PushDate,0,10)}}</view>
+            </view>
+          </view>
+        </view>
       </view>
     </i-collapse-item>
     <i-collapse-item title="已发布消息" name="name3">
       <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
-      <!-- TODO：自己发布的消息是怎么区分的 -->
-        <i-card wx:if="{{message.Status==true}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg" full = "true">
-          <view slot="content">{{message.Pusher}}</view>
-          <!-- <view slot="footer">尾部内容</view> -->
-        </i-card>  
+        <view id="each-message" class="horizontal msg-view" wx:if="{{message.Status==true}}">
+          <view>
+            <image class="msg-image" src='/images/icon2.jpg'></image>
+          </view>
+          <view class="vertiacl msg-content" style="">
+            <view class="horizontal" style="height:50%">
+              <view class="msg-title">{{message.Title}}</view>
+            </view>
+            <view class="horizontal" style="height:50%;align-items:flex-end">
+              <text class="iconfont icon-ionc--1"></text>
+              <view slot="content" class="msg-pusher" style="width:50%">{{message.Pusher}}</view>
+              <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">{{tools.sub(message.PushDate,0,10)}}</view>
+            </view>
+          </view>
+        </view>
       </view>
     </i-collapse-item>
   </i-collapse>

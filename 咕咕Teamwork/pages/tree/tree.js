@@ -16,6 +16,7 @@ var URGENCY = 'Urgency';
 var SELF = 'Self';
 var CHILD = 'Child';
 var TEAM_MATES = 'TeamMates'
+var PARENT = 'Parent'
 
 import CanvasDrag from '../../components/canvas-drag/canvas-drag';
 Page({
@@ -31,7 +32,11 @@ Page({
         DeadLine:'',
         Content:''
     },
+    //解决Canvas层级太高的问题
+    canvasImg:"",
+    //是否有选中结点
     isSelected: false,
+    //是否在编辑框
     isEdit: false,
     oneTaskTree: {
       "Tree": [{
@@ -47,50 +52,50 @@ Page({
           },
           "Self": 0,
           "Child": [
+            1,2
+          ],
+          "TeamMates": [
+            "testopenid"
+          ]
+        },
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid2",
+            "Title": "跟随教学引导",
+            "Pusher": "咕咕鸡",
+            "Content": "这是一个测试子任务",
+            "Status": false,
+            "PushDate": "2019-04-01T00:00:00Z",
+            "DeadLine": "2100-01-01T00:00:00Z",
+            "Urgency": 3
+          },
+          "Self": 1,
+          "Child": [
             0
           ],
           "TeamMates": [
             "testopenid"
           ]
         },
-        // {
-        //   "Task": {
-        //     "TaskID": "testopenidtaskid2",
-        //     "Title": "跟随教学引导",
-        //     "Pusher": "咕咕鸡",
-        //     "Content": "这是一个测试子任务",
-        //     "Status": false,
-        //     "PushDate": "2019-04-01T00:00:00Z",
-        //     "DeadLine": "2100-01-01T00:00:00Z",
-        //     "Urgency": 3
-        //   },
-        //   "Self": 1,
-        //   "Child": [
-        //     0
-        //   ],
-        //   "TeamMates": [
-        //     "testopenid"
-        //   ]
-        // },
-        // {
-        //   "Task": {
-        //     "TaskID": "testopenidtaskid3",
-        //     "Title": "尝试使用咕咕",
-        //     "Pusher": "咕咕鸡",
-        //     "Content": "这是一个测试子任务",
-        //     "Status": false,
-        //     "PushDate": "2019-04-01T00:00:00Z",
-        //     "DeadLine": "2100-01-01T00:00:00Z",
-        //     "Urgency": 3
-        //   },
-        //   "Self": 2,
-        //   "Child": [
-        //     0
-        //   ],
-        //   "TeamMates": [
-        //     "testopenid"
-        //   ]
-        // }
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid3",
+            "Title": "尝试使用咕咕",
+            "Pusher": "咕咕鸡",
+            "Content": "这是一个测试子任务",
+            "Status": false,
+            "PushDate": "2019-04-01T00:00:00Z",
+            "DeadLine": "2100-01-01T00:00:00Z",
+            "Urgency": 3
+          },
+          "Self": 2,
+          "Child": [
+            0
+          ],
+          "TeamMates": [
+            "testopenid"
+          ]
+        }
       ],
       "TreeId": "testtasktree",
       "TreeName": "testproject"
@@ -228,7 +233,7 @@ Page({
   // 通过data里的数据生成树状图
   onInitByTree() {
     this.onSetData();
-    CanvasDrag.clearCanvas();
+    this.onClearCanvas();
     CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
 
   },
@@ -270,7 +275,9 @@ Page({
         },
         selected_node:obj
       });
+      console.log(this.data.selected_node[SELF] + "的父亲结点是:" + this.data.selected_node[PARENT] + ",它的id是" + CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT])[TASK][TASK_ID]);
     }
+   
   },
   onAddNode: function(e) {
     CanvasDrag.onAddNode();
@@ -283,6 +290,7 @@ Page({
   },
   // 显示编辑框
   onEditNode:function(e){
+    this.saveCanvas();
     this.setData({
       isEdit:true
     });
@@ -312,6 +320,19 @@ Page({
       }
     });
   },
+
+  saveCanvas:function(e){
+    CanvasDrag.export()
+      .then((filePath) => {
+        console.log(filePath);
+        this.setData({
+          canvasImg:filePath,
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -330,7 +351,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
-    CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
+    // CanvasDrag.initByTreeArr(this.data.oneTaskTree["Tree"]);
+    console.log(wx.canIUse('canvasContext.setShadow'));
+    console.log(wx.canIUse('canvasContext.shadowColor'));
   },
 
   /**

@@ -101,6 +101,7 @@ App({
   },
   globalData: {
     userInfo: null,
+    personal:null,
     userInforComplete:false,
     windowHeight:0,
     windowWidth:0,

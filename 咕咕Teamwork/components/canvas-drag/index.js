@@ -7,15 +7,15 @@
 const DELETE_ICON = './icon/close.png'; // 删除按钮
 const DRAG_ICON = './icon/scale.png'; // 缩放按钮
 const ADD_ICON = './icon/add.png'
-const STROKE_COLOR = 'black';
-const DELED_COLOR = 'red';
 const ROTATE_ENABLED = false;
 var DEFAULT_FONT_SIZE = 15;
 var ZOOM_ENABLE = false;
 var ADD_ENABLE = false;
 var DEL_ENABLE = false;
 
-var SELECT_COLOR = '#88caed';
+var SELECT_COLOR = 'rgba(135, 201, 237,0.8)';
+var DEFAULT_COLOR = 'rgba(180,180,180,0.8)';
+var DEL_COLOR = 'rgba(200,0,0,0.8)';
 
 var initX =150;
 var initY = 50;
@@ -35,8 +35,8 @@ var DEADLINE = 'DeadLine';
 var URGENCY = 'Urgency';
 var SELF = 'Self';
 var CHILD = 'Child';
-var TEAM_MATES = 'TeamMates'
-
+var TEAM_MATES = 'TeamMates';
+var PARENT = 'Parent';
 
 const DEBUG_MODE = false; // 打开调试后会渲染操作区域边框（无背景时有效）
 // attrs就是传入数据库字段
@@ -114,8 +114,9 @@ dragGraph.prototype = {
       this.ctx.setTextBaseline('middle');
       this.ctx.setTextAlign('center');
       //标记为删除的元素为红色
-      this.ctx.setFillStyle(this.isDeled ? DELED_COLOR : this.color);
+      this.ctx.setFillStyle(this.isDeled ? DEL_COLOR : this.color);
       textWidth = this.ctx.measureText(this.text).width;
+      //textWidth = this.w;
       textHeight = this.fontSize + 10;
       // 字体区域中心点不变，左上角位移
       this.x = this.centerX - textWidth / 2;
@@ -144,8 +145,14 @@ dragGraph.prototype = {
       this.y = this.centerY - textHeight / 2;
     }
 
-    this.ctx.setShadow(0, 0, 10, this.isDeled?'red':this.selected?SELECT_COLOR:'gray');
+    this.ctx.setShadow(0, 0, 20, this.isDeled?DEL_COLOR:this.selected?SELECT_COLOR:DEFAULT_COLOR);
+    // this.ctx.shadowColor = this.isDeled ? DEL_COLOR : this.selected ? SELECT_COLOR : DEFAULT_COLOR;
+    // this.ctx.shadowBlur = 20.0;
+    // this.ctx.shadowOffsetX = 0;
+    // this.ctx.shadowOffsetY = 0;
+    // console.log(this.ctx);
     this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10, 10);
+    //this.ctx.fillRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10);
     this.ctx.setShadow(0, 0, 0, 'black');
     // 渲染元素
     if (this.type === 'text') {
@@ -155,10 +162,7 @@ dragGraph.prototype = {
     }
     // 如果是选中状态，绘制选择虚线框，和缩放图标、删除图标
     if (this.selected) {
-      // this.ctx.setLineDash([2, 5]);
       this.ctx.setLineWidth(2);
-      // this.ctx.setStrokeStyle(STROKE_COLOR);
-      // this.ctx.lineDashOffset = 6;
       //阴影
       if (this.type === 'text') {
         //this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10,10);
@@ -192,43 +196,44 @@ dragGraph.prototype = {
     // 开始绘制
     let ctx = this.ctx;
     ctx.save();
-    ctx.beginPath()
+    ctx.setShadow(0, 0, 10, this.isDeled ? DEL_COLOR : this.selected ? SELECT_COLOR : DEFAULT_COLOR);
+    ctx.beginPath();
     // 因为边缘描边存在锯齿，最好指定使用 transparent 填充
     // 这里是使用 fill 还是 stroke都可以，二选一即可
-    ctx.setFillStyle('white')
-    // ctx.setStrokeStyle('transparent')
+    ctx.setFillStyle('white');
+     //ctx.setStrokeStyle('black')
     // 左上角
-    ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5)
+    ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5);
 
     // border-top
-    ctx.moveTo(x + r, y)
-    ctx.lineTo(x + w - r, y)
-    ctx.lineTo(x + w, y + r)
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.lineTo(x + w, y + r);
     // 右上角
-    ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2)
+    ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2);
 
     // border-right
-    ctx.lineTo(x + w, y + h - r)
-    ctx.lineTo(x + w - r, y + h)
+    ctx.lineTo(x + w, y + h - r);
+    ctx.lineTo(x + w - r, y + h);
     // 右下角
-    ctx.arc(x + w - r, y + h - r, r, 0, Math.PI * 0.5)
+    ctx.arc(x + w - r, y + h - r, r, 0, Math.PI * 0.5);
 
     // border-bottom
-    ctx.lineTo(x + r, y + h)
-    ctx.lineTo(x, y + h - r)
+    ctx.lineTo(x + r, y + h);
+    ctx.lineTo(x, y + h - r);
     // 左下角
-    ctx.arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI)
+    ctx.arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI);
 
     // border-left
-    ctx.lineTo(x, y + r)
-    ctx.lineTo(x + r, y)
+    ctx.lineTo(x, y + r);
+    ctx.lineTo(x + r, y);
 
     // 这里是使用 fill 还是 stroke都可以，二选一即可，但是需要与上面对应
-    ctx.fill()
-    // ctx.stroke()
-    ctx.closePath()
+    ctx.fill();
+    // ctx.stroke();
+    ctx.closePath();
     // 剪切
-    ctx.clip()
+    ctx.clip();
     ctx.restore();
   },
   /**
@@ -846,6 +851,7 @@ Component({
       },
       Self: this.treeRawArr.length,
       Child: [0],
+      Parent: -1,
       TeamMates: ["tt"]
     }) {
       var x_offset = 20,
@@ -853,6 +859,7 @@ Component({
       //↓↓把这部分换成访问服务器就可以了
       var fromNode = this.tempGraphArr[0];
       var index = fromNode.taskattrs[SELF];
+      newNodeAttr['Parent'] = index;
       this.treeRawArr.push(newNodeAttr);
       if (this.treeRawArr[index][CHILD][0] == 0) {
         this.treeRawArr[index][CHILD] = [];
@@ -935,6 +942,15 @@ Component({
         this.treeRawArr[arrIndex] = thisTask;
       }
 
+      //初始化Parent
+
+      for(var i = 0;i <this.treeRawArr.length;i++){
+        var childs = this.treeRawArr[i][CHILD];
+        for(var j =0;j<childs.length;j++){
+          this.treeRawArr[childs[j]][PARENT]=i;
+        }
+      }
+
       var rootTaskNode = this.treeRawArr[0];
       var newgraph = new dragGraph({
         x: initX,
@@ -995,7 +1011,7 @@ Component({
     //@param self int
     getTaskByIndex(self) {
       for (var i = 0; i < this.treeRawArr.length; i++) {
-        var thistask = treeRawArr[i];
+        var thistask = this.treeRawArr[i];
         if (self == thistask[SELF])
           return thistask;
       }

@@ -1,5 +1,4 @@
 <!--pages/process/messageList/add/add.wxml-->
-<view class="st-bg-view">
   <view class="st-bg-image"></view>
   <view class="st-radius-view" style='padding-left:30rpx;padding-right:30rpx;background-color:white'>
     <view class="cu-form-group">
@@ -28,4 +27,3 @@
     </view>
   </view>
   <button bind:click="handleClick" class="st-button no-border">新建</button>
-</view>

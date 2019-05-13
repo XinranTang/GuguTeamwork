@@ -1,19 +1,22 @@
 <!--pages/page/myInfor/myInfor.wxml-->
-<view class="st-bg-view">
+
 <view class="st-bg-image"></view>
 <view wx:if="{{show}}">请先授权！</view>
 <view wx:else>
   <view wx:if="{{complete}}">
-    <view>姓名：{{userInfo.Name}}</view>
-    <view>个人能力标签：{{userInfo.Ability}}</view>
-    <view>个性签名：{{userInfo.Sign}}</view>
-    <view>手机号码：{{userInfo.Phone}}</view>
-    <view>邮箱：{{userInfo.Mail}}</view>
-    <view>位置：{{userInfo.Position}}</view>
-    <button bindtap='changeUserInfor'>更改信息</button>
-    <button bindtap='createResume'>生成简历</button>
-    <button bindtap='createCard'>生成名片</button>
+    <view class="st-radius-view info-view">
+      <view class="line">姓名：{{userInfo.Name}}</view>
+      <view class="line">个人能力标签：{{userInfo.Ability}}</view>
+      <view class="line">个性签名：{{userInfo.Sign}}</view>
+      <view class="line">手机号码：{{userInfo.Phone}}</view>
+      <view class="line">邮箱：{{userInfo.Mail}}</view>
+      <view class="line">位置：{{userInfo.Position}}</view>
+    </view>
+    <button class="st-button no-border" bindtap='changeUserInfor'>更改信息</button>
+    <button class="st-button no-border" bindtap='createResume'>生成简历</button>
+    <button class="st-button no-border" bindtap='createCard'>生成名片</button>
   </view>
+
   <view wx:else>
     <!-- <view>补充用户信息！</view> -->
     <form bindsubmit="formSubmit">
@@ -50,5 +53,4 @@
       <button class="st-button no-border" formType="submit">提交</button>
     </form>
   </view>
-</view>
 </view>

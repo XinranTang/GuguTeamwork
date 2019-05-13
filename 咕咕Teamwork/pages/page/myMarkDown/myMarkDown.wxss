@@ -1,7 +1,4 @@
 /* pages/page/myMarkDown/myMarkDown.wxss */
-/* .page {
-  position: relative;
-} */
 .lists {
   position: absolute;
   left: 0;

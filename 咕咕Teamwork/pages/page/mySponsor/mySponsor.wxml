@@ -1,5 +1,6 @@
 <!--pages/page/mySponsor/mySponsor.wxml-->
-<view>
+<view class="st-bg-image"></view>
+<view class="st-radius-view" style="padding:30rpx">
   <text>开发人员信息\n</text>
   <text class='text-bold'>-树新风-\n</text>
   <text>队伍编号：1485503\n参赛区域：东北赛区\n参赛类别：小程序\n指导老师：李丹程\n</text>

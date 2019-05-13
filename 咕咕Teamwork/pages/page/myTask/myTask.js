@@ -9,7 +9,7 @@ Page({
     mtasks:[],
     ctasks:[],
     tasks:[],
-    name:"name1",
+    name:"name2",
     color:{}
   },
 

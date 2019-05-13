@@ -19,7 +19,9 @@
     "pages/page/mySponsor/mySponsor",
     "pages/page/myCommunity/detail/detail",
     "pages/page/myCommunity/topics/topics",
-    "pages/page/help/help"
+    "pages/tree/tree",
+    "pages/page/help/help",
+    "pages/page/myAssociate/myAssociate"
   ],
   "window": {
     "backgroundTextStyle": "light",
