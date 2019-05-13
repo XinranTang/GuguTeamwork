@@ -92,3 +92,7 @@
   padding-bottom: 5rpx;
   font-size: 28rpx;
 }
+
+.button-hover {
+  background-color: rgb(130, 194, 228) !important;
+}

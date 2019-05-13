@@ -46,6 +46,8 @@ Page({
       Content: ''
     },
     isSelected: false,
+    //解决Canvas层级太高的问题
+    canvasImg: "",
     isEdit:false,
     oneTaskTree: {
       "Tree": [
@@ -518,6 +520,7 @@ Page({
   /**
    * 这里能不能不用modal，因为要添加小组成员
    */
+  // 【modal和view差不太多吧？modal里添个按钮，或者独立出一个跟编辑同层次的按钮看上去也行】
   onEditNode: function (e) {
     this.setData({
       isEdit: true
@@ -532,11 +535,11 @@ Page({
     var text_selected_node = JSON.parse(self.data.text_selected_node)
     var json={
       "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": text_selected_node.TaskID,
-      "Title": text_selected_node.Title,
-      "Content": text_selected_node.Content,
-      "Deadline": text_selected_node.DeadLine,
-      "Urgency": text_selected_node.Urgency
+      "TaskID": text_selected_node.Task.TaskID,
+      "Title": text_selected_node.Task.Title,
+      "Content": text_selected_node.Task.Content,
+      "Deadline": text_selected_node.Task.DeadLine,
+      "Urgency": text_selected_node.Task.Urgency
     }
     CanvasDrag.changeNodeInfo(this.data.edit_info);
     wx.request({

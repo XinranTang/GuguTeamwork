@@ -1,5 +1,5 @@
 var sub = function (val, begin, end) {
-  if (val.length == 0 || val == undefined) {
+  if (val == undefined || val.length == 0) {
     return;
   }
   return val.substring(begin, end);

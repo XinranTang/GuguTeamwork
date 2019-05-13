@@ -1,6 +1,25 @@
 // pages/process/taskList/task.js
 var app = getApp()
 import CanvasDrag from '../../../components/canvas-drag/canvas-drag';
+
+// 服务器数据库字段名
+var TREE = 'Tree';
+var TREE_NAME = 'TreeName';
+var TREE_ID = 'TreeID';
+var TASK = 'Task';
+var TASK_ID = 'TaskID';
+var TITLE = 'Title';
+var PUSHER = 'Pusher';
+var CONTENT = 'Content';
+var STATUS = 'Status';
+var PUSH_DATE = 'PushDate';
+var DEADLINE = 'DeadLine';
+var URGENCY = 'Urgency';
+var SELF = 'Self';
+var CHILD = 'Child';
+var TEAM_MATES = 'TeamMates'
+var PARENT = 'Parent'
+
 Page({
 
   /**
@@ -19,6 +38,17 @@ Page({
     show:false,
     text_selected_node: '...',
     isSelected: false,
+    //选中的结点
+    selected_node: {},
+    //编辑框内的内容
+    edit_info: {
+      Title: '',
+      DeadLine: '',
+      Content: ''
+    },
+    //解决Canvas层级太高的问题
+    canvasImg: "",
+    isEdit: false,
     graph: {}
   },
 
@@ -285,12 +315,19 @@ Page({
     });
     if (this.data.text_selected_node == JSON.stringify({})) {
       this.setData({
-        isSelected: false
+        isSelected: false,
+        selected_node: {}
       });
-    }
-    else {
+    } else {
+      var obj = JSON.parse(this.data.text_selected_node);
       this.setData({
-        isSelected: true
+        isSelected: true,
+        edit_info: {
+          Title: obj[TASK][TITLE],
+          Content: obj[TASK][CONTENT],
+          DeadLine: obj[TASK][DEADLINE]
+        },
+        selected_node: obj
       });
     }
   },
@@ -302,5 +339,50 @@ Page({
   },
   onDoDel: function (e) {
     CanvasDrag.onDoDel();
+  },
+  // 显示编辑框
+  onEditNode: function (e) {
+    this.saveCanvas();
+    this.setData({
+      isEdit: true
+    });
+  },
+  // 编辑框确认按钮
+  editConfirm: function (e) {
+    this.setData({
+      isEdit: false
+    })
+    CanvasDrag.changeNodeInfo(this.data.edit_info);
+  },
+  // 编辑框取消按钮
+  editCancel: function (e) {
+    this.setData({
+      isEdit: false
+    })
+  },
+  // 编辑框失去焦点
+  editChange: function (e) {
+    var _edit_info = this.data.edit_info;
+    var type = e.target.dataset.type;
+    _edit_info[type] = e.detail.value;
+    this.setData({
+      edit_info: _edit_info,
+      selected_node: {
+        'Task': _edit_info
+      }
+    });
+  },
+
+  saveCanvas: function (e) {
+    CanvasDrag.export()
+      .then((filePath) => {
+        console.log(filePath);
+        this.setData({
+          canvasImg: filePath,
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      })
   }
 })
