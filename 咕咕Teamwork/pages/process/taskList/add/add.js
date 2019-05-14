@@ -231,14 +231,16 @@ Page({
     var text_selected_node = JSON.parse(self.data.text_selected_node)
     console.log(text_selected_node)
     var json = {
+      // 这里都是默认值，全部都得改
       "OpenId": self.data.user,
-      "Title": text_selected_node.Title,
-      "Content": text_selected_node.Content,
-      "Deadline": text_selected_node.DeadLine,
-      "Urgency": text_selected_node.Urgenncy,
+      "Title": "no title",
+      "Content": "no content",
+      "Deadline": self.data.date + "T" + self.data.time + ":00Z",
+      "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": text_selected_node.Parent,
+      "Parent": text_selected_node.Parent+"",
     };
+    console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/newNode',
       header: {
@@ -256,6 +258,7 @@ Page({
     CanvasDrag.onDelNode();
   },
   onDoDel: function (e) {
+    var self = this;
     CanvasDrag.onDoDel();
     var text_selected_node = JSON.parse(self.data.text_selected_node)
     console.log(text_selected_node)
@@ -398,6 +401,20 @@ Page({
             data: JSON.stringify(json),
             dataType: JSON,
             success: function (res) {
+// 【这里是测试代码，以后注意要删掉】
+              wx.request({
+                url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+                header: {
+                  'content-type': "application/x-www-form-urlencoded"
+                },
+                method: 'POST',
+                data: {
+                  OpenId: "testopenid"
+                },
+                success(res1) {
+                  console.log(res1.data)
+                }
+              })
               // 服务器请求成功，设置页面数据
               var index = 'oneTaskTree.Tree'
               var t = res.data
@@ -411,7 +428,7 @@ Page({
                       "Task": {
                         "TaskID": res.data,
                         "Title": json.Name,
-                        "Pusher": "本机用户", // TODO:改成昵称或者真名
+                        "Pusher": "testopenid", // TODO:改成昵称或者真名
                         "Content": json.Brief,
                         "Status": 0,
                         "PushDate": new Date(),
@@ -485,6 +502,9 @@ Page({
     wx.getStorage({
       key: 'UserInfor',
       success: function (res) {
+        self.setData({
+          createTask:true
+        })
         arr = res.data.Tasks;
         manage = res.data.Manage;
         var t = self.data.tempT.t;
@@ -493,7 +513,7 @@ Page({
         arr.push({
           "TaskID": t,
           "Title": json.Name,
-          "Pusher": "本机用户", // TODO:改成昵称或者真名
+          "Pusher": "testopenid", // TODO:改成昵称或者真名
           "Content": json.Brief,
           "Status": 0,
           "Urgency": json.Urgency,
@@ -508,6 +528,25 @@ Page({
           key: 'UserInfor',
           data: res.data,
         })
+       
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: "testopenid"
+          },
+          success(res1) {
+            console.log(res1.data)
+            wx.setStorage({
+              key: 'Forest',
+              data: res1.data,
+            })
+          }
+        })
+          
         wx.navigateBack({
           
         })
@@ -529,16 +568,18 @@ Page({
     this.setData({
       isEdit: false
     })
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
-    var json={
-      "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": text_selected_node.TaskID,
-      "Title": text_selected_node.Title,
-      "Content": text_selected_node.Content,
-      "Deadline": text_selected_node.DeadLine,
-      "Urgency": text_selected_node.Urgency
-    }
     CanvasDrag.changeNodeInfo(this.data.edit_info);
+    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    console.log(text_selected_node)
+    var json = {
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "TaskID": text_selected_node.Task.TaskID,
+      "Title": text_selected_node.Task.Title,
+      "Content": text_selected_node.Task.Content,
+      "Deadline": text_selected_node.Task.DeadLine,
+      "Urgency": text_selected_node.Task.Urgency+""
+    }
+    console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/alterNode',
       header: {
