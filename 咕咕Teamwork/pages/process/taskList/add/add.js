@@ -46,6 +46,8 @@ Page({
       Content: ''
     },
     isSelected: false,
+    //解决Canvas层级太高的问题
+    canvasImg: "",
     isEdit:false,
     oneTaskTree: {
       "Tree": [
@@ -557,6 +559,7 @@ Page({
   /**
    * 这里能不能不用modal，因为要添加小组成员
    */
+  // 【modal和view差不太多吧？modal里添个按钮，或者独立出一个跟编辑同层次的按钮看上去也行】
   onEditNode: function (e) {
     this.setData({
       isEdit: true

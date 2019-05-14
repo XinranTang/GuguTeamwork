@@ -83,6 +83,19 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 		trees = append(trees, projectTree)
 	}
 	sqlmanip.DisConnectDB(db)
+	//还需要加上刚刚新添加的树
+	tree.GetForest().PRMMutex.RLock()
+	{
+		for _, v := range tree.GetForest().Projects {
+			if v[0].Task.Pusher == r.PostFormValue("OpenId") {
+				projectTree.TreeId = v[0].Task.TaskID
+				projectTree.Tree = v
+				projectTree.TreeName = v[0].Task.Title
+				trees = append(trees, projectTree)
+			}
+		}
+	}
+	tree.GetForest().PRMMutex.RUnlock()
 
 	output, err := json.MarshalIndent(trees, "", "\t\t")
 	utils.CheckErr(err, "Trees:form json")

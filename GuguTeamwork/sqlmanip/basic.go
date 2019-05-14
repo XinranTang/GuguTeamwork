@@ -28,14 +28,30 @@ func ConnectTaskDB() *sql.DB {
 	utils.CheckErr(err, "ConnectTaskDB:open db")
 
 	stmt, err := db.Prepare("PRAGMA synchronous = NORMAL;")
-	utils.CheckErr(err, "ConnectUserDB:synchronous prepare")
+	utils.CheckErr(err, "ConnectTaskDB:synchronous prepare")
 	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectUserDB:synchronous exec")
+	utils.CheckErr(err, "ConnectTaskDB:synchronous exec")
 
 	stmt, err = db.Prepare("BEGIN TRANSACTION;")
-	utils.CheckErr(err, "ConnectUserDB:transaction prepare")
+	utils.CheckErr(err, "ConnectTaskDB:transaction prepare")
 	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectUserDB:transaction exec")
+	utils.CheckErr(err, "ConnectTaskDB:transaction exec")
+	return db
+}
+
+func ConnectPersonalDB() *sql.DB {
+	db, err := sql.Open("sqlite3", "./SQLite3/UserInfor.db")
+	utils.CheckErr(err, "ConnectPersonalDB:open db")
+
+	stmt, err := db.Prepare("PRAGMA synchronous = NORMAL;")
+	utils.CheckErr(err, "ConnectPersonalDB:synchronous prepare")
+	_, err = stmt.Exec()
+	utils.CheckErr(err, "ConnectPersonalDB:synchronous exec")
+
+	stmt, err = db.Prepare("BEGIN TRANSACTION;")
+	utils.CheckErr(err, "ConnectPersonalDB:transaction prepare")
+	_, err = stmt.Exec()
+	utils.CheckErr(err, "ConnectPersonalDB:transaction exec")
 	return db
 }
 

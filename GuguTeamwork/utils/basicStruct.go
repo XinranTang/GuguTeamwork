@@ -14,6 +14,17 @@ type UserInfo struct {
 	Level                string
 }
 
+type PrivateInfo struct {
+	ID       string
+	Name     string
+	Sign     string
+	Sex      int8
+	Phone    string
+	Mail     string
+	Position string
+	Ability  string
+}
+
 type Message struct {
 	MessageID       string
 	Title           string

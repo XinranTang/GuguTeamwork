@@ -10,7 +10,7 @@ import (
 var forest *Forest
 
 //在这个时间后树将从内存中摘掉
-const forestFlushDuration = time.Minute * 5
+const forestFlushDuration = time.Minute * 6
 
 type monitor struct {
 	Timer     *time.Timer

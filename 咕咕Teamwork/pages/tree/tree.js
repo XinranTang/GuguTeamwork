@@ -275,9 +275,10 @@ Page({
         },
         selected_node:obj
       });
-      console.log(this.data.selected_node[SELF] + "的父亲结点是:" + this.data.selected_node[PARENT] + ",它的id是" + CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT])[TASK][TASK_ID]);
+      console.log(this.data.selected_node);
+      console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT]));
     }
-   
+
   },
   onAddNode: function(e) {
     CanvasDrag.onAddNode();
