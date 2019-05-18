@@ -299,6 +299,61 @@ Page({
       text_selected_node: '{}'
     });
     CanvasDrag.clearCanvas();
+    var json = {
+      "TreeID": _this.data.oneTaskTree.TreeId,
+      "TaskID": _this.data.oneTaskTree.TaskID,
+      "Parent": ""
+    };
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("任务结点删除成功")
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: "testopenid"
+          },
+          success(res1) {
+            console.log(res1.data)
+            wx.setStorage({
+              key: 'Forest',
+              data: res1.data,
+            })
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: "testopenid"
+              },
+              success(res) {
+                wx.setStorage({
+                  key: 'Information',
+                  data: res.data,
+                })
+                app.globalData.tasks = res.data.Tasks;
+                app.globalData.messages = res.data.Messages;
+              }
+            })
+          }
+        })
+        wx.navigateBack({
+          
+        })
+      }
+    })
   },
   switchZoom: function (e) {
     CanvasDrag.enableZoom(e.detail.value);
@@ -333,19 +388,194 @@ Page({
   },
   onAddNode: function (e) {
     CanvasDrag.onAddNode();
+    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    console.log(text_selected_node)
+    var json = {
+      // 这里都是默认值，全部都得改
+      "OpenId": self.data.user,
+      "Title": "no title",
+      "Content": "no content",
+      "Deadline": self.data.date + "T" + self.data.time + ":00Z",
+      "Urgency": "0",
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "Parent": text_selected_node.Parent + "",
+    };
+    console.log(json)
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/newNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("任务结点添加成功")
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: "testopenid"
+          },
+          success(res1) {
+            console.log(res1.data)
+            wx.setStorage({
+              key: 'Forest',
+              data: res1.data,
+            })
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: "testopenid"
+              },
+              success(res) {
+                wx.setStorage({
+                  key: 'Information',
+                  data: res.data,
+                })
+                app.globalData.tasks = res.data.Tasks;
+                app.globalData.messages = res.data.Messages;
+              }
+            })
+          }
+        })
+      }
+    })
   },
   onDelNode: function (e) {
     CanvasDrag.onDelNode();
   },
   onDoDel: function (e) {
+    var self = this;
     CanvasDrag.onDoDel();
+    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    console.log(text_selected_node)
+    var json = {
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "TaskID": text_selected_node.TaskID,
+      "Parent": text_selected_node.Parent
+    };
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("任务结点删除成功")
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: "testopenid"
+          },
+          success(res1) {
+            console.log(res1.data)
+            wx.setStorage({
+              key: 'Forest',
+              data: res1.data,
+            })
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: "testopenid"
+              },
+              success(res) {
+                wx.setStorage({
+                  key: 'Information',
+                  data: res.data,
+                })
+                app.globalData.tasks = res.data.Tasks;
+                app.globalData.messages = res.data.Messages;
+              }
+            })
+          }
+        })
+      }
+    })
   },
   // 显示编辑框
   onEditNode: function (e) {
     this.saveCanvas();
+    var self = this;
     this.setData({
-      isEdit: true
-    });
+      isEdit: false
+    })
+    CanvasDrag.changeNodeInfo(this.data.edit_info);
+    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    console.log(text_selected_node)
+    var json = {
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "TaskID": text_selected_node.Task.TaskID,
+      "Title": text_selected_node.Task.Title,
+      "Content": text_selected_node.Task.Content,
+      "Deadline": text_selected_node.Task.DeadLine,
+      "Urgency": text_selected_node.Task.Urgency + ""
+    }
+    console.log(json)
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/alterNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("把结点编辑信息传给服务器成功")
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: "testopenid"
+          },
+          success(res1) {
+            console.log(res1.data)
+            wx.setStorage({
+              key: 'Forest',
+              data: res1.data,
+            })
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: "testopenid"
+              },
+              success(res) {
+                wx.setStorage({
+                  key: 'Information',
+                  data: res.data,
+                })
+                app.globalData.tasks = res.data.Tasks;
+                app.globalData.messages = res.data.Messages;
+              }
+            })
+          }
+        })
+      }
+    })
   },
   // 编辑框确认按钮
   editConfirm: function (e) {

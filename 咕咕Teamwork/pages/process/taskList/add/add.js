@@ -546,6 +546,24 @@ Page({
               key: 'Forest',
               data: res1.data,
             })
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: "testopenid"
+              },
+              success(res) {
+                wx.setStorage({
+                  key: 'Information',
+                  data: res.data,
+                })
+                app.globalData.tasks = res.data.Tasks;
+                app.globalData.messages = res.data.Messages;
+                }
+            })
           }
         })
           
@@ -634,6 +652,5 @@ onShareAppMessage: function (res) {
       // path:'/pages/process/taskList/add/add',
       imageUrl:'/images/image_gugu_secretary.jpg',
     }
-
   }
 })
