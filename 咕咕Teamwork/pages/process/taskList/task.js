@@ -398,7 +398,7 @@ Page({
       "Deadline": self.data.date + "T" + self.data.time + ":00Z",
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": text_selected_node.Parent + "",
+      "Parent": text_selected_node.Task.Parent + "",
     };
     console.log(json)
     wx.request({
@@ -459,8 +459,8 @@ Page({
     console.log(text_selected_node)
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": text_selected_node.TaskID,
-      "Parent": text_selected_node.Parent
+      "TaskID": text_selected_node.Task.TaskID,
+      "Parent": text_selected_node.Task.Parent
     };
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',

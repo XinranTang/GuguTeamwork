@@ -240,8 +240,9 @@ Page({
       "Deadline": self.data.date + "T" + self.data.time + ":00Z",
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": text_selected_node.Parent+"",
+      "Parent": text_selected_node.Task.Parent+"",// 【这个要改成父节点的任务名字】
     };
+    console.log("添加节点的json:")
     console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/newNode',
@@ -266,8 +267,8 @@ Page({
     console.log(text_selected_node)
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": text_selected_node.TaskID,
-      "Parent": text_selected_node.Parent
+      "TaskID": text_selected_node.Task.TaskID,
+      "Parent": text_selected_node.Task.Parent
     };
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',

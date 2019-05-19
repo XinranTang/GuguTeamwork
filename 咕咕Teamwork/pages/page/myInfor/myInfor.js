@@ -169,6 +169,7 @@ Page({
   createResume:function(){
     console.log("生成简历")
     //  // TODO: 向服务器发起post 【这个后端还没写】
+    // 逻辑：服务器用用户信息生成图片
     //     wx.request({
     //       url: 'https://www.fracturesr.xyz/gugu/personal',
     //       header: {
