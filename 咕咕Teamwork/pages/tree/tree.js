@@ -275,8 +275,10 @@ Page({
         },
         selected_node:obj
       });
-      console.log(this.data.selected_node);
-      console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT]));
+      //console.log(this.data.selected_node);
+      //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT]));
+      //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT])[TASK][TASKID])
+      console.log('ParentID:'+this.data.selected_node[PARENT]);
     }
 
   },
