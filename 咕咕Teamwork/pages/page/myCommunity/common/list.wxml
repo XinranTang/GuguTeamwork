@@ -51,8 +51,4 @@
     </block>
   </view>
 </scroll-view>
-
-<loading class="loading" hidden="{{hidden}}">
-  <text class="loading-font">加载中...</text>
-</loading>
 </template>

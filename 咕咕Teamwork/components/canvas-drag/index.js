@@ -859,7 +859,7 @@ Component({
       //↓↓把这部分换成访问服务器就可以了
       var fromNode = this.tempGraphArr[0];
       var index = fromNode.taskattrs[SELF];
-      newNodeAttr['Parent'] = index;
+      newNodeAttr['Parent'] = fromNode.taskattrs[TASK][TASK_ID];
       this.treeRawArr.push(newNodeAttr);
       if (this.treeRawArr[index][CHILD][0] == 0) {
         this.treeRawArr[index][CHILD] = [];
@@ -947,7 +947,9 @@ Component({
       for(var i = 0;i <this.treeRawArr.length;i++){
         var childs = this.treeRawArr[i][CHILD];
         for(var j =0;j<childs.length;j++){
-          this.treeRawArr[childs[j]][PARENT]=i;
+          //Parent字段改成TaskIDs
+          //this.treeRawArr[childs[j]][PARENT]=i;
+          this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
         }
       }
 
