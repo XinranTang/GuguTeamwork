@@ -25,12 +25,15 @@ type PrivateInfo struct {
 	Ability  string
 }
 
+//format of Read and Not Read
+//e.g. testopenid1;testopenid2;
 type Message struct {
 	MessageID       string
 	Title           string
 	Pusher          string
 	Content         string
-	Status          bool
+	Read            string
+	NotRead         string
 	PushDate        time.Time
 	FinalDeleteDate time.Time
 }

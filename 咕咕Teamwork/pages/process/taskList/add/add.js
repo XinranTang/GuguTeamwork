@@ -234,12 +234,12 @@ Page({
     console.log(text_selected_node)
     var json = {
       "OpenId": self.data.user,
-      "Title": text_selected_node.Title,
-      "Content": text_selected_node.Content,
-      "Deadline": text_selected_node.DeadLine,
-      "Urgency": text_selected_node.Urgenncy,
+      "Title": text_selected_node.Task.Title,
+      "Content": text_selected_node.Task.Content,
+      "Deadline": text_selected_node.Task.DeadLine,
+      "Urgency": text_selected_node.Task.Urgenncy,
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": text_selected_node.Parent,
+      "Parent": text_selected_node.Parent.toString(),
     };
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/newNode',

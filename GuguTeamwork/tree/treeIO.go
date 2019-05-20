@@ -1,6 +1,7 @@
 package tree
 
 import (
+	"log"
 	"sort"
 	"strconv"
 
@@ -83,6 +84,9 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 	forest.PRMMutex.Lock()
 	{
 		for i := 0; i < len(forest.Projects[Project]); i++ {
+			log.Println("compare")
+			log.Println(forest.Projects[Project][i].Task.TaskID)
+			log.Println(parent)
 			if forest.Projects[Project][i].Task.TaskID == parent {
 				if forest.Projects[Project][i].Child[0] == 0 {
 					forest.Projects[Project][i].Child[0] = TaskNode.Self
@@ -112,7 +116,11 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 	ope := BuildOpe(Project, TaskNode.Task.TaskID, int8(1))
 	forest.ORMMutex.Lock()
 	{
-		forest.Opes.Push(ope)
+		ok, err := forest.Opes.SetOff(ope)
+		utils.CheckErr(err, "DropFromTree:set off")
+		if !ok {
+			forest.Opes.Push(ope)
+		}
 	}
 	forest.ORMMutex.Unlock()
 

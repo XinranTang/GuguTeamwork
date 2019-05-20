@@ -55,6 +55,22 @@ func ConnectPersonalDB() *sql.DB {
 	return db
 }
 
+func ConnectTmpDB() *sql.DB {
+	db, err := sql.Open("sqlite3", "./SQLite3/tmp.db")
+	utils.CheckErr(err, "ConnectTmpDB:open db")
+
+	stmt, err := db.Prepare("PRAGMA synchronous = NORMAL;")
+	utils.CheckErr(err, "ConnectTmpDB:synchronous prepare")
+	_, err = stmt.Exec()
+	utils.CheckErr(err, "ConnectTmpDB:synchronous exec")
+
+	stmt, err = db.Prepare("BEGIN TRANSACTION;")
+	utils.CheckErr(err, "ConnectTmpDB:transaction prepare")
+	_, err = stmt.Exec()
+	utils.CheckErr(err, "ConnectTmpDB:transaction exec")
+	return db
+}
+
 func DisConnectDB(db *sql.DB) {
 	stmt, err := db.Prepare("COMMIT;")
 	utils.CheckErr(err, "ConnectUserDB:commit prepare")

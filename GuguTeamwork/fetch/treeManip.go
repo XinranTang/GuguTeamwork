@@ -73,6 +73,11 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 	for _, v := range utils.ParseManage(tempStr) {
 		projectTree.TreeId = v
 		tree.SafeTreeManip(v)
+		if len(tree.GetForest().Projects[v]) == 0 {
+			log.Println("trigger")
+			log.Println(v)
+			continue
+		}
 		tree.GetForest().PRMMutex.RLock()
 		{
 			projectTree.Tree = tree.GetForest().Projects[v]
@@ -82,12 +87,18 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 		utils.CheckErr(err, "Trees:query project name")
 		trees = append(trees, projectTree)
 	}
+	log.Println("表中树")
+	log.Println(trees)
+
 	sqlmanip.DisConnectDB(db)
-	//还需要加上刚刚新添加的树
+	//还需要加上刚刚新添加的树,但是不能是删掉的树
 	tree.GetForest().PRMMutex.RLock()
 	{
 		for _, v := range tree.GetForest().Projects {
-			if v[0].Task.Pusher == r.PostFormValue("OpenId") {
+			if len(v) == 0 {
+				continue
+			}
+			if v[0].Task.Pusher == r.PostFormValue("OpenId") && !strings.Contains(tempStr, v[0].Task.TaskID) {
 				projectTree.TreeId = v[0].Task.TaskID
 				projectTree.Tree = v
 				projectTree.TreeName = v[0].Task.Title
@@ -96,6 +107,8 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	tree.GetForest().PRMMutex.RUnlock()
+	log.Println("最终树")
+	log.Println(trees)
 
 	output, err := json.MarshalIndent(trees, "", "\t\t")
 	utils.CheckErr(err, "Trees:form json")
@@ -177,7 +190,11 @@ func NewProjectTree(w http.ResponseWriter, r *http.Request) {
 	ope := tree.BuildOpe(TreeId, TreeId, int8(1))
 	tree.GetForest().ORMMutex.Lock()
 	{
-		tree.GetForest().Opes.Push(ope)
+		ok, err := tree.GetForest().Opes.SetOff(ope)
+		utils.CheckErr(err, "NewProjectTree:set off")
+		if !ok {
+			tree.GetForest().Opes.Push(ope)
+		}
 	}
 	tree.GetForest().ORMMutex.Unlock()
 
@@ -195,8 +212,6 @@ func AddNewTreeNodes(w http.ResponseWriter, r *http.Request) {
 
 	if utils.CheckEmp(ANewNodeData.TreeID, ANewNodeData.OpenId, ANewNodeData.Title, ANewNodeData.Content, ANewNodeData.Deadline, ANewNodeData.Parent) {
 		tree.SafeTreeManip(ANewNodeData.TreeID)
-		log.Println("before add")
-		log.Println(tree.GetForest().Projects[ANewNodeData.TreeID])
 		var task = task.BuildTask(ANewNodeData.TreeID, ANewNodeData.OpenId, ANewNodeData.Title, ANewNodeData.Content, ANewNodeData.Deadline, ANewNodeData.Urgency)
 		var taskNode = new(utils.TaskNode)
 		taskNode.Task = *task
@@ -206,8 +221,7 @@ func AddNewTreeNodes(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(300)
 			return
 		}
-		log.Println("after add")
-		log.Println(tree.GetForest().Projects[ANewNodeData.TreeID])
+		w.Write([]byte(task.TaskID))
 	} else {
 		err := new(utils.EmptyPostFormValueError)
 		err.DealWithError(w)
@@ -230,8 +244,8 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 	copy(tmp, tree.GetForest().Projects[ADeleteNodeData.TreeID])
 	tree.GetForest().PRMMutex.RUnlock()
 
-	log.Println("tree before delete")
-	log.Println(tmp)
+	log.Println("trees before delete")
+	log.Println(tree.GetForest().Projects)
 
 	var flag = -1
 	for k, v := range tmp {
@@ -272,7 +286,11 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 			ope := tree.BuildDeleteOpe(ADeleteNodeData.TreeID, tmp[k].Task.TaskID, int8(-1), tmp[k].TeamMates)
 			tree.GetForest().ORMMutex.Lock()
 			{
-				tree.GetForest().Opes.Push(ope)
+				ok, err := tree.GetForest().Opes.SetOff(ope)
+				utils.CheckErr(err, "DropFromTree:set off")
+				if !ok {
+					tree.GetForest().Opes.Push(ope)
+				}
 			}
 			tree.GetForest().ORMMutex.Unlock()
 		}
@@ -296,9 +314,6 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.Println("after delete")
-	log.Println(tmp)
-
 	tree.GetForest().PRMMutex.Lock()
 	{
 		tree.GetForest().Projects[ADeleteNodeData.TreeID] = tmp
@@ -311,6 +326,8 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 		tree.GetForest().Monitors[ADeleteNodeData.TreeID] = tmp
 	}
 	tree.GetForest().MRMMutex.Unlock()
+	log.Println("after delete")
+	log.Println(tree.GetForest().Projects)
 }
 
 //这个处理器修改一个task的内部内容

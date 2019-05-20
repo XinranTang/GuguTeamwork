@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -17,6 +18,12 @@ type ATRes struct {
 	Expires_in   int
 	Errcode      int
 	Errmsg       string
+}
+
+type MiniProgCodePara struct {
+	Scene string
+	Page  string
+	Width int
 }
 
 func GetAccessToken() {
@@ -63,6 +70,14 @@ func GetOpenIdFromTencent(code string) *TencentRes {
 	return &ATencentRes
 }
 
-func GetMiniProgCode() {
+func GetInvitation(data []byte) []byte {
+	var url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + AccessToken
 
+	resp, err := http.NewRequest("POST", url, bytes.NewReader(data))
+	CheckErr(err, "GetInvitation:post")
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	CheckErr(err, "GetInvitaion:read body")
+	return body
 }
