@@ -33,3 +33,26 @@ func CreateTask(db *sql.DB, task *utils.Task, openid string) {
 	utils.CheckErr(err, "CreateTask:insert into Tasks prepare")
 	_, err = stmt.Exec(task.TaskID, task.Title, task.Pusher, task.Content, task.Status, task.PushDate, task.DeadLine, task.Urgency)
 }
+
+func CreateMessage(db *sql.DB, message *utils.Message) error {
+	stmt, err := db.Prepare("INSERT INTO Messages(MessageID,Title,Pusher,Content,Read,NotRead,PushDate,FinalDeleteDate) VALUES(?,?,?,?,?,?,?,?)")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(message.MessageID, message.Title, message.Pusher, message.Content, message.Read, message.NotRead, message.PushDate, message.FinalDeleteDate)
+	if err != nil {
+		return err
+	}
+	for _, v := range utils.ParseManage(message.NotRead) {
+		var order = "UPDATE UserInfo SET Messages=Messages || '" + message.MessageID + ";' WHERE OpenId=" + v + ";"
+		stmt, err = db.Prepare(order)
+		if err != nil {
+			return err
+		}
+		_, err = stmt.Exec()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

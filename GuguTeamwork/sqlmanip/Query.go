@@ -33,7 +33,8 @@ func QueryUserInfo(db *sql.DB, openid string) *utils.UserInfo {
 			&AMessage.Title,
 			&AMessage.Pusher,
 			&AMessage.Content,
-			&AMessage.Status,
+			&AMessage.Read,
+			&AMessage.NotRead,
 			&AMessage.PushDate,
 			&AMessage.FinalDeleteDate)
 		utils.CheckErr(err, "QueryUserInfo:query message")
@@ -146,4 +147,16 @@ func QueryTreeName(db *sql.DB, TreeID string) (string, error) {
 		return "", err
 	}
 	return res, nil
+}
+
+func CountMessage(db *sql.DB, pusher string) (int, error) {
+	rows, err := db.Query("SELECT * From Messages WHERE Pusher=?", pusher)
+	if err != nil {
+		return -1, err
+	}
+	var count = 0
+	for rows.Next() {
+		count++
+	}
+	return count, nil
 }

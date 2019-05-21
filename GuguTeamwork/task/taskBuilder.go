@@ -49,10 +49,5 @@ func BuildTask(TreeId string, OpenId string, Title string, Content string, Deadl
 		task.Urgency = 0
 	}
 
-	//将新任务的信息同时写入数据库
-	//db := sqlmanip.ConnetUserDB()
-	//sqlmanip.CreateTask(db, &task, OpenId)
-	//sqlmanip.DisConnectDB(db)
-
 	return &task
 }

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"GuguTeamwork/cleaner"
+	"GuguTeamwork/conns"
 	"GuguTeamwork/fetch"
 	"GuguTeamwork/test"
 	"GuguTeamwork/tree"
@@ -17,11 +18,15 @@ func main() {
 	//初始化任务森林
 	tree.BuildForest()
 	tree.GetForest().InitForest()
+	//初始化连接池
+	conns.InitConnPool()
+	//启动常规任务协程
 	go cleaner.CleanForest()
 	go tree.DBFlusher()
 	go utils.GetAccessToken()
 	go test.Report()
 	//路由服务
+	//TCP服务
 	mux := http.NewServeMux()
 	mux.HandleFunc("/gugu/test", test.Test)
 	mux.HandleFunc("/gugu/entry", fetch.Entry)
@@ -32,6 +37,11 @@ func main() {
 	mux.HandleFunc("/gugu/deleteNode", fetch.DropFromTree)
 	mux.HandleFunc("/gugu/alterNode", fetch.AlterNode)
 	mux.HandleFunc("/gugu/personal", fetch.Personal)
+	mux.HandleFunc("/gugu/sendQR", fetch.MakeQR)
+	mux.HandleFunc("/gugu/newMessage", fetch.NewMessage)
+	//WS服务
+	mux.HandleFunc("/gugu/online", conns.Online)
+	mux.HandleFunc("/gugu/offline", conns.Offline)
 	//静态资源服务
 	fileServer := http.FileServer(http.Dir("public"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))

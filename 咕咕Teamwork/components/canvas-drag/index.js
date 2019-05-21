@@ -846,7 +846,7 @@ Component({
         Content: "这是一个新任务",
         Status: false,
         PushDate: "tt",
-        DeadLine: "tt",
+        DeadLine: "2050-05-30T00:00:00Z",
         Urgency: 3
       },
       Self: this.treeRawArr.length,

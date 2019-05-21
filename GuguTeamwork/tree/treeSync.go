@@ -9,7 +9,7 @@ import (
 )
 
 //每隔这个时间会将新的信息刷到数据库内
-const dBFlushInterval = time.Second * 80
+const dBFlushInterval = time.Second * 30
 
 func DBFlusher() {
 	log.Println("Flusher started")
@@ -54,6 +54,10 @@ func DBFlusher() {
 			utils.CheckErr(err, "DBFlusher:flush tree")
 		}
 		sqlmanip.DisConnectDB(db)
+		log.Println("opes")
+		for k, _ := range opes {
+			log.Println(*opes[k])
+		}
 		db = sqlmanip.ConnetUserDB()
 		err := sqlmanip.FlushTaskData(db, opes, update)
 		utils.CheckErr(err, "DBFlusher:flush tasks")

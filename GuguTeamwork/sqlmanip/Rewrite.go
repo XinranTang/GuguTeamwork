@@ -71,14 +71,18 @@ func FlushTreeData(db *sql.DB, table string, data []utils.TaskNode) error {
 		order = "DROP TABLE " + table + ";"
 		stmt, err = db.Prepare(order)
 		if err != nil {
-			return err
+			//可能的情况是原本就未将这颗树刷入数据库
+			if strings.Contains(err.Error(), "no such table") {
+				return nil
+			} else {
+				return err
+			}
 		}
 		_, err = stmt.Exec()
 		if err != nil {
 			return err
 		}
 	} else {
-
 		//制作副本
 		var replica = table + "_replica"
 		var order = "CREATE TABLE " + replica + " AS SELECT * FROM " + table + " WHERE 1=0;"
@@ -138,7 +142,6 @@ func FlushTreeData(db *sql.DB, table string, data []utils.TaskNode) error {
 			return err
 		}
 	}
-
 	stmt, err := db.Prepare("COMMIT")
 	if err != nil {
 		return err
