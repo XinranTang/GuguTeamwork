@@ -1,11 +1,14 @@
 <!--pages/page/myAnalysis/myAnalysis.wxml-->
-<i-collapse name="{{name}}">
-  <i-collapse-item title="项目完成情况" name="name1">
-    
-  </i-collapse-item>
-</i-collapse>
-<i-collapse name="{{name}}">
-  <i-collapse-item title="个人数据分析" name="name2">
-    
-  </i-collapse-item>
-</i-collapse>
+<view class="st-bg-image"></view>
+<view class="st-radius-view msg-all">
+  <i-collapse name="{{name}}">
+    <i-collapse-item title="项目完成情况" name="name1">
+
+    </i-collapse-item>
+  </i-collapse>
+  <i-collapse name="{{name}}">
+    <i-collapse-item title="个人数据分析" name="name2">
+
+    </i-collapse-item>
+  </i-collapse>
+</view>

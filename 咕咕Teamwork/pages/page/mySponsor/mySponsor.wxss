@@ -1,1 +1,17 @@
 /* pages/page/mySponsor/mySponsor.wxss */
+.mates-image{
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+}
+
+.half{
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
+
+.sp-text{
+  padding-top: 15rpx;
+}

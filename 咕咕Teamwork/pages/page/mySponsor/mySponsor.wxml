@@ -1,9 +1,33 @@
 <!--pages/page/mySponsor/mySponsor.wxml-->
 <view class="st-bg-image"></view>
-<view class="st-radius-view" style="padding:30rpx">
-  <text>开发人员信息\n</text>
-  <text class='text-bold'>-树新风-\n</text>
-  <text>队伍编号：1485503\n参赛区域：东北赛区\n参赛类别：小程序\n指导老师：李丹程\n</text>
-  <text>队员：\n唐欣然，王绪亮，周星辰，常铂雨\n</text>
-  <text>有疑问请联系：手机 13940205916，QQ 784595821</text>
+<view class="st-radius-view vertical" style="padding:30rpx">
+
+  <text style='align-self:center'>开发人员信息\n</text>
+  <text style='align-self:center' class='text-bold'>-树新风-\n</text>
+  <text style='align-self:center'>队伍编号：1485503\n参赛区域：东北赛区\n参赛类别：小程序\n指导老师：李丹程\n</text>
+  <text style='align-self:center;padding:10rpx'>队伍成员：</text>
+  <view class='vertical'>
+    <view class='horizontal' style='padding-top:20rpx;padding-bottom:20rpx'>
+      <view class='half vertical'>
+        <image class="mates-image" src='/images/image_gugu_secretary.jpg'></image>
+        <text class="sp-text">唐欣然</text>
+      </view>
+      <view class='half vertical'>
+        <image class="mates-image" src='/images/image_gugu_boss.jpg'></image>
+        <text class="sp-text">王绪亮</text>
+      </view>
+    </view>
+    <view class='horizontal' style='padding-top:20rpx;padding-bottom:20rpx'>
+      <view class='half vertical'>
+        <image class="mates-image" src='/images/image_gugu_worker.jpg'></image>
+        <text class="sp-text">周星辰</text>
+      </view>
+      <view class='half vertical'>
+        <image class="mates-image" src='/images/image_gugu_gede.jpg'></image>
+        <text class="sp-text">常铂雨</text>
+      </view>
+    </view>
+  </view>
+  <text style='align-self:center'>有疑问请联系：</text>
+  <text style='align-self:center'>手机 13940205916，QQ 784595821</text>
 </view>

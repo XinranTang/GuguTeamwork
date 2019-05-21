@@ -74,7 +74,7 @@ Page({
             0
           ],
           "TeamMates": [
-            "testopenid"
+            "testopenid", "testopenid2"
           ]
         },
         {
@@ -83,7 +83,7 @@ Page({
             "Title": "尝试使用咕咕",
             "Pusher": "咕咕鸡",
             "Content": "这是一个测试子任务",
-            "Status": false,
+            "Status": true,
             "PushDate": "2019-04-01T00:00:00Z",
             "DeadLine": "2100-01-01T00:00:00Z",
             "Urgency": 3
@@ -279,6 +279,7 @@ Page({
       //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT]));
       //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT])[TASK][TASKID])
       console.log('ThisTaskID:'+this.data.selected_node[TASK][TASK_ID]);
+      
     }
 
   },
