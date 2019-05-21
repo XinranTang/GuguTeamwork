@@ -278,7 +278,7 @@ Page({
       //console.log(this.data.selected_node);
       //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT]));
       //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT])[TASK][TASKID])
-      console.log('ParentID:'+this.data.selected_node[PARENT]);
+      console.log('ThisTaskID:'+this.data.selected_node[TASK][TASK_ID]);
     }
 
   },
@@ -297,6 +297,7 @@ Page({
     this.setData({
       isEdit:true
     });
+    CanvasDrag.getTaskByIndex(this.data.selected_node[SELF])[TASK][TASK_ID]='tt_fix';
   },
   // 编辑框确认按钮
   editConfirm:function(e){

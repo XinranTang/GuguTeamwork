@@ -860,6 +860,7 @@ Component({
       var fromNode = this.tempGraphArr[0];
       var index = fromNode.taskattrs[SELF];
       newNodeAttr['Parent'] = fromNode.taskattrs[TASK][TASK_ID];
+      newNodeAttr['Self'] = this.treeRawArr.length;
       this.treeRawArr.push(newNodeAttr);
       if (this.treeRawArr[index][CHILD][0] == 0) {
         this.treeRawArr[index][CHILD] = [];
