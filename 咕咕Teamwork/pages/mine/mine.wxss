@@ -1,4 +1,10 @@
 /* pages/mine/mine.wxss */
+page {
+  background-color: rgba(250,250,250,0.90);
+  width: 100%;
+  height: 100%;
+  background-image: none;
+}
 .userinfo {
   height: 300rpx;
   /* display: flex; */

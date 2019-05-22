@@ -7,6 +7,13 @@
 const DELETE_ICON = './icon/close.png'; // 删除按钮
 const DRAG_ICON = './icon/scale.png'; // 缩放按钮
 const ADD_ICON = './icon/add.png'
+const MAIN_ICON = './icon/icon_main.png'
+const FINISH_ICON = './icon/icon_finish.png'
+const MAIN_ICON_2 = './icon/icon_main_2.png'
+const FINISH_ICON_2 = './icon/icon_finish_2.png'
+const MAN_ICON = './icon/icon_man.png'
+const MAN_ICON_2 = './icon/icon_man_2.png'
+
 const ROTATE_ENABLED = false;
 var DEFAULT_FONT_SIZE = 15;
 var ZOOM_ENABLE = false;
@@ -146,20 +153,35 @@ dragGraph.prototype = {
     }
 
     this.ctx.setShadow(0, 0, 20, this.isDeled?DEL_COLOR:this.selected?SELECT_COLOR:DEFAULT_COLOR);
-    // this.ctx.shadowColor = this.isDeled ? DEL_COLOR : this.selected ? SELECT_COLOR : DEFAULT_COLOR;
-    // this.ctx.shadowBlur = 20.0;
-    // this.ctx.shadowOffsetX = 0;
-    // this.ctx.shadowOffsetY = 0;
-    // console.log(this.ctx);
     this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10, 10);
     //this.ctx.fillRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10);
     this.ctx.setShadow(0, 0, 0, 'black');
     // 渲染元素
     if (this.type === 'text') {
       this.ctx.fillText(this.text, this.centerX, this.centerY);
+      
+      //如果是主任务 显示小房子图标 不显示是否完成图标
+      if (this.taskattrs[SELF] == 0)
+        this.ctx.drawImage(this.selected ? MAIN_ICON : MAIN_ICON_2, this.x + textWidth - 10, this.y - 15, 20, 20);
+      else if (this.taskattrs[TASK][STATUS] == true)
+        this.ctx.drawImage(this.selected ? FINISH_ICON : FINISH_ICON_2, this.x + textWidth - 10, this.y - 15, 20, 20);
+
+      //显示有几个成员参与
+      var count = this.taskattrs[TEAM_MATES].length;
+      var initY = this.y + textHeight - 5;
+      var initX = this.x + textWidth - 10;
+      var d = 15;
+      var icon = this.selected?MAN_ICON:MAN_ICON_2;
+      for(var i =0;i<count;i++){
+        this.ctx.drawImage(icon, initX - i*d, initY, 25, 25);
+      }
+
     } else if (this.type === 'image') {
       this.ctx.drawImage(this.fileUrl, this.x, this.y, this.w, this.h);
     }
+    
+
+
     // 如果是选中状态，绘制选择虚线框，和缩放图标、删除图标
     if (this.selected) {
       this.ctx.setLineWidth(2);
@@ -860,6 +882,7 @@ Component({
       var fromNode = this.tempGraphArr[0];
       var index = fromNode.taskattrs[SELF];
       newNodeAttr['Parent'] = fromNode.taskattrs[TASK][TASK_ID];
+      newNodeAttr['Self'] = this.treeRawArr.length;
       this.treeRawArr.push(newNodeAttr);
       if (this.treeRawArr[index][CHILD][0] == 0) {
         this.treeRawArr[index][CHILD] = [];
@@ -905,11 +928,20 @@ Component({
     // 传值传的都是dragGraph对象 包含task atrr json
     _insertTreeNode(fromTaskGraph) {
       this.drawArr.push(fromTaskGraph)
-      var d = 80;
+      var d = 100;
       var pos_x_offset = 0;
       var pos_y_offset = 80;
       var childs = fromTaskGraph.taskattrs[CHILD];
-      pos_x_offset = -(childs.length - 1) * d / 2;
+      var totalLen = 0;
+      this.ctx.setFontSize(DEFAULT_FONT_SIZE);
+      this.ctx.setTextBaseline('middle');
+      this.ctx.setTextAlign('center');
+      for(var i =0;i<childs.length;i++){
+        totalLen += this.ctx.measureText(this.treeRawArr[childs[i]][TASK][TITLE]).width;
+      }
+      //pos_x_offset = -(childs.length - 1) * d / 2;
+      pos_x_offset = -(totalLen+(childs.length - 1)*15)/4;
+      console.log(totalLen);
       //非叶子节点
       if (childs[0] != 0) {
         for (var i = 0; i < childs.length; i++) {
@@ -927,7 +959,7 @@ Component({
           }, this.ctx, fromTaskGraph, newTaskGraph);
           this.edgeArr.push(newedge);
           this._insertTreeNode(newTaskGraph);
-          pos_x_offset += 80;
+          pos_x_offset = pos_x_offset + this.ctx.measureText(nextTaskNodeAtrr[TASK][TITLE]).width + 15;
         }
       }
     },
