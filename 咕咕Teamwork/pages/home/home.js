@@ -504,12 +504,33 @@ Page({
       var index = dataSet.index;
       var task = this.data.tasks[index];
       console.log(e.currentTarget.dataset)
-      app.globalData.currentTaskIndex = index;
-      app.globalData.tasks = self.data.tasks;
-      app.globalData.currentTask = task;
-      wx.navigateTo({
-        url: '../process/taskList/task',
-      });
+      wx.getStorage({
+        key: 'Forest',
+        success: function(res) {
+          let tempData = res.data;
+          let flag = false;
+          tempData.forEach(each=>{
+            if(each.TreeId == task.TaskID){
+              console.log("找到了"+each.TreeId)
+              flag = true;
+              app.globalData.currentTaskIndex = index;
+              app.globalData.tasks = self.data.tasks;
+              app.globalData.currentTask = each;
+              wx.navigateTo({
+                url: '../process/taskList/task',
+              });
+            }
+          })
+          if(!flag){
+            app.globalData.currentTaskIndex = index;
+            app.globalData.tasks = self.data.tasks;
+            app.globalData.currentTask = task;
+            wx.navigateTo({
+              url: '../process/taskList/task',
+            });
+          }
+        },
+      })
     }
   }
 })

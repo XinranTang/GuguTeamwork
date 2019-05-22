@@ -28,6 +28,7 @@ Page({
   data: {
     "title":'测试',
     "pusher":'',
+    user: "",
     "content":'',
     "status":false,
     "pushDate":"",
@@ -56,7 +57,15 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    
+    let self = this
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function(res) {
+        self.setData({
+          user:res.data.OpenId
+        })
+      },
+    })
   },
 
   /**
@@ -75,40 +84,59 @@ Page({
 
     var currentTask = app.globalData.currentTask;
     wx.getStorage({
-      key: 'UserInfor',
-      success: function (res) {
-        var arr = [];
-        arr = res.data.Manage.split(";");
-        var flag = false;// 不是管理者
-        arr.forEach(item => {
-          if (item == currentTask.TaskID) {
-            flag = true;
-            wx.getStorage({
-              key: 'Forest',
-              success: function (res) {
-                res.data.forEach(each => {
-                  if (each.TreeId == item) {
-                    self.setData({
-                      show: true,
-                      oneTaskTree: each
-                    })
-                    self.onInitByTree();
-                  }
-                })
-              },
+      key: 'Forest',
+      success: function(res) {
+        console.log("task.js"+res.data)
+        let findTree = false;
+        res.data.forEach(each => {
+          if(currentTask.TreeId == each.TreeId){
+            findTree = true;
+            self.setData({
+              show: true,
+              oneTaskTree: each
             })
+            self.onInitByTree();
           }
         })
-        if (!flag) {
-          self.setData({
-            task: currentTask,
-            title: currentTask.Title,
-            pusher: currentTask.Pusher,
-            content: currentTask.Content,
-            status: currentTask.Status,
-            pushDate: currentTask.PushDate,
-            deadLine: currentTask.DeadLine,
-            urgency: currentTask.Urgency
+        if(!findTree){
+          wx.getStorage({
+            key: 'UserInfor',
+            success: function (res) {
+              var arr = [];
+              arr = res.data.Manage.split(";");
+              var flag = false;// 不是管理者
+              arr.forEach(item => {
+                if (item == currentTask.TaskID) {
+                  flag = true;
+                  // wx.getStorage({
+                  //   key: 'Forest',
+                  //   success: function (res) {
+                  //     res.data.forEach(each => {
+                  //       if (each.TreeId == item) {
+                  //         self.setData({
+                  //           show: true,
+                  //           oneTaskTree: each
+                  //         })
+                  //         self.onInitByTree();
+                  //       }
+                  //     })
+                  //   },
+                  // })
+                }
+              })
+              if (!flag) {
+                self.setData({
+                  task: currentTask,
+                  title: currentTask.Title,
+                  pusher: currentTask.Pusher,
+                  content: currentTask.Content,
+                  status: currentTask.Status,
+                  pushDate: currentTask.PushDate,
+                  deadLine: currentTask.DeadLine,
+                  urgency: currentTask.Urgency
+                })
+              }
+            },
           })
         }
       },
@@ -299,11 +327,13 @@ Page({
       text_selected_node: '{}'
     });
     CanvasDrag.clearCanvas();
+    console.log(_this.data.oneTaskTree)
     var json = {
       "TreeID": _this.data.oneTaskTree.TreeId,
-      "TaskID": _this.data.oneTaskTree.TaskID,
+      "TaskID": _this.data.oneTaskTree.TreeId,
       "Parent": ""
     };
+    console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',
       header: {
@@ -340,17 +370,17 @@ Page({
               },
               success(res) {
                 wx.setStorage({
-                  key: 'Information',
+                  key: 'UserInfor',
                   data: res.data,
                 })
                 app.globalData.tasks = res.data.Tasks;
                 app.globalData.messages = res.data.Messages;
+                wx.navigateBack({
+
+                })
               }
             })
           }
-        })
-        wx.navigateBack({
-          
         })
       }
     })
@@ -387,6 +417,7 @@ Page({
     }
   },
   onAddNode: function (e) {
+    var self = this;
     CanvasDrag.onAddNode();
     var text_selected_node = JSON.parse(self.data.text_selected_node)
     console.log(text_selected_node)
@@ -398,8 +429,9 @@ Page({
       "Deadline": self.data.date + "T" + self.data.time + ":00Z",
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": text_selected_node.Task.Parent + "",
+      "Parent": self.data.selected_node[PARENT]
     };
+    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + "T" + self.data.time + ":00Z";
     console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/newNode',
@@ -411,6 +443,7 @@ Page({
       dataType: JSON,
       success: function (res) {
         console.log("任务结点添加成功")
+        CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
         wx.request({
           url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
           header: {
@@ -517,6 +550,13 @@ Page({
     this.setData({
       isEdit: false
     })
+    
+  },
+  // 编辑框确认按钮
+  editConfirm: function (e) {
+    this.setData({
+      isEdit: false
+    })
     CanvasDrag.changeNodeInfo(this.data.edit_info);
     var text_selected_node = JSON.parse(self.data.text_selected_node)
     console.log(text_selected_node)
@@ -576,13 +616,7 @@ Page({
         })
       }
     })
-  },
-  // 编辑框确认按钮
-  editConfirm: function (e) {
-    this.setData({
-      isEdit: false
-    })
-    CanvasDrag.changeNodeInfo(this.data.edit_info);
+
   },
   // 编辑框取消按钮
   editCancel: function (e) {
