@@ -34,7 +34,7 @@ Page({
         "color":"#01C7B3",
       },
       {
-        "name": "发起任务",
+        "name": "我要发起",
         "func": "intoFunc4",
         "icon":"iconfont icon-weibiaoti201",
         //樱桃红
@@ -64,7 +64,7 @@ Page({
         "icon": "iconfont icon-team"
       },
       {
-        "name": "任务社区",
+        "name": "提交周报",
         "url": "../../images/icon2.jpg",
         "func": "intoFunc8",
         "icon": "iconfont icon-anonymous",
@@ -275,7 +275,7 @@ Page({
   },
   intoFunc8:function(){
     wx.navigateTo({
-      url: '../page/myCommunity/topics/topics',
+      url: '../page/myReport/myReport',
     })
   },
   toPageSetting:function(){

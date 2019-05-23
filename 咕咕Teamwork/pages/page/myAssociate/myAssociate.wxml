@@ -1,2 +1,0 @@
-<!--pages/page/myAssociate/myAssociate.wxml-->
- <button class="radius bg-blue" style="color:white; padding:5rpx" bindtap="upload">上传附件</button>

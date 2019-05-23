@@ -87,7 +87,7 @@ Page({
     wx.getStorage({
       key: 'Forest',
       success: function(res) {
-        console.log("task.js"+res.data)
+        console.log("task.js"+res.datac)
         let findTree = false;
         let eachData = res.data;
         eachData.forEach(each => {
@@ -619,19 +619,21 @@ Page({
   },
   // 编辑框确认按钮
   editConfirm: function (e) {
-    this.setData({
+    var self = this;
+    self.setData({
       isEdit: false
     })
-    CanvasDrag.changeNodeInfo(this.data.edit_info);
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
-    console.log(text_selected_node)
+    console.log(self.data.edit_info)
+    CanvasDrag.changeNodeInfo(self.data.edit_info);
+    var selected_node = self.data.selected_node
+    console.log(selected_node)
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": text_selected_node.Task.TaskID,
-      "Title": text_selected_node.Task.Title,
-      "Content": text_selected_node.Task.Content,
-      "Deadline": text_selected_node.Task.DeadLine,
-      "Urgency": text_selected_node.Task.Urgency + ""
+      "TaskID": self.data.text_selected_node.Task.TaskID,
+      "Title": selected_node.Task.Title,
+      "Content": selected_node.Task.Content,
+      "Deadline": selected_node.Task.DeadLine,
+      "Urgency": self.data.text_selected_node.Task.Urgency + ""
     }
     console.log(json)
     wx.request({
