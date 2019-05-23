@@ -92,9 +92,7 @@ Page({
           "Child": [
             0
           ],
-          "TeamMates": [
-            "testopenid"
-          ]
+          "TeamMates": null
         }
       ],
       "TreeId": "testtasktree",

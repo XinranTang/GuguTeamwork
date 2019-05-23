@@ -61,5 +61,11 @@
     "i-input": "../dist/input/index",
     "i-modal": "../dist/modal/index"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "networkTimeout":{
+    "request":10000,
+    "connectSocket":60000,
+    "uploadFile":60000,
+    "downloadFile":60000
+  }
 }

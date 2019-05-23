@@ -5,3 +5,13 @@ var sub = function (val, begin, end) {
   return val.substring(begin, end);
 }
 module.exports.sub = sub;
+
+var testCheckRead = function (str){
+  var openId = 'testopenid';
+  if(str.indexOf(openId)){
+    return true
+  }
+  return false
+}
+
+module.exports.testCheckRead = testCheckRead;
