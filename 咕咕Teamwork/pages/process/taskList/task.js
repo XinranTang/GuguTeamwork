@@ -29,6 +29,7 @@ Page({
     "title":'测试',
     "pusher":'',
     user: "",
+    treeDeadLine:"",
     "content":'',
     "status":false,
     "pushDate":"",
@@ -79,7 +80,7 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    console.log(app.globalData.currentTask)
+    console.log("current task: "+app.globalData.currentTask)
     var self = this;
 
     var currentTask = app.globalData.currentTask;
@@ -88,14 +89,19 @@ Page({
       success: function(res) {
         console.log("task.js"+res.data)
         let findTree = false;
-        res.data.forEach(each => {
+        let eachData = res.data;
+        eachData.forEach(each => {
           if(currentTask.TreeId == each.TreeId){
             findTree = true;
             self.setData({
               show: true,
               oneTaskTree: each
             })
+            console.log("在forest里找到了")
             self.onInitByTree();
+            self.setData({
+              treeDeadLine:each.Tree[0].Task.DeadLine
+            })
           }
         })
         if(!findTree){
@@ -426,7 +432,7 @@ Page({
       "OpenId": self.data.user,
       "Title": "no title",
       "Content": "no content",
-      "Deadline": self.data.date + "T" + self.data.time + ":00Z",
+      "Deadline": self.data.treeDeadLine,
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
       "Parent": self.data.selected_node[PARENT]
@@ -545,10 +551,10 @@ Page({
   },
   // 显示编辑框
   onEditNode: function (e) {
-    this.saveCanvas();
+    // this.saveCanvas();
     var self = this;
     this.setData({
-      isEdit: false
+      isEdit: true
     })
     // CanvasDrag.changeNodeInfo(this.data.edit_info);
     // var text_selected_node = JSON.parse(self.data.text_selected_node)
@@ -675,10 +681,7 @@ Page({
         })
       }
     })
-<<<<<<< HEAD
 
-=======
->>>>>>> f0bece61b0a495ce082dba28a755ac7db3246848
   },
   // 编辑框取消按钮
   editCancel: function (e) {
