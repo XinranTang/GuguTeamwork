@@ -190,11 +190,7 @@ func NewProjectTree(w http.ResponseWriter, r *http.Request) {
 	ope := tree.BuildOpe(TreeId, TreeId, int8(1))
 	tree.GetForest().ORMMutex.Lock()
 	{
-		ok, err := tree.GetForest().Opes.SetOff(ope)
-		utils.CheckErr(err, "NewProjectTree:set off")
-		if !ok {
-			tree.GetForest().Opes.Push(ope)
-		}
+		tree.GetForest().Opes.Push(ope)
 	}
 	tree.GetForest().ORMMutex.Unlock()
 
@@ -286,9 +282,9 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 			ope := tree.BuildDeleteOpe(ADeleteNodeData.TreeID, tmp[k].Task.TaskID, int8(-1), tmp[k].TeamMates)
 			tree.GetForest().ORMMutex.Lock()
 			{
-				ok, err := tree.GetForest().Opes.SetOff(ope)
+				res, err := tree.GetForest().Opes.SetOff(ope)
 				utils.CheckErr(err, "DropFromTree:set off")
-				if !ok {
+				if res != 2 {
 					tree.GetForest().Opes.Push(ope)
 				}
 			}

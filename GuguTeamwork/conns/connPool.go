@@ -52,6 +52,7 @@ func (pool *connPool) GetConn(openid string) chan WsMsg {
 	{
 		v, ok = pool.conns[openid]
 	}
+	pool.lock.RUnlock()
 	if ok {
 		return v
 	} else {

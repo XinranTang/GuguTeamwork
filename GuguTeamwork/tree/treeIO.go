@@ -116,11 +116,7 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 	ope := BuildOpe(Project, TaskNode.Task.TaskID, int8(1))
 	forest.ORMMutex.Lock()
 	{
-		ok, err := forest.Opes.SetOff(ope)
-		utils.CheckErr(err, "DropFromTree:set off")
-		if !ok {
-			forest.Opes.Push(ope)
-		}
+		forest.Opes.Push(ope)
 	}
 	forest.ORMMutex.Unlock()
 

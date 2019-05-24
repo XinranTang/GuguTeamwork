@@ -1,5 +1,6 @@
 var sock = null
-var wsuri = "ws://localhost:9000/gugu/online";
+var wsuri = "ws://localhost:9000/guguWss/online";
+var OpenId = "testopenid"
 window.onload = function() {
 	sock = new WebSocket(wsuri)
 	sock.onopen = function() {
@@ -13,7 +14,6 @@ window.onload = function() {
 	sock.onmessage = function(e) {
         console.log("message received: " + e.data);
     }
-	var OpenId = "testopenid"
 }
 
 
@@ -73,17 +73,39 @@ function sendQR() {
 	})
 }
 
-function wsSend() {
+function wsSend_task() {
 	var json = {
 		"TimeOut":new Date(),
 		"TypeCode":100,
 		"Sender":"testopenid",
 		"Receiver":'testopenid',
-		"ContentId":"testopenid_project_1"
+		"ContentId":"testopenid_project_1;testopenid_project_1-task-1;"
 	};
 	sock.send(JSON.stringify(json))
 }
-			
+	
+
+function newMsg() {
+	$.post({
+		url:"http://localhost:9000/gugu/newMessage",
+		data:newMsgJson(),
+		success: function(res) {
+			alert("MESSAGING SUCCESS")
+			console.log(res)
+		},
+	})
+}
+
+function ReadMsg() {
+	$.get({
+		url:"http://localhost:9000/gugu/readMessage?OpenId=testopenid&MessageID=testopenid_message_1",
+		success: function(res) {
+			alert("ReadMsg SUCCESS")
+			console.log(res)
+		},
+	})
+}
+
 function nodeJson() {
 	var json = {
 		"OpenId":"testopenid",
@@ -120,7 +142,7 @@ function deleteNodeJson() {
 function alterJson() {
 	var json = {
 		"TreeID":"testopenid_project_3",
-		"TaskID":"testopenid_project_3-task-1",
+		"TaskID":"testopenid_project_3-task-5",
 		"Title":"altered title",
 		"Content":"altered content",
 		"Deadline":"2099-01-01T00:00:00Z",
@@ -134,6 +156,17 @@ function sendQRJson() {
 		"Scene":"testopenid&testopenid_project_1",
 		"Page":"pages/index",
 		"Width":"300"
+	};
+	return JSON.stringify(json)
+}
+
+function newMsgJson() {
+	var json = {
+		"Title":"test message",
+		"Pusher":"testopenid",
+		"Content":"just a test",
+		"NotRead":"testopenid;",
+		"FinalDeleteDate":""
 	};
 	return JSON.stringify(json)
 }

@@ -39,8 +39,9 @@ func main() {
 	mux.HandleFunc("/gugu/personal", fetch.Personal)
 	mux.HandleFunc("/gugu/sendQR", fetch.MakeQR)
 	mux.HandleFunc("/gugu/newMessage", fetch.NewMessage)
+	mux.HandleFunc("/gugu/readMessage", fetch.ReadMessage)
 	//WS服务
-	mux.HandleFunc("/gugu/online", conns.Online)
+	mux.HandleFunc("/guguWss/online", conns.Online)
 	mux.HandleFunc("/gugu/offline", conns.Offline)
 	//静态资源服务
 	fileServer := http.FileServer(http.Dir("public"))
