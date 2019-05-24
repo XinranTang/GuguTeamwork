@@ -21,6 +21,25 @@
   box-shadow: 0px 3px 5px 1px rgba(135, 201, 237, 0.3);
 }
 
+.st-button-no-shadow{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:90rpx;
+  margin: 40rpx;
+  border-radius: 50rpx;
+  color: white;
+  font-size: 35rpx;
+  background-color: rgb(135, 201, 237);
+}
+
+.st-buttom-tiny{
+  height:70rpx;
+  margin:0rpx;
+  margin-top:15rpx;
+
+}
+
 .no-border::after{
   border: none;
 }
@@ -93,6 +112,26 @@
   font-size: 28rpx;
 }
 
+.st-radius-view-tiny{
+  margin-top:15rpx;
+  position:relative;
+  border-radius:20rpx;
+  background-color:rgb(255, 255, 255);
+  box-shadow: 0px 3px 10px 1px rgba(204, 204, 204, 0.6);
+  padding:20rpx;
+}
+
 .button-hover {
   background-color: rgb(130, 194, 228) !important;
+}
+
+.line-vertical-10{
+  height: 100%;
+  width: 10rpx;
+  background: #cccccc
+}
+
+.line-horizontal{
+  height: 1rpx;
+  background: #cccccc
 }
