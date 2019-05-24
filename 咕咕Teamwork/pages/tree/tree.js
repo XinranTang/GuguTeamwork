@@ -74,7 +74,7 @@ Page({
             0
           ],
           "TeamMates": [
-            "testopenid"
+            "testopenid", "testopenid2"
           ]
         },
         {
@@ -83,7 +83,7 @@ Page({
             "Title": "尝试使用咕咕",
             "Pusher": "咕咕鸡",
             "Content": "这是一个测试子任务",
-            "Status": false,
+            "Status": true,
             "PushDate": "2019-04-01T00:00:00Z",
             "DeadLine": "2100-01-01T00:00:00Z",
             "Urgency": 3
@@ -92,9 +92,7 @@ Page({
           "Child": [
             0
           ],
-          "TeamMates": [
-            "testopenid"
-          ]
+          "TeamMates": null
         }
       ],
       "TreeId": "testtasktree",
@@ -278,7 +276,8 @@ Page({
       //console.log(this.data.selected_node);
       //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT]));
       //console.log(CanvasDrag.getTaskByIndex(this.data.selected_node[PARENT])[TASK][TASKID])
-      console.log('ParentID:'+this.data.selected_node[PARENT]);
+      console.log('ThisTaskID:'+this.data.selected_node[TASK][TASK_ID]);
+      
     }
 
   },
@@ -297,6 +296,7 @@ Page({
     this.setData({
       isEdit:true
     });
+    CanvasDrag.getTaskByIndex(this.data.selected_node[SELF])[TASK][TASK_ID]='tt_fix';
   },
   // 编辑框确认按钮
   editConfirm:function(e){

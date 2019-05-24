@@ -7,6 +7,7 @@ Page({
    */
   data: {
     name:"name1",
+    user:"",
     messages:[]
   },
 
@@ -31,6 +32,7 @@ Page({
     this.setData({
       messages: app.globalData.messages
     })
+    console.log(this.data.messages);
   },
 
   /**

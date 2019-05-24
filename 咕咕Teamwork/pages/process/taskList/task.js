@@ -517,6 +517,71 @@ Page({
     this.setData({
       isEdit: false
     })
+    // CanvasDrag.changeNodeInfo(this.data.edit_info);
+    // var text_selected_node = JSON.parse(self.data.text_selected_node)
+    // console.log(text_selected_node)
+    // var json = {
+    //   "TreeID": self.data.oneTaskTree.TreeId,
+    //   "TaskID": text_selected_node.Task.TaskID,
+    //   "Title": text_selected_node.Task.Title,
+    //   "Content": text_selected_node.Task.Content,
+    //   "Deadline": text_selected_node.Task.DeadLine,
+    //   "Urgency": text_selected_node.Task.Urgency + ""
+    // }
+    // console.log(json)
+    // wx.request({
+    //   url: 'https://www.fracturesr.xyz/gugu/alterNode',
+    //   header: {
+    //     'content-type': "application/x-www-form-urlencoded"
+    //   },
+    //   method: 'POST',
+    //   data: JSON.stringify(json),
+    //   dataType: JSON,
+    //   success: function (res) {
+    //     console.log("把结点编辑信息传给服务器成功")
+    //     wx.request({
+    //       url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+    //       header: {
+    //         'content-type': "application/x-www-form-urlencoded"
+    //       },
+    //       method: 'POST',
+    //       data: {
+    //         OpenId: "testopenid"
+    //       },
+    //       success(res1) {
+    //         console.log(res1.data)
+    //         wx.setStorage({
+    //           key: 'Forest',
+    //           data: res1.data,
+    //         })
+    //         wx.request({
+    //           url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+    //           header: {
+    //             'content-type': "application/x-www-form-urlencoded"
+    //           },
+    //           method: 'POST',
+    //           data: {
+    //             OpenId: "testopenid"
+    //           },
+    //           success(res) {
+    //             wx.setStorage({
+    //               key: 'Information',
+    //               data: res.data,
+    //             })
+    //             app.globalData.tasks = res.data.Tasks;
+    //             app.globalData.messages = res.data.Messages;
+    //           }
+    //         })
+    //       }
+    //     })
+    //   }
+    // })
+  },
+  // 编辑框确认按钮
+  editConfirm: function (e) {
+    this.setData({
+      isEdit: false
+    })
     CanvasDrag.changeNodeInfo(this.data.edit_info);
     var text_selected_node = JSON.parse(self.data.text_selected_node)
     console.log(text_selected_node)
@@ -576,13 +641,6 @@ Page({
         })
       }
     })
-  },
-  // 编辑框确认按钮
-  editConfirm: function (e) {
-    this.setData({
-      isEdit: false
-    })
-    CanvasDrag.changeNodeInfo(this.data.edit_info);
   },
   // 编辑框取消按钮
   editCancel: function (e) {

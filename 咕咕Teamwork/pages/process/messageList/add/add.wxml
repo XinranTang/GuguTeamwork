@@ -3,11 +3,15 @@
   <view class="st-radius-view" style='padding-left:30rpx;padding-right:30rpx;background-color:white'>
     <view class="cu-form-group">
       <view class='title'>消息标题</view>
-      <input placeholder="标题" class='radius' name='input'></input>
+      <input placeholder="标题" class='radius' name='input' bindblur='bindTitleChange'></input>
     </view>
     <view class="cu-form-group">
       <view class='title'>消息内容</view>
-      <input placeholder="内容描述" class='radius' name='input'></input>
+      <input placeholder="内容描述" class='radius' name='input' bindblur='bindContentChange'></input>
+    </view>
+    <view class="cu-form-group">
+      <view class='title'>发送对象</view>
+      <input placeholder="" value="{{msg_to_who}}"class='radius' name='input' bindblur='bindToWhoChange'></input>
     </view>
     <view class="cu-form-group">
       <view class='title'>截止查看日期</view>
@@ -26,4 +30,4 @@
       </picker>
     </view>
   </view>
-  <button bind:click="handleClick" class="st-button no-border">新建</button>
+  <button bindtap="onClickSend" class="st-button no-border">新建</button>

@@ -7,6 +7,13 @@
 const DELETE_ICON = './icon/close.png'; // 删除按钮
 const DRAG_ICON = './icon/scale.png'; // 缩放按钮
 const ADD_ICON = './icon/add.png'
+const MAIN_ICON = './icon/icon_main.png'
+const FINISH_ICON = './icon/icon_finish.png'
+const MAIN_ICON_2 = './icon/icon_main_2.png'
+const FINISH_ICON_2 = './icon/icon_finish_2.png'
+const MAN_ICON = './icon/icon_man.png'
+const MAN_ICON_2 = './icon/icon_man_2.png'
+
 const ROTATE_ENABLED = false;
 var DEFAULT_FONT_SIZE = 15;
 var ZOOM_ENABLE = false;
@@ -17,7 +24,7 @@ var SELECT_COLOR = 'rgba(135, 201, 237,0.8)';
 var DEFAULT_COLOR = 'rgba(180,180,180,0.8)';
 var DEL_COLOR = 'rgba(200,0,0,0.8)';
 
-var initX =150;
+var initX = 150;
 var initY = 50;
 
 // 服务器数据库字段名
@@ -145,21 +152,36 @@ dragGraph.prototype = {
       this.y = this.centerY - textHeight / 2;
     }
 
-    this.ctx.setShadow(0, 0, 20, this.isDeled?DEL_COLOR:this.selected?SELECT_COLOR:DEFAULT_COLOR);
-    // this.ctx.shadowColor = this.isDeled ? DEL_COLOR : this.selected ? SELECT_COLOR : DEFAULT_COLOR;
-    // this.ctx.shadowBlur = 20.0;
-    // this.ctx.shadowOffsetX = 0;
-    // this.ctx.shadowOffsetY = 0;
-    // console.log(this.ctx);
+    this.ctx.setShadow(0, 0, 20, this.isDeled ? DEL_COLOR : this.selected ? SELECT_COLOR : DEFAULT_COLOR);
     this._roundRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10, 10);
     //this.ctx.fillRect(this.x - 5, this.y - 5, textWidth + 10, textHeight + 10);
     this.ctx.setShadow(0, 0, 0, 'black');
     // 渲染元素
     if (this.type === 'text') {
       this.ctx.fillText(this.text, this.centerX, this.centerY);
+
+      //如果是主任务 显示小房子图标 不显示是否完成图标
+      if (this.taskattrs[SELF] == 0)
+        this.ctx.drawImage(this.selected ? MAIN_ICON : MAIN_ICON_2, this.x + textWidth - 10, this.y - 15, 20, 20);
+      else if (this.taskattrs[TASK][STATUS] == true)
+        this.ctx.drawImage(this.selected ? FINISH_ICON : FINISH_ICON_2, this.x + textWidth - 10, this.y - 15, 20, 20);
+
+      //显示有几个成员参与
+      var count = this.taskattrs[TEAM_MATES] == null ? 0 : this.taskattrs[TEAM_MATES].length;
+      var initY = this.y + textHeight - 5;
+      var initX = this.x + textWidth - 10;
+      var d = 15;
+      var icon = this.selected ? MAN_ICON : MAN_ICON_2;
+      for (var i = 0; i < count; i++) {
+        this.ctx.drawImage(icon, initX - i * d, initY, 25, 25);
+      }
+
     } else if (this.type === 'image') {
       this.ctx.drawImage(this.fileUrl, this.x, this.y, this.w, this.h);
     }
+
+
+
     // 如果是选中状态，绘制选择虚线框，和缩放图标、删除图标
     if (this.selected) {
       this.ctx.setLineWidth(2);
@@ -201,7 +223,7 @@ dragGraph.prototype = {
     // 因为边缘描边存在锯齿，最好指定使用 transparent 填充
     // 这里是使用 fill 还是 stroke都可以，二选一即可
     ctx.setFillStyle('white');
-     //ctx.setStrokeStyle('black')
+    //ctx.setStrokeStyle('black')
     // 左上角
     ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5);
 
@@ -574,11 +596,11 @@ Component({
     const sysInfo = wx.getSystemInfoSync();
     const screenWidth = sysInfo.screenWidth;
     this.factor = screenWidth / 750;
-    
+
     //initX = this.toPx(screenWidth/2);
     //不知道为啥获取不到屏幕正中的绘图位置，就先这样吧
     initX = 155;
-    console.log(screenWidth+','+initX);
+    console.log(screenWidth + ',' + initX);
     if (typeof this.drawArr === 'undefined') {
       this.drawArr = [];
     }
@@ -670,7 +692,7 @@ Component({
       this.drawArr.forEach((item) => {
         item.paint();
       });
-      
+
       return new Promise((resolve) => {
         this.ctx.draw(false, () => {
           resolve();
@@ -860,6 +882,7 @@ Component({
       var fromNode = this.tempGraphArr[0];
       var index = fromNode.taskattrs[SELF];
       newNodeAttr['Parent'] = fromNode.taskattrs[TASK][TASK_ID];
+      newNodeAttr['Self'] = this.treeRawArr.length;
       this.treeRawArr.push(newNodeAttr);
       if (this.treeRawArr[index][CHILD][0] == 0) {
         this.treeRawArr[index][CHILD] = [];
@@ -879,7 +902,7 @@ Component({
       this.drawArr.push(newTaskGraph);
       this.edgeArr.push(newedge);
       fromNode.selected = false;
-      this.tempGraphArr[0]=newTaskGraph;
+      this.tempGraphArr[0] = newTaskGraph;
       this.triggerEvent('onSelectedChange', JSON.stringify(this.getSelectedNode().taskattrs == undefined ? {} : this.getSelectedNode().taskattrs));
       this.draw();
       // this.clearCanvas();
@@ -905,11 +928,20 @@ Component({
     // 传值传的都是dragGraph对象 包含task atrr json
     _insertTreeNode(fromTaskGraph) {
       this.drawArr.push(fromTaskGraph)
-      var d = 80;
+      var d = 100;
       var pos_x_offset = 0;
       var pos_y_offset = 80;
       var childs = fromTaskGraph.taskattrs[CHILD];
-      pos_x_offset = -(childs.length - 1) * d / 2;
+      var totalLen = 0;
+      this.ctx.setFontSize(DEFAULT_FONT_SIZE);
+      this.ctx.setTextBaseline('middle');
+      this.ctx.setTextAlign('center');
+      for (var i = 0; i < childs.length; i++) {
+        totalLen += this.ctx.measureText(this.treeRawArr[childs[i]][TASK][TITLE]).width;
+      }
+      //pos_x_offset = -(childs.length - 1) * d / 2;
+      pos_x_offset = -(totalLen + (childs.length - 1) * 15) / 4;
+      console.log(totalLen);
       //非叶子节点
       if (childs[0] != 0) {
         for (var i = 0; i < childs.length; i++) {
@@ -923,11 +955,11 @@ Component({
           }, this.ctx, this.factor, nextTaskNodeAtrr);
           var newedge = new edgeGraph({
             width: 2,
-            color:'gray'
+            color: 'gray'
           }, this.ctx, fromTaskGraph, newTaskGraph);
           this.edgeArr.push(newedge);
           this._insertTreeNode(newTaskGraph);
-          pos_x_offset += 80;
+          pos_x_offset = pos_x_offset + this.ctx.measureText(nextTaskNodeAtrr[TASK][TITLE]).width + 15;
         }
       }
     },
@@ -944,9 +976,9 @@ Component({
 
       //初始化Parent
 
-      for(var i = 0;i <this.treeRawArr.length;i++){
+      for (var i = 0; i < this.treeRawArr.length; i++) {
         var childs = this.treeRawArr[i][CHILD];
-        for(var j =0;j<childs.length;j++){
+        for (var j = 0; j < childs.length; j++) {
           //Parent字段改成TaskIDs
           //this.treeRawArr[childs[j]][PARENT]=i;
           this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
