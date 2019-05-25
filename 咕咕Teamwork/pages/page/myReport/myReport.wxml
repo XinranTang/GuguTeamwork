@@ -1,0 +1,22 @@
+<!--pages/page/myReport/myReport.wxml-->
+<i-collapse>
+  <i-collapse-item title="选择加入的项目提交周报" name="name1">
+    <view slot="content" wx:for="{{ctasks}}" bindtap='toTask' wx:for-item="task" data-data="{{task.data}}" data-index="{{index}}" data-id="{{task.TaskID}}">
+      <view id="each-task" class="horizontal task-view">
+        <view>
+          <image class="task-image" src='/images/icon2.jpg'></image>
+        </view>
+        <view class="vertiacl task-content" style="">
+          <view class="horizontal" style="height:50%">
+            <view class="task-title">{{task.Title}}</view>
+          </view>
+          <view class="horizontal" style="height:50%;align-items:flex-end">
+            <text class="iconfont icon-ionc--1"></text>
+            <view slot="content" class="task-pusher" style="width:50%">{{task.Pusher}}</view>
+            <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">截止时间:{{tools.sub(task.DeadLine,0,10)}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </i-collapse-item>
+</i-collapse>

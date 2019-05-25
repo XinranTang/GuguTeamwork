@@ -53,10 +53,6 @@ Page({
           arr.forEach(item => {
             console.log(item)
             if (item == task.TaskID) {
-              a = self.data.mtasks;
-              self.setData({
-                mtasks: a.concat(task)
-              })
               flag=true;
             }             
           })
@@ -66,6 +62,14 @@ Page({
               ctasks: a.concat(task)
             })
           }
+        })
+        wx.getStorage({// 【这里这么写对吗】
+          key: 'Forest',
+          success: function(res) {
+            self.setData({
+              mtasks:res.data
+            })
+          },
         })
       },
     })
@@ -116,33 +120,55 @@ Page({
     var dataSet = e.currentTarget.dataset;
     var id = dataSet.id;
     var index = e.currentTarget.dataset.index;
+    let flag = false;
     console.log(id)
     wx.getStorage({
-      key: 'UserInfor',
+      key: 'Forest',
       success: function(res) {
-        var arr = [];
-        let flag = false;
-        arr = res.data.Manage.split(";");
-        arr.forEach(each=>{
-          if(each==id){
-            flag=true;
+        let tempData = res.data;
+        tempData.forEach(each=>{
+          if(each.TreeId == id){
+            flag = true;// 从树堆里找到了任务id
             app.globalData.currentTaskIndex = index;
             app.globalData.tasks = self.data.tasks;
-            app.globalData.currentTask = self.data.mtasks[index];
+            app.globalData.currentTask = each;// 只能直接把任务附上去了。。。
             wx.navigateTo({
               url: '../../process/taskList/task',
             });
           }
         })
         if(!flag){
-          app.globalData.currentTaskIndex = index;
-          app.globalData.tasks = self.data.tasks;
-          app.globalData.currentTask = self.data.ctasks[index];
-          wx.navigateTo({
-            url: '../../process/taskList/task',
-          });
+          wx.getStorage({
+            key: 'UserInfor',
+            success: function (res) {
+
+              var arr = [];
+              flag = false;
+              arr = res.data.Manage.split(";");
+              arr.forEach(each => {
+                if (each == id) {
+                  flag = true;
+                  // app.globalData.currentTaskIndex = index;
+                  // app.globalData.tasks = self.data.tasks;
+                  // app.globalData.currentTask = self.data.mtasks[index];
+                  // wx.navigateTo({
+                  //   url: '../../process/taskList/task',
+                  // });
+                }
+              })
+              if (!flag) {
+                app.globalData.currentTaskIndex = index;
+                app.globalData.tasks = self.data.tasks;
+                app.globalData.currentTask = self.data.ctasks[index];
+                wx.navigateTo({
+                  url: '../../process/taskList/task',
+                });
+              }
+            },
+          })
         }
       },
     })
+    
   }
 })

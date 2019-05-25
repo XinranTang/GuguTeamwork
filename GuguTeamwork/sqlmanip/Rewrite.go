@@ -44,6 +44,26 @@ func RewriteItemInt(db *sql.DB, table string, key string, header string, newValu
 	return nil
 }
 
+func IncDec(table string, key string, header string, keyValue string, flag bool) error {
+	db := ConnectPersonalDB()
+	defer DisConnectDB(db)
+	var order string
+	if flag {
+		order = "UPDATE " + table + " SET " + header + "=(" + header + "+1) WHERE " + key + "=?"
+	} else {
+		order = "UPDATE " + table + " SET " + header + "=(" + header + "-1) WHERE " + key + "=?"
+	}
+	stmt, err := db.Prepare(order)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(keyValue)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func RewriteItemString(db *sql.DB, table string, key string, header string, newValue string, keyValue string) error {
 	order := "UPDATE " + table + " SET " + header + "=? WHERE " + key + "=?"
 	stmt, err := db.Prepare(order)
@@ -350,6 +370,10 @@ func FlushTaskData(db *sql.DB, opes []*utils.Ope, data map[string][]utils.TaskNo
 				if err != nil {
 					return err
 				}
+				//bad design
+				//自建项目
+				err = CreateProjectRecord(t.Task.Pusher, t.Task.TaskID)
+				utils.CheckErr(err, "FlushTask:statistics")
 			}
 			order = "INSERT INTO Tasks(TaskID,Title,Pusher,Content,Status,PushDate,DeadLine,Urgency) VALUES(?,?,?,?,?,?,?,?)"
 			stmt, err := db.Prepare(order)
@@ -385,6 +409,8 @@ func FlushTaskData(db *sql.DB, opes []*utils.Ope, data map[string][]utils.TaskNo
 					return err
 				}
 			}
+			//Inc
+			IncDec("user_task", "taskID", "notdone", t.Task.TaskID, true)
 		default:
 			return new(utils.OtherError)
 		}

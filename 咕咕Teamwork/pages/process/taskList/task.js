@@ -37,6 +37,7 @@ Page({
     "task": null,
     oneTaskTree: {},
     show: false,
+    treeDeadLine:"",
     text_selected_node: '...',
     isSelected: false,
     //选中的结点
@@ -62,8 +63,17 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function(options) {
 
+  onLoad: function (options) {
+    let self = this
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function(res) {
+        self.setData({
+          user:res.data.OpenId
+        })
+      },
+    })
   },
 
   /**
@@ -76,8 +86,10 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
+
   onShow: function() {
     console.log(app.globalData.currentTask)
+
     var self = this;
 
     var currentTask = app.globalData.currentTask;
@@ -88,41 +100,73 @@ Page({
         self.setData({
           user: res.data.OpenId
         })
-
+        let findTree = false;
         var arr = [];
         arr = res.data.Manage.split(";");
         var flag = false; // 不是管理者
-        arr.forEach(item => {
-          if (item == currentTask.TaskID) {
-            flag = true;
+        // arr.forEach(item => {
+        //   if (item == currentTask.TaskID) {
+        //     flag = true;
             wx.getStorage({
               key: 'Forest',
               success: function(res) {
                 res.data.forEach(each => {
-                  if (each.TreeId == item) {
+                  if (each.TreeId == currentTask.TreeId) {
                     self.setData({
                       show: true,
-                      oneTaskTree: each
+                      oneTaskTree: each,
+                      treeDeadLine:each.Tree[0].Task.DeadLine
                     })
+                    findTree = true;
                     self.onInitByTree();
                   }
                 })
+                if (!findTree) {
+                  wx.getStorage({
+                    key: 'UserInfor',
+                    success: function (res) {
+                      var arr = [];
+                      arr = res.data.Manage.split(";");
+                      var flag = false;// 不是管理者
+                      arr.forEach(item => {
+                        if (item == currentTask.TaskID) {
+                          flag = true;
+                          // wx.getStorage({
+                          //   key: 'Forest',
+                          //   success: function (res) {
+                          //     res.data.forEach(each => {
+                          //       if (each.TreeId == item) {
+                          //         self.setData({
+                          //           show: true,
+                          //           oneTaskTree: each
+                          //         })
+                          //         self.onInitByTree();
+                          //       }
+                          //     })
+                          //   },
+                          // })
+                        }
+                      })
+                      if (!flag) {
+                        self.setData({
+                          task: currentTask,
+                          title: currentTask.Title,
+                          pusher: currentTask.Pusher,
+                          content: currentTask.Content,
+                          status: currentTask.Status,
+                          pushDate: currentTask.PushDate,
+                          deadLine: currentTask.DeadLine,
+                          urgency: currentTask.Urgency
+                        })
+                      }
+                    },
+                  })
+                }
               },
             })
-          }
-        })
-        if (!flag) {
-          self.setData({
-            task: currentTask,
-            title: currentTask.Title,
-            pusher: currentTask.Pusher,
-            content: currentTask.Content,
-            status: currentTask.Status,
-            pushDate: currentTask.PushDate,
-            deadLine: currentTask.DeadLine,
-            urgency: currentTask.Urgency
-          })
-        }
+          // }
+        // })
+        
       },
     })
   },
@@ -332,11 +376,13 @@ Page({
       text_selected_node: '{}'
     });
     CanvasDrag.clearCanvas();
+    console.log(_this.data.oneTaskTree)
     var json = {
       "TreeID": _this.data.oneTaskTree.TreeId,
-      "TaskID": _this.data.oneTaskTree.TaskID,
+      "TaskID": _this.data.oneTaskTree.TreeId,
       "Parent": ""
     };
+    console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',
       header: {
@@ -373,18 +419,23 @@ Page({
               },
               success(res) {
                 wx.setStorage({
-                  key: 'Information',
+                  key: 'UserInfor',
                   data: res.data,
                 })
                 app.globalData.tasks = res.data.Tasks;
                 app.globalData.messages = res.data.Messages;
+                wx.navigateBack({
+
+                })
               }
             })
           }
         })
+
         wx.navigateBack({
 
         })
+
       }
     })
   },
@@ -419,21 +470,23 @@ Page({
       });
     }
   },
+
   onAddNode: function(e) {
     CanvasDrag.onAddNode();
     var self = this;
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
-    console.log(text_selected_node)
+    // var text_selected_node = JSON.parse(self.data.text_selected_node)
+    // console.log(text_selected_node)
     var json = {
       // 这里都是默认值，全部都得改
       "OpenId": self.data.user,
       "Title": "no title",
       "Content": "no content",
-      "Deadline": self.data.date + "T" + self.data.time + ":00Z",
+      "Deadline": self.data.treeDeadLine,
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": text_selected_node.Task.Parent + "",
+      "Parent": self.data.selected_node[PARENT]
     };
+    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + "T" + self.data.time + ":00Z";
     console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/newNode',
@@ -444,7 +497,8 @@ Page({
       data: JSON.stringify(json),
       dataType: JSON,
       success: function(res) {
-        console.log("任务结点添加成功")
+        console.log("任务结点添加成功"+res.data)
+        CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
         wx.request({
           url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
           header: {
@@ -489,12 +543,12 @@ Page({
   onDoDel: function(e) {
     var self = this;
     CanvasDrag.onDoDel();
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
-    console.log(text_selected_node)
+    // var text_selected_node = JSON.parse(self.data.text_selected_node)
+    // console.log(text_selected_node)
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": text_selected_node.Task.TaskID,
-      "Parent": text_selected_node.Task.Parent
+      "TaskID": self.data.selected_node.Task.TaskID,
+      "Parent": self.data.selected_node.Task.Parent
     };
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',
@@ -544,6 +598,7 @@ Page({
       }
     })
   },
+
   //显示邀请好友
   onInvite: function(e) {
     this.saveCanvas();
@@ -581,6 +636,7 @@ Page({
     //   }
     // })
 
+
     wx.sendSocketMessage({
       data:JSON.stringify(json),
       success: function (res) {
@@ -616,15 +672,15 @@ Page({
       isEdit: false
     })
     CanvasDrag.changeNodeInfo(this.data.edit_info);
-    var self = this;
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    let text_selected_node = JSON.parse(this.data.text_selected_node)
     console.log(text_selected_node)
+    var self = this;
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
       "TaskID": text_selected_node.Task.TaskID,
-      "Title": text_selected_node.Task.Title,
-      "Content": text_selected_node.Task.Content,
-      "Deadline": text_selected_node.Task.DeadLine,
+      "Title": self.data.selected_node.Task.Title,
+      "Content": self.data.selected_node.Task.Content,
+      "Deadline": self.data.selected_node.Task.DeadLine,
       "Urgency": text_selected_node.Task.Urgency + ""
     }
     console.log(json)
@@ -675,6 +731,7 @@ Page({
         })
       }
     })
+
   },
   // 编辑框取消按钮
   editCancel: function(e) {
@@ -706,5 +763,5 @@ Page({
       .catch((e) => {
         console.error(e);
       })
-  }
+ }
 })

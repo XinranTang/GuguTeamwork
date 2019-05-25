@@ -109,8 +109,10 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
+    var self = this
     var date = new Date();
     let show_day = new Array('周日', '周一', '周二', '周三', '周四', '周五', '周六');
+// <<<<<<< HEAD
     this.setData({
       messages:app.globalData.messages,
       tasks:app.globalData.tasks,
@@ -141,21 +143,82 @@ Page({
       randomColorArr.push(random);
       labLen--;
     } while (labLen > 0)
+// =======
+    wx.getStorage({
+      key: 'Forest',
+      success: function(res) {
+        let eachItem = app.globalData.tasks;
+        let forests = res.data;
+        let flag = false;
+        if(app.globalData.tasks.length!=0){
+          for (var i = 0; i < eachItem.length; i++) {
+            flag = false;
+            forests.forEach(each => {
+              if (eachItem[i].TaskID == each.TreeId) {
+                flag = true;
+              }
+            })
+            if (!flag) {
+              eachItem.splice(i, 1); // 将使后面的元素依次前移，数组长度减1
+              i--; // 如果不减，将漏掉一个元素
+            }
+          }
+        }
+        self.setData({
+          messages: app.globalData.messages,
+          tasks: eachItem,
+          color: app.globalData.color,
+          hour: date.getHours(),
+          schedule: {
+            timestamp: Date.parse(new Date()) / 1000,
+            year: date.getFullYear(),
+            month: (date.getMonth() + 1) + "月",
+            day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+            hour: date.getHours(),
+            weekDay: show_day[date.getDay()],
+          },
+        })
+        let labLen = self.data.messages.length;
+        let labLenT = self.data.tasks.length;
+        let colorArr = self.data.colorArr;
+        let colorLen = colorArr.length;
+        let randomColorArr = [];
+        // console.log("本地任务数量")
+        // console.log(self.data.tasks.length)
+        //判断执行
+        do {
+          let random = colorArr[Math.floor(Math.random() * colorLen)];
+          randomColorArr.push(random);
+          labLen--;
+        } while (labLen > 0)
+// >>>>>>> 01aa5433c395ee219ac6a0ce2e413f0ecc05c494
 
-    self.setData({
-      randomColorArr: randomColorArr
-    });
-    randomColorArr = [];
+        self.setData({
+          randomColorArr: randomColorArr
+        });
+        randomColorArr = [];
 
-    do {
-      let random = colorArr[Math.floor(Math.random() * colorLen)];
-      randomColorArr.push(random);
-      labLenT--;
-    } while (labLenT > 0)
-    self.setData({
-      randomColorArrT: randomColorArr
-    });
+        do {
+          let random = colorArr[Math.floor(Math.random() * colorLen)];
+          randomColorArr.push(random);
+          labLenT--;
+        } while (labLenT > 0)
+        self.setData({
+          randomColorArrT: randomColorArr
+        });
     // console.log(randomColorArr)
+// <<<<<<< HEAD
+// =======
+      
+    // self.setData({
+    //   messages: app.globalData.messages,
+    //   tasks: app.globalData.tasks,
+    //   invitations: app.globalData.invitations
+    // })
+  }
+  
+  })
+// >>>>>>> 01aa5433c395ee219ac6a0ce2e413f0ecc05c494
   },
 
   /**
@@ -586,12 +649,33 @@ Page({
       var index = dataSet.index;
       var task = this.data.tasks[index];
       console.log(e.currentTarget.dataset)
-      app.globalData.currentTaskIndex = index;
-      app.globalData.tasks = self.data.tasks;
-      app.globalData.currentTask = task;
-      wx.navigateTo({
-        url: '../process/taskList/task',
-      });
+      wx.getStorage({
+        key: 'Forest',
+        success: function(res) {
+          let tempData = res.data;
+          let flag = false;
+          tempData.forEach(each=>{
+            if(each.TreeId == task.TaskID){
+              console.log("找到了"+each.TreeId)
+              flag = true;
+              app.globalData.currentTaskIndex = index;
+              app.globalData.tasks = self.data.tasks;
+              app.globalData.currentTask = each;
+              wx.navigateTo({
+                url: '../process/taskList/task',
+              });
+            }
+          })
+          if(!flag){
+            app.globalData.currentTaskIndex = index;
+            app.globalData.tasks = self.data.tasks;
+            app.globalData.currentTask = task;
+            wx.navigateTo({
+              url: '../process/taskList/task',
+            });
+          }
+        },
+      })
     }
   },
   toMyTask:function(e){

@@ -40,6 +40,8 @@ func main() {
 	mux.HandleFunc("/gugu/sendQR", fetch.MakeQR)
 	mux.HandleFunc("/gugu/newMessage", fetch.NewMessage)
 	mux.HandleFunc("/gugu/readMessage", fetch.ReadMessage)
+	mux.HandleFunc("/gugu/analysis", fetch.Analysis)
+	mux.HandleFunc("/gugu/make", fetch.Make)
 	//WS服务
 	mux.HandleFunc("/guguWss/online", conns.Online)
 	mux.HandleFunc("/gugu/offline", conns.Offline)

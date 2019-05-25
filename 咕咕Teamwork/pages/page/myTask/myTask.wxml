@@ -8,19 +8,19 @@
       <text class="st-text-tag">创建</text>
     </view>
     <i-collapse-item title="我管理的项目" name="name2">
-        <view slot="content" wx:for='{{mtasks}}' i-class-content="green-text" bindtap='toTask' wx:for-item="task" data-data="{{item.data}}" data-id="{{task.TaskID}}" data-index="{{index}}">
+        <view slot="content" wx:for='{{mtasks}}' i-class-content="green-text" bindtap='toTask' wx:for-item="task" data-data="{{item.data}}" data-id="{{task.TreeId}}" data-index="{{index}}">
           <view id="each-task" class="horizontal task-view">
             <view>
               <image class="task-image" src='/images/icon2.jpg'></image>
             </view>
             <view class="vertiacl task-content" style="">
               <view class="horizontal" style="height:50%">
-                <view class="task-title">{{task.Title}}</view>
+                <view class="task-title">{{task.Tree[0].Task.Title}}</view>
               </view>
               <view class="horizontal" style="height:50%;align-items:flex-end">
                 <text class="iconfont icon-ionc--1"></text>
-                <view slot="content" class="task-pusher" style="width:50%">{{task.Pusher}}</view>
-                <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">截止时间:{{tools.sub(task.DeadLine,0,10)}}</view>
+                <view slot="content" class="task-pusher" style="width:50%">{{task.Tree[0].Task.Pusher}}</view>
+                <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">截止时间:{{tools.sub(task.Tree[0].Task.DeadLine,0,10)}}</view>
               </view>
             </view>
           </view>
