@@ -303,7 +303,10 @@ Page({
     this.setData({
       isEdit: false
     })
+    console.log(this.data.selected_node);
     CanvasDrag.changeNodeInfo(this.data.edit_info);
+    console.log(this.data.selected_node);
+
   },
   // 编辑框取消按钮
   editCancel: function (e) {

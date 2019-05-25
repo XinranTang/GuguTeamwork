@@ -57,6 +57,19 @@ func RewriteItemString(db *sql.DB, table string, key string, header string, newV
 	return nil
 }
 
+func Append(db *sql.DB, table string, key string, header string, appendValue string, keyValue string) error {
+	order := "UPDATE " + table + " SET " + header + "=" + header + " || '" + appendValue + "' WHERE " + key + "=?"
+	stmt, err := db.Prepare(order)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(keyValue)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func FlushTreeData(db *sql.DB, table string, data []utils.TaskNode) error {
 	if len(data) == 0 {
 		var order = "DELETE FROM ProjectTrees WHERE TreeID=?"
@@ -205,7 +218,12 @@ func FlushTaskData(db *sql.DB, opes []*utils.Ope, data map[string][]utils.TaskNo
 				}
 				start := strings.Index(ts, v.TaskID)
 				end := utils.Find(ts, ";", start) + 1
-				_, err = stmt.Exec(ts[:start]+ts[end:], j)
+				if end >= len(ts) {
+					ts = ts[:start]
+				} else {
+					ts = ts[:start] + ts[end:]
+				}
+				_, err = stmt.Exec(ts, j)
 				if err != nil {
 					return err
 				}
@@ -223,7 +241,12 @@ func FlushTaskData(db *sql.DB, opes []*utils.Ope, data map[string][]utils.TaskNo
 					start := strings.Index(ts, v.TaskID)
 					if start >= 0 {
 						end := utils.Find(ts, ";", start) + 1
-						_, err = stmt.Exec(ts[:start]+ts[end:], j)
+						if end >= len(ts) {
+							ts = ts[:start]
+						} else {
+							ts = ts[:start] + ts[end:]
+						}
+						_, err = stmt.Exec(ts, j)
 						if err != nil {
 							return err
 						}
@@ -277,7 +300,12 @@ func FlushTaskData(db *sql.DB, opes []*utils.Ope, data map[string][]utils.TaskNo
 					}
 					start := strings.Index(ts, t.Task.TaskID)
 					end := utils.Find(ts, ";", start) + 1
-					_, err = stmt.Exec(ts[:start]+ts[end:], v)
+					if end >= len(ts) {
+						ts = ts[:start]
+					} else {
+						ts = ts[:start] + ts[end:]
+					}
+					_, err = stmt.Exec(ts, v)
 					if err != nil {
 						return err
 					}

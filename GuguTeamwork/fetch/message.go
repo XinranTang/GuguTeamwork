@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"GuguTeamwork/conns"
 	"GuguTeamwork/sqlmanip"
@@ -17,6 +18,15 @@ type NewMessageData struct {
 	Content         string
 	NotRead         string
 	FinalDeleteDate string
+}
+
+func MakeQR(w http.ResponseWriter, r *http.Request) {
+	data, err := ioutil.ReadAll(r.Body)
+	utils.CheckErr(err, "MakeInvitation:read data")
+	r.Body.Close()
+
+	res := utils.GetInvitation(data)
+	w.Write(res)
 }
 
 func NewMessage(w http.ResponseWriter, r *http.Request) {
@@ -53,4 +63,29 @@ func NewMessage(w http.ResponseWriter, r *http.Request) {
 			conn <- msg
 		}
 	}
+}
+
+func ReadMessage(w http.ResponseWriter, r *http.Request) {
+	db := sqlmanip.ConnetUserDB()
+	defer sqlmanip.DisConnectDB(db)
+
+	r.ParseForm()
+	notRead, err := sqlmanip.QueryMessageIDToString(db, "NotRead", "Messages", r.Form["MessageID"][0])
+	utils.CheckErr(err, "ReadMessage:query notread in db")
+	s := strings.Index(notRead, r.Form["OpenId"][0])
+	if s == -1 {
+		w.WriteHeader(300)
+		w.Write([]byte("User have read the message or do not have the message."))
+		return
+	}
+	e := utils.Find(notRead, ";", s) + 1
+	if e >= len(notRead) {
+		notRead = notRead[0:s]
+	} else {
+		notRead = notRead[0:s] + notRead[e:]
+	}
+	err = sqlmanip.RewriteItemString(db, "Messages", "MessageID", "NotRead", notRead, r.Form["MessageID"][0])
+	utils.CheckErr(err, "ReadMessage:reset not read in db")
+	err = sqlmanip.Append(db, "Messages", "MessageID", "Read", r.Form["OpenId"][0]+";", r.Form["MessageID"][0])
+	utils.CheckErr(err, "ReadMessage:set read in db")
 }

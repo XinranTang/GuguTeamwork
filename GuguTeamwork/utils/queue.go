@@ -2,7 +2,6 @@ package utils
 
 import (
 	"container/list"
-	"log"
 )
 
 type Queue struct {
@@ -40,23 +39,25 @@ func (q *Queue) IsEmp() bool {
 	return false
 }
 
-func (q *Queue) SetOff(ope *Ope) (bool, error) {
-	log.Println("awake")
-	log.Println(*ope)
-	for v := q.body.Front(); v != nil; v = v.Next() {
-		value, ok := v.Value.(*Ope)
-		if !ok {
-			return false, new(OtherError)
-		}
-		if value.TreeID == ope.TreeID && value.TaskID == ope.TaskID && value.Manip == -ope.Manip {
-			log.Println("remove")
-			log.Println(value)
-			if v == q.tailElem {
-				q.tailElem = q.tailElem.Prev()
+func (q *Queue) SetOff(ope *Ope) (int8, error) {
+	if ope.Manip == -1 {
+		for v := q.body.Front(); v != nil; v = v.Next() {
+			value, ok := v.Value.(*Ope)
+			if !ok {
+				return -1, new(OtherError)
 			}
-			q.body.Remove(v)
-			return true, nil
+			if value.TreeID == ope.TreeID && value.TaskID == ope.TaskID {
+				if v == q.tailElem {
+					q.tailElem = q.tailElem.Prev()
+				}
+				q.body.Remove(v)
+				if value.Manip == 0 {
+					return 1, nil
+				} else {
+					return 2, nil
+				}
+			}
 		}
 	}
-	return false, nil
+	return 0, nil
 }

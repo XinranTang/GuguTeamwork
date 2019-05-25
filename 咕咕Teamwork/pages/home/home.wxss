@@ -22,6 +22,9 @@
   color:white;
 }
 
+.invitation-text{
+  font-weight: bold;
+}
 .mask {
 
   width: 100%;
@@ -236,4 +239,48 @@ image[class*="gif-"]{
         opacity: 1;
         transform: translateX(0)
     }
+}
+
+.modal-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
+  z-index: 9000;
+  color: #fff;
+}
+
+.modal-photo {
+  position: fixed;
+  top: 20%;
+  z-index: 9999;
+  margin-top:-170rpx;
+}
+
+.userinfo-avatar {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+}
+
+.modal-container{
+  display:flex;                    
+ justify-content: center;        
+}
+
+.modal-content {
+  position: fixed;
+  top: 30%;
+  z-index: 9500;
+  width: 500rpx;
+  height: 65%;
+  overflow: hidden;
+  padding: 120rpx 50rpx 50rpx;
+  background: #fff;
+  margin-top: -180rpx;
+  border-radius: 10rpx;
 }

@@ -297,5 +297,31 @@ Page({
     wx.navigateTo({
       url: '../page/help/help',
     })
+  },
+  quit:function(){
+    var self = this;
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/offline',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: {
+        OpenId: app.globalData.openId
+      },
+      success(res) {
+        console.log(app.globalData.openId+" offline successfully");
+      }
+    })
+    app.globalData.socketOpen = false;
+
+    wx.closeSocket({
+      success: function (res) {
+        console.log("关闭socket成功");
+      },
+      fail: function (res) {
+        console.log("关闭socket失败");
+      }
+    });
   }
 })

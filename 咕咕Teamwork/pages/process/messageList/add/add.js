@@ -105,47 +105,47 @@ Page({
       },
     })
 
-    //websocket
-    var sock = null
-    var wsuri = "wss://www.fracturesr.xyz/guguWss/online";
-    var openId = self.data.user;
-    console.log("ws:" + self.data.user);
-    wx.connectSocket({
-      url: wsuri
-    })
+    // //websocket
+    // var sock = null
+    // var wsuri = "wss://www.fracturesr.xyz/guguWss/online";
+    // var openId = self.data.user;
+    // console.log("ws:" + self.data.user);
+    // wx.connectSocket({
+    //   url: wsuri
+    // })
 
-    wx.onSocketMessage(function(res) {
-      console.log('收到服务器信息' + JSON.stringify(res));
-    })
+    // wx.onSocketMessage(function(res) {
+    //   console.log('收到服务器信息' + JSON.stringify(res));
+    // })
 
-    wx.onSocketOpen(function(res) {
-      self.setData({
-        socket_open: true
-      })
-      console.log("socket open");
-      wx.sendSocketMessage({
-        data: self.data.user,
-        success: function(res) {
-          console.log("发送openId:" + self.data.user);
-        }
-      })
-    })
+    // wx.onSocketOpen(function(res) {
+    //   self.setData({
+    //     socket_open: true
+    //   })
+    //   console.log("socket open");
+    //   wx.sendSocketMessage({
+    //     data: self.data.user,
+    //     success: function(res) {
+    //       console.log("发送openId:" + self.data.user);
+    //     }
+    //   })
+    // })
 
 
 
-    wx.onSocketClose(function(res) {
-      //如果是60s自动断开则restart
-      console.log("socket_open:" + self.data.socket_open)
-      if (self.data.socket_open) {
-        console.log('socket close');
-        console.log('socket restart');
-        wx.connectSocket({
-          url: wsuri
-        })
-      } else {
-        console.log('quit page, socket close');
-      }
-    })
+    // wx.onSocketClose(function(res) {
+    //   //如果是60s自动断开则restart
+    //   console.log("socket_open:" + self.data.socket_open)
+    //   if (self.data.socket_open) {
+    //     console.log('socket close');
+    //     console.log('socket restart');
+    //     wx.connectSocket({
+    //       url: wsuri
+    //     })
+    //   } else {
+    //     console.log('quit page, socket close');
+    //   }
+    // })
 
   },
 
@@ -178,14 +178,14 @@ Page({
       socket_open: false
     })
     console.log("page unload");
-    wx.closeSocket({
-      success: function(res) {
-        console.log("关闭socket成功");
-      },
-      fail: function(res) {
-        console.log("关闭socket失败");
-      }
-    });
+    // wx.closeSocket({
+    //   success: function(res) {
+    //     console.log("关闭socket成功");
+    //   },
+    //   fail: function(res) {
+    //     console.log("关闭socket失败");
+    //   }
+    // });
   },
 
   /**

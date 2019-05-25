@@ -1,6 +1,6 @@
 //app.js
 App({
-  onLaunch: function () {
+  onLaunch: function() {
     // 展示本地存储能力
     // wx.getStorageSync(key)，获取本地缓存
     var logs = wx.getStorageSync('logs') || []
@@ -9,8 +9,8 @@ App({
     wx.setStorageSync('logs', logs)
     var that = this
     wx.getSystemInfo({
-      success: function (res) {
-        that.globalData.windowHeight= res.windowHeight
+      success: function(res) {
+        that.globalData.windowHeight = res.windowHeight
         that.globalData.windowWidth = res.windowWidth
       }
     })
@@ -25,7 +25,7 @@ App({
           },
           method: 'POST',
           data: {
-            OpenId:"testopenid"
+            OpenId: "testopenid"
           },
           success: function(res) {
             wx.setStorage({
@@ -33,6 +33,56 @@ App({
               data: res.data,
             })
             console.log(res.data)
+
+            //--------------连接WebSocket-------------
+
+            var openid = res.data.OpenId;
+            var wsuri = "wss://www.fracturesr.xyz/guguWss/online";
+
+            wx.connectSocket({
+              url: wsuri
+            })
+
+            wx.onSocketMessage(function(res) {
+              console.log('收到服务器信息');
+              var json = JSON.parse(res.data);
+              console.log(json);
+              //如果是邀请信息，加入invitations
+              if (json.TypeCode == 100) {
+                that.globalData.invitations.push(json);
+                console.log(that.globalData.invitations);
+              }
+            })
+
+            wx.onSocketOpen(function(res) {
+              console.log("socket open");
+              if (!that.globalData.socketOpen) {
+                wx.sendSocketMessage({
+                  data: openid,
+                  success: function(res) {
+                    console.log("发送openId:" + openid);
+                  }
+                })
+              }
+              that.globalData.socketOpen = true;
+            })
+
+            wx.onSocketClose(function(res) {
+              //如果是60s自动断开则restart
+              console.log("socketOpen:" + that.globalData.socketOpen)
+              if (that.globalData.socketOpen) {
+                console.log('socket close');
+                console.log('socket restart');
+                wx.connectSocket({
+                  url: wsuri
+                })
+              } else {
+                console.log('quit page, socket close');
+              }
+            })
+
+            //--------------连接WebSocket-------------
+
           },
           fail() {
             console.log("fail")
@@ -65,7 +115,7 @@ App({
               console.log("succeeded in get local information")
             },
             // 失败：即本地无当前用户信息
-            fail:function(){
+            fail: function() {
               // 向服务器发起POST
               wx.request({
                 url: 'https://www.fracturesr.xyz/entry',
@@ -73,8 +123,8 @@ App({
                   'content-type': "application/x-www-form-urlencoded"
                 },
                 method: 'POST',
-                data:{
-                  'code':"res.data"
+                data: {
+                  'code': "res.data"
                 },
                 success(res) {
                   wx.setStorage({
@@ -82,38 +132,66 @@ App({
                     data: 'res.data',
                   })
                 },
-                fail(){
+                fail() {
                   console.log("fail")
                 }
 
               })
             }
           })
-        }else{
+        } else {
           console.log("fail to get infor")
         }
       }
     })
   },
-  onLoad: function(){
-  
-     
+  onLoad: function() {
+
+  },
+  onUnload: function() {
+    var self = this;
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/offline',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: {
+        OpenId: self.globalData.openId
+      },
+      success(res) {
+        console.log(self.globalData.openId + "offline successfully");
+      }
+    })
+    this.globalData.socketOpen = false;
+
+    wx.closeSocket({
+      success: function(res) {
+        console.log("关闭socket成功");
+      },
+      fail: function(res) {
+        console.log("关闭socket失败");
+      }
+    });
   },
   globalData: {
+    socketOpen: false,
+    openId: 'testopenid',
     userInfo: null,
-    personal:null,
-    userInforComplete:false,
-    windowHeight:0,
-    windowWidth:0,
-    currentTaskIndex:0,
+    personal: null,
+    userInforComplete: false,
+    windowHeight: 0,
+    windowWidth: 0,
+    currentTaskIndex: 0,
     currentMessageIndex: 0,
-    currentTask:{},
-    markDownChoice:2,
-    tasks:[],
-    messages:[],
-    color:{
-      "Blue":'#88caed',
-      'Orange':'#f86e3d'
+    currentTask: {},
+    markDownChoice: 2,
+    invitations: [],
+    tasks: [],
+    messages: [],
+    color: {
+      "Blue": '#88caed',
+      'Orange': '#f86e3d'
     }
   }
 })

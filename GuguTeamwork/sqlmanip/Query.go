@@ -96,6 +96,16 @@ func QueryTaskIDToString(db *sql.DB, header string, table string, taskid string)
 	return tempStr, nil
 }
 
+func QueryMessageIDToString(db *sql.DB, header string, table string, messageid string) (string, error) {
+	var order = "SELECT " + header + " FROM " + table + " WHERE MessageID='" + messageid + "';"
+	var tempStr string
+	err := db.QueryRow(order).Scan(&tempStr)
+	if err != nil {
+		return "", err
+	}
+	return tempStr, nil
+}
+
 func QueryTrees(db *sql.DB) []string {
 	rows, err := db.Query("SELECT TreeID FROM ProjectTrees;")
 	utils.CheckErr(err, "QueryTrees:query")

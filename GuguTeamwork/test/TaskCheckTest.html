@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Content-type" content="text/html">
+		<meta name="author" content="fracturesr">
+		<title>InviteToTaskTest PAGE</title>
+		<script src="./jquery-3.3.1.min.js"></script>
+		<script>
+			var sock = null
+			var wsuri = "ws://localhost:9000/guguWss/online";
+			var OpenId = "testopenid"
+			window.onload = function() {
+				sock = new WebSocket(wsuri)
+				sock.onopen = function() {
+				console.log("connected to " + wsuri);
+				sock.send(OpenId)
+				}
+				sock.onclose = function(e) {
+					console.log("connection closed (" + e.code + ")");
+				}
+				sock.onmessage = function(e) {
+					console.log("message received: " + e.data);
+				}
+			}
+			
+			function checkRequest() {
+				var json = {
+				"TimeOut":new Date(),
+				"TypeCode":50,
+				"Sender":"testopenid",
+				"Receiver":'testopenid',
+				"ContentId":"testopenid_project_1;testopenid_project_1;"
+				};
+				sock.send(JSON.stringify(json))
+			}
+			
+			function pass() {
+				var json = {
+				"TimeOut":new Date(),
+				"TypeCode":51,
+				"Sender":"testopenid",
+				"Receiver":'testopenid',
+				"ContentId":"testopenid_project_1;testopenid_project_1;"
+				};
+				sock.send(JSON.stringify(json))
+			}
+			
+			function decline() {
+				var json = {
+				"TimeOut":new Date(),
+				"TypeCode":52,
+				"Sender":"testopenid",
+				"Receiver":'testopenid',
+				"ContentId":"testopenid_project_1;testopenid_project_1;"
+				};
+				sock.send(JSON.stringify(json))
+			}
+		</script>
+	</head>
+	<body>
+		<button type="button" onclick="checkRequest()">
+			checkRequest
+		</button>
+		<br />
+		<br />
+		<button type="button" onclick="pass()">
+			pass
+		</button>
+		<br />
+		<br />
+		<button type="button" onclick="decline()">
+			decline
+		</button>
+	</body>
+</html>

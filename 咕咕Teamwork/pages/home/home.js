@@ -38,6 +38,9 @@ Page({
     randomColorArrT: [],
     messages: [],
     tasks:[],
+    invitations:[],
+    nowInvitation:{},
+    currentInvitationIndex:0,
     list: [
       { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }
        ]
@@ -88,7 +91,8 @@ Page({
   
     this.setData({
       messages:app.globalData.messages,
-      tasks:app.globalData.tasks
+      tasks:app.globalData.tasks,
+      invitations:app.globalData.invitations
     })
   },
 
@@ -161,9 +165,12 @@ Page({
           randomColorArrT: randomColorArr
         });
     // console.log(randomColorArr)
-      },
+
+    this.setData({
+      messages: app.globalData.messages,
+      tasks: app.globalData.tasks,
+      invitations: app.globalData.invitations
     })
-    
   },
 
   /**
@@ -505,6 +512,11 @@ Page({
       url: '../process/messageList/message',
     })
   },
+  toMyMessage:function(e){
+    wx.navigateTo({
+      url: '../page/myMessage/myMessage',
+    })
+  },
   toTask: function (e) {
     if(this.data.choose==true){
       var self = this;
@@ -555,5 +567,71 @@ Page({
         },
       })
     }
+  },
+  toMyTask:function(e){
+    wx.navigateTo({
+      url: '../page/myTask/myTask',
+    })
+  },
+  inviteIgnore:function(e){
+    this.setData({
+      onInvite: false
+    })
+  },
+  inviteConfirm:function(e){
+    var json = JSON.parse(JSON.stringify(this.data.nowInvitation));
+    var temp = json.Receiver;
+    json.Receiver = json.Sender;
+    json.Sender = temp;
+    //通过了
+    json.TypeCode = 101;
+    wx.sendSocketMessage({
+      data:JSON.stringify(json),
+      success:function(res){
+        console.log("101Code发送成功")
+      },
+      fail:function(e){
+        console.log("101Code发送失败")
+      }
+    })
+    this.setData({
+      onInvite: false
+    })
+  },
+  inviteCancel:function(e){
+    var json = JSON.parse(JSON.stringify(this.data.nowInvitation));
+    var temp = json.Receiver;
+    json.Receiver = json.Sender;
+    json.Sender = temp;
+    //拒绝了
+    json.TypeCode = 102;
+    wx.sendSocketMessage({
+      data: JSON.stringify(json),
+      success: function (res) {
+        console.log("102Code发送成功")
+      },
+      fail: function (e) {
+        console.log("102Code发送失败")
+      }
+    })
+    this.setData({
+      onInvite: false
+    })
+    console.log("拒绝邀请");
+  },
+  onClickInvite:function(e){
+   
+    var self = this;
+    var dataSet = e.currentTarget.dataset;
+    var index = dataSet.index;
+    var invitation = this.data.invitations[index];
+    console.log(e.currentTarget.dataset)
+
+    this.setData({
+      onInvite: true,
+      currentInvitationIndex: index,
+      nowInvitation: this.data.invitations[index]
+    })
+    console.log(this.data.nowInvitation);
   }
 })

@@ -44,7 +44,7 @@ func CreateMessage(db *sql.DB, message *utils.Message) error {
 		return err
 	}
 	for _, v := range utils.ParseManage(message.NotRead) {
-		var order = "UPDATE UserInfo SET Messages=Messages || '" + message.MessageID + ";' WHERE OpenId=" + v + ";"
+		var order = "UPDATE UserInfo SET Messages=Messages || '" + message.MessageID + ";' WHERE OpenId='" + v + "';"
 		stmt, err = db.Prepare(order)
 		if err != nil {
 			return err
