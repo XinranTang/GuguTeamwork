@@ -7,8 +7,9 @@ var sub = function (val, begin, end) {
 module.exports.sub = sub;
 
 var testCheckRead = function (str){
-  var openId = 'testopenid';
-  if(str.indexOf(openId)){
+  var app = getApp();
+  var openId = app.globalData.openId;
+  if(str.indexOf(openId)>=0){
     return true
   }
   return false

@@ -1,6 +1,5 @@
 import sqlite3 as db
-import numpy as np
-import pandas as pd
+import sys
 import matplotlib.pyplot as plt
 
 plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
@@ -24,7 +23,7 @@ def readfromDB(content):
 if __name__=="__main__":
     # openID = input("OpenId:")
     # 这里改一下绝对路径
-    results=readFronSqllite('C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db'," select taskID, done,not_done,date_rate from user_task where userID = '"+'testopenid'+"'")
+    results=readFronSqllite('C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db'," select taskID, done,not_done,date_rate from user_task where userID = '"+sys.argv[1]+"'")
     result = []
     for each in list(results):
         print(each)

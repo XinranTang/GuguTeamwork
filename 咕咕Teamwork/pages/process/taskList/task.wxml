@@ -26,11 +26,26 @@
     </modal>
   </view>
 
+  <view>
+    <modal title="填写被邀请人信息" confirm-text="确认" hidden='{{!isInvite}}' cancel-text="取消" bindconfirm="inviteConfirm" bindcancel="inviteCancel">
+      <label>
+        <view class="vertical">
+          <view class="horizontal">
+            <text style='align-self:center'>对方的openID</text>
+            <input class="input" style='padding-left:10rpx' bindinput="" placeholder="openID" data-type='Title' value="{{inviteWho}}" bindblur='inviteChange' />
+</view>
+            <button style='font-size:30rpx;width:100%'>分享链接到微信</button>
+          
+        </view>
+      </label>
+    </modal>
+  </view>
+
   <view class="st-radius-view" style='margin-top:40rpx'>
-    <view hidden="{{isEdit}}">
+    <view hidden="{{isEdit|isInvite}}">
       <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
     </view>
-    <image hidden="{{!isEdit}}" src="{{canvasImg}}" style="width:700rpx;height:750rpx;"></image>
+    <image hidden="{{!(isEdit|isInvite)}}" src="{{canvasImg}}" style="width:700rpx;height:750rpx;"></image>
   </view>
   <!-- <view class="btn" bindtap="onAddImage">添加图片</view>
 <view class="btn" bindtap="onAddTest">添加测试图片</view>
@@ -74,6 +89,7 @@
         <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'>编辑</view>
         <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>添加</view>
         <view class="btn" bindtap="onDelNode" hidden='{{!isSelected}}'>删除/恢复</view>
+        <view class="btn" bindtap="onInvite" hidden='{{!isSelected}}'>邀请好友</view>
       </view>
     </view>
   </view>

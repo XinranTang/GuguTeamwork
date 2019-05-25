@@ -14,75 +14,103 @@
   <view style='display:flex;flex-direction: row;margin-top:30rpx'>
     <view class="VerticalBox" scroll-y style="width:50%">
       <!-- 时间块 -->
-      <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="height:calc(100vh)">
+      <view class="horizontal">
+        <!-- 竖线 -->
+        <view class=".line-vertical-10" style="height:60rpx;align-self:flex-end;background:{{color.Orange=='undefined'|color.Orange==null?'#f86e3d':color.Orange}}"></view>
+        <text class="title" style='margin-left:15rpx;color:{{color.Orange}}'>日程</text>
+      </view>
+      <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-into-view="list-{{hour}}" style="margin-top:20rpx;height:calc(100vh)">
         <view>
           <view class='myTime' wx:for="{{list}}" data-index="{{index}}" bindtap='addTask' bindlongtap='addMySchedule'>
             <view id='list-{{index}}' style='display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
-              <view style='font-size:24rpx;text-align:center'>{{(index%24<10?"0"+(index%24):index%24)+":00"}}
-              </view>
-              <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:300rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
-                <text style="font-size:25rpx">{{list[index].t.Title}}</text>
+              <view style='font-size:24rpx;text-align:center'>{{(index%24
+                <10? "0"+(index%24):index%24)+ ":00"}} </view>
+                  <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:300rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
+                    <text style="font-size:25rpx">{{list[index].t.Title}}</text>
+                  </view>
               </view>
             </view>
           </view>
-        </view>
       </scroll-view>
-    </view>
-    <!-- 右侧任务与消息模块 -->
-    <view style='padding-left:20rpx;width:50%'>
-      <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh)" scroll-into-view="main-id-{{TabCur}}" bindscroll="VerticalMain">
-        <!-- 消息 -->
-        <block class="message">
-          <text class="title" style='color:{{color.Orange}}'>消息</text>
-
-          <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view>
-
-          <view style='margin-top:10rpx;margin-bottom:10rpx'>
-            <block class="" wx:if="{{messages.length!=0}}" style="margin-top:10rpx">
-              <view class="message-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message" bindtap='toMessage' style="background-color:{{randomColorArr[index]}}">
-                <view class="" wx:if="{{message.Status==false}}">{{message.Title}}</view>
+      </view>
+      <!-- 右侧任务与消息模块 -->
+      <view style='padding-left:20rpx;width:50%'>
+        <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh)" scroll-into-view="main-id-{{TabCur}}" bindscroll="VerticalMain">
+          <!-- 消息 -->
+          <block class="message">
+            <view class="horizontal" style="justify-content:space-between">
+              <view class="horizontal">
+                <view class=".line-vertical-10" style="height:60rpx;align-self:flex-end;background:{{color.Orange=='undefined'|color.Orange==null?'#f86e3d':color.Orange}}"></view>
+                <text class="title" style='margin-left:15rpx;color:{{color.Orange}}'>消息</text>
               </view>
-            </block>
-            <block wx:else>
-              <view>当前还没有消息哦</view>
-            </block>
-          </view>
-        </block>
-        <!-- 任务 -->
-        <block class="task" style=" margin-top:20rpx;">
-          <text class="title" style='color:{{color.Orange}}'>任务</text>
+              <text class="st-text-tag" style='height:100%;align-self:center' bindtap='toMyMessage'>更多></text>
+            </view>
+            <!-- <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view> -->
 
-          <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view>
+            <view style='margin-top:20rpx;margin-bottom:10rpx'>
+              <block class="" wx:if="{{messages.length!=0}}" style="margin-top:20rpx">
+                <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message" bindtap='toMessage' style="">
+                  <view class="">{{message.Title}}</view>
+                </view>
+              </block>
+              <block wx:else>
+                <view class="st-radius-view-tiny">当前还没有消息哦</view>
+              </block>
+            </view>
+          </block>
 
-          <view style='margin-top:10rpx;margin-bottom:10rpx'>
-            <block wx:if="{{tasks.length!=0}}">
-              <view class="task-list" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask' style="background-color:{{randomColorArrT[index]}}">
-                <view>
-                  <view class='text-bold' style='font-size:26rpx'>{{task.Title}}</view>
-                  <view>发布者：{{task.Pusher}}</view>
-                  <view>截止时间：{{util.sub(task.DeadLine)}}</view>
-                  <!-- <view slot="footer">尾部内容</view> -->
+          <!-- 任务 -->
+          <block class="task" style=" margin-top:30rpx;">
+            <view class="horizontal" style="justify-content:space-between;margin-top:30rpx;">
+              <view class="horizontal">
+                <view class=".line-vertical-10" style="height:60rpx;align-self:flex-end;background:{{color.Orange=='undefined'|color.Orange==null?'#f86e3d':color.Orange}}"></view>
+                <view class="" style='align-self:center'>
+                  <text class="title" style='color:{{color.Orange}};margin-left:15rpx'>任务</text>
+                </view>
+              </view>
+              <text class="st-text-tag" style='height:100%;align-self:center' bindtap='toMyTask'>更多></text>
+            </view>
+            <!-- <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view> -->
+
+            <!-- 任务邀请 -->
+            <block>
+              <view class="" style="backgroud-color:white" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{invitations}}" wx:for-item="invitation" bindtap="onClickInvite">
+                <view class="st-radius-view-tiny horizontal">
+                  <text class="st-text-tag" style='width:auto'>new</text>
+                  <text class="invitation-text" style="margin-left:20rpx">任务邀请</text>
                 </view>
               </view>
             </block>
-            <block wx:else>
-              <view>当前还没有任务哦</view>
-            </block>
-          </view>
-        </block>
-      </scroll-view>
+
+            <view style='margin-top:20rpx;margin-bottom:10rpx'>
+              <block wx:if="{{tasks.length!=0}}">
+                <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask' style="">
+                  <view>
+                    <view class='text-bold' style='font-size:26rpx'>{{task.Title}}</view>
+                    <view>发布者：{{task.Pusher}}</view>
+                    <view>截止时间：{{util.sub(task.DeadLine)}}</view>
+                    <!-- <view slot="footer">尾部内容</view> -->
+                  </view>
+                </view>
+              </block>
+              <block wx:else>
+                <view class="st-radius-view-tiny">当前还没有任务哦</view>
+              </block>
+            </view>
+          </block>
+        </scroll-view>
+      </view>
     </view>
   </view>
-</view>
-<wxs module="util">
-  var sub = function(val) {
-    return val.substring(0, 10) + " " + val.substring(11, 16)
-  }
-  module.exports.sub = sub;
-</wxs>
-<!-- 弹出框模块 -->
+  <wxs module="util">
+    var sub = function(val) {
+      return val.substring(0, 10) + " " + val.substring(11, 16)
+    }
+    module.exports.sub = sub;
+  </wxs>
+  <!-- 弹出框模块 -->
 
-<!-- <form bindsubmit="formSubmit" wx:if="{{!hiddenmodalput}}" style='position:absolute;top:420rpx;left:90rpx;z-index: 9999;'>
+  <!-- <form bindsubmit="formSubmit" wx:if="{{!hiddenmodalput}}" style='position:absolute;top:420rpx;left:90rpx;z-index: 9999;'>
   <view class="cu-form-group margin-top">
     <view class='title'>日程主题</view>
     <input placeholder=" " class='radius' name='title'></input>
@@ -96,15 +124,34 @@
 
 </form> -->
 
-<view wx:if='{{!hiddenmodalput}}'>
-  <modal title="添加日程" confirm-text="确认" cancel-text="取消"  bindconfirm="formSubmit" bindcancel="cancel">
-    <label>
-      <view class="">
-        <input class="input" bindinput="" placeholder="日程主题" data-type='title' bindblur='editChange' />
-        <input class="input" bindinput="" placeholder="内容" data-type='content'  bindblur='editChange'/>
-      </view>
-    </label>
-  </modal>
-</view>
+  <view wx:if='{{!hiddenmodalput}}'>
+    <modal title="添加日程" confirm-text="确认" cancel-text="取消" bindconfirm="formSubmit" bindcancel="cancel">
+      <label>
+        <view class="">
+          <input class="input" bindinput="" placeholder="日程主题" data-type='title' bindblur='editChange' />
+          <input class="input" bindinput="" placeholder="内容" data-type='content' bindblur='editChange' />
+        </view>
+      </label>
+    </modal>
+  </view>
 
-<!-- <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{!hiddenmodalput}}"></view> -->
+  <view class="modal-mask" bindtap="inviteIgnore" wx:if='{{onInvite}}'></view>
+  <view wx:if='{{onInvite}}'>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_boss.jpg" mode="cover"></image>
+      </view>
+
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text style='align-self:center;font-size:30rpx'>任务邀请</text>
+        <text style="word-break:break-all">咕咕，openid为{{nowInvitation.Sender}}的用户在{{nowInvitation.Timeout}}邀请您加入{{nowInvitation.ContentId}}任务。</text>
+        <view style=''>
+        <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%"bindtap="inviteConfirm">接受</button>
+         <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%"bindtap="inviteCancel">拒绝</button>
+         <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%"bindtap="inviteIgnore">忽略</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{!hiddenmodalput}}"></view> -->

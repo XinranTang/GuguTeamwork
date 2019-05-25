@@ -21,7 +21,7 @@
     "pages/page/myCommunity/topics/topics",
     "pages/tree/tree",
     "pages/page/help/help",
-    "pages/page/myAssociate/myAssociate"
+    "pages/page/myReport/myReport"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -30,7 +30,8 @@
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "black",
+    "color": "#000000",
+    "selectedColor": "#000000",
     "borderStyle": "white",
     "position": "bottom",
     "list": [
@@ -62,10 +63,10 @@
     "i-modal": "../dist/modal/index"
   },
   "sitemapLocation": "sitemap.json",
-  "networkTimeout":{
-    "request":10000,
-    "connectSocket":60000,
-    "uploadFile":60000,
-    "downloadFile":60000
+  "networkTimeout": {
+    "request": 10000,
+    "connectSocket": 60000,
+    "uploadFile": 60000,
+    "downloadFile": 60000
   }
 }

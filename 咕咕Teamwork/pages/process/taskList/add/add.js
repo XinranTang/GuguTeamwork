@@ -34,7 +34,7 @@ Page({
     y:0,
     h:220,
     w:220,
-    date: '2019-01-01',
+    date: '2019-05-25',
     time: '12:00',
     text_selected_node: '...',
     createTask:false,
@@ -240,8 +240,9 @@ Page({
       "Deadline": self.data.date + "T" + self.data.time + ":00Z",
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": text_selected_node.Task.Parent+"",// 【这个要改成父节点的任务名字】
+      "Parent": self.data.selected_node[PARENT],// 【这个要改成父节点的任务名字】
     };
+    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + "T" + self.data.time + ":00Z";
     console.log("添加节点的json:")
     console.log(json)
     wx.request({
@@ -253,7 +254,14 @@ Page({
       data: JSON.stringify(json),
       dataType: JSON,
       success: function (res) {
-        console.log("任务结点添加成功")
+        console.log(res.data)
+        CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
+        // edit_info: {
+        //   Title: '',
+        //     DeadLine: '',
+        //       Content: ''
+        // },
+        // CanvasDrag.changeNodeInfo(self.data.edit_info);
       }
     })
   },
@@ -268,7 +276,7 @@ Page({
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
       "TaskID": text_selected_node.Task.TaskID,
-      "Parent": text_selected_node.Task.Parent
+      "Parent": self.data.selected_node[PARENT]
     };
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',
@@ -306,9 +314,10 @@ Page({
           if(this.data.clicked==true){
               var json = {
                 "TreeID": self.data.oneTaskTree.TreeId,
-                "TaskID": self.data.oneTaskTree.TreeName,
-                "Parent": ""
+                "TaskID": self.data.oneTaskTree.TreeId,
+                "Parent": ""// 【传的是这个参但后端说不对，气气】
               };
+              console.log(json)
               wx.request({
                 url: 'https://www.fracturesr.xyz/gugu/deleteNode',
                 header: {
@@ -563,14 +572,15 @@ Page({
                 })
                 app.globalData.tasks = res.data.Tasks;
                 app.globalData.messages = res.data.Messages;
+                wx.navigateBack({
+
+                })
                 }
             })
           }
         })
           
-        wx.navigateBack({
-          
-        })
+
       },
     })
   },
