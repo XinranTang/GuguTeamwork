@@ -2,6 +2,7 @@
 <wxs src="../../../wxs/sub.wxs" module="tools" />
 
 <view wx:if='{{!show}}'>
+<!-- 不是pusher的人看到的 -->
   <view id="title">
     <text>任务信息</text>
   </view>
@@ -12,6 +13,9 @@
   <view>发布日期：{{pushDate}}</view>
   <view>截止日期：{{deadLine}}</view>
   <view>优先级：{{urgency}}</view>
+
+  <button bindtap="sendCheck">任务完成</button>
+  
 </view>
 <view wx:else>
   <view>

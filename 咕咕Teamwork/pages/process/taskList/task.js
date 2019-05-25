@@ -54,6 +54,8 @@ Page({
     isInvite: false,
     inviteWho: "testopenid",
     user: '',
+    //提交任务完成的提示
+    isSendCheck:false,
     graph: {}
   },
 
@@ -181,6 +183,10 @@ Page({
    * Called when user click on the top right corner to share
    */
   onShareAppMessage: function() {
+
+  },
+  //发送任务审批
+  sendCheck:function(){
 
   },
   /**

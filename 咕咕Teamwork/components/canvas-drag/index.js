@@ -937,6 +937,9 @@ Component({
       this.ctx.setTextBaseline('middle');
       this.ctx.setTextAlign('center');
       for (var i = 0; i < childs.length; i++) {
+        //防止出现不应该存在的child
+        if (childs[i] >= this.treeRawArr.length)
+          continue;
         totalLen += this.ctx.measureText(this.treeRawArr[childs[i]][TASK][TITLE]).width;
       }
       //pos_x_offset = -(childs.length - 1) * d / 2;
@@ -946,6 +949,9 @@ Component({
       if (childs[0] != 0) {
         for (var i = 0; i < childs.length; i++) {
           var index = childs[i];
+          //防止出现不应该存在的child
+          if(index >= this.treeRawArr.length)
+            continue;
           var nextTaskNodeAtrr = this.treeRawArr[index];
           var newTaskGraph = new dragGraph({
             x: fromTaskGraph.x + pos_x_offset,
@@ -981,7 +987,9 @@ Component({
         for (var j = 0; j < childs.length; j++) {
           //Parent字段改成TaskIDs
           //this.treeRawArr[childs[j]][PARENT]=i;
-          this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
+          //防止出现了不应该存在的child
+          if(childs[j]<this.treeRawArr.length)
+            this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
         }
       }
 

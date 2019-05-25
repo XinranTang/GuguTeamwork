@@ -6,9 +6,8 @@ var sub = function (val, begin, end) {
 }
 module.exports.sub = sub;
 
-var testCheckRead = function (str){
-  var app = getApp();
-  var openId = app.globalData.openId;
+var testCheckRead = function (str,openId){
+  console.log(str+"里有"+openId+"吗");
   if(str.indexOf(openId)>=0){
     return true
   }

@@ -17,6 +17,22 @@ App({
     // 登录
     wx.login({
       success: res => {
+
+        console.log("code:"+res.code);
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/entry',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            data: res.code
+          },
+          success: function (res) {
+            console.log("code's data");
+            console.log(res.data)
+          }
+        })
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         wx.request({
           url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
@@ -51,6 +67,11 @@ App({
               if (json.TypeCode == 100) {
                 that.globalData.invitations.push(json);
                 console.log(that.globalData.invitations);
+              }
+              //如果是任务审批信息，加入checks
+              if(json.TypeCode == 50){
+                that.globalData.checks.push(json);
+                console.log(that.globalData.checks);
               }
             })
 
@@ -186,6 +207,8 @@ App({
     currentMessageIndex: 0,
     currentTask: {},
     markDownChoice: 2,
+    //任务审批
+    checks:[],
     invitations: [],
     tasks: [],
     messages: [],

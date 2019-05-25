@@ -7,6 +7,9 @@ Page({
    * Page initial data
    */
   data: {
+    isSchedule:false,
+    nowSchedule:{"title":"","content":""},
+    nowScheduleIndex:0,
     hiddenmodalput:true,
     hiddenDel:true,
     previourIndex:0,
@@ -38,9 +41,14 @@ Page({
     randomColorArrT: [],
     messages: [],
     tasks:[],
+    //任务邀请
     invitations:[],
     nowInvitation:{},
     currentInvitationIndex:0,
+    //任务审批
+    checks:[],
+    nowCheck:{},
+    currentCheckIndex:0,
     list: [
       { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }
        ]
@@ -92,7 +100,8 @@ Page({
     this.setData({
       messages:app.globalData.messages,
       tasks:app.globalData.tasks,
-      invitations:app.globalData.invitations
+      invitations:app.globalData.invitations,
+      checks:app.globalData.checks,
     })
   },
 
@@ -106,6 +115,8 @@ Page({
       messages:app.globalData.messages,
       tasks:app.globalData.tasks,
       color: app.globalData.color,
+      invitations: app.globalData.invitations,
+      checks: app.globalData.checks,
       hour: date.getHours(),
       schedule: {
         timestamp: Date.parse(new Date()) / 1000 ,
@@ -145,11 +156,6 @@ Page({
       randomColorArrT: randomColorArr
     });
     // console.log(randomColorArr)
-    this.setData({
-      messages: app.globalData.messages,
-      tasks: app.globalData.tasks,
-      invitations: app.globalData.invitations
-    })
   },
 
   /**
@@ -373,6 +379,13 @@ Page({
     });
   },
   formSubmit:function(e){
+    if (this.data.editInfo.title == "" | this.data.editInfo.title.length == 0){
+      wx.showToast({
+        title: '请输入日程标题',
+        icon: 'none'
+      })
+      return;
+    }
     var i = this.data.chooseIndex;
     // console.log(e)
     this.setData({
@@ -395,7 +408,62 @@ Page({
       }
     })
   },
+  //查看日程-确认
+  addTaskCancel:function(e){
+      this.setData({
+        isSchedule: false,
+      })
+  },
+  //查看日程-点击删除
+  addTaskDel:function(e){
+    var i = this.data.nowScheduleIndex;
+    this.setData({
+      [`list[${i}].t`]: null,
+      [`list[${i}].hasTask`]: false,
+      choose: false,
+      [`list[${i}].color`]: "#eeeeee",
+      [`list[${i}].choosen`]: false,
+      isSchedule: false,
+    })
+  },
+  //添加日程-new
   addTask:function(e){
+    var i = e.currentTarget.dataset.index;
+    this.setData({
+      nowScheduleIndex:i
+    });
+    if (this.data.list[i].hasTask) {
+      //just把showModal改成了自定义模态
+      this.setData({
+        isSchedule : true,
+        nowSchedule:{
+          "title": this.data.list[i].t.Title,
+          "content": this.data.list[i].t.Content
+        }
+      });
+    } else {
+      this.setData({
+        choose: true,
+        chooseIndex: e.currentTarget.dataset.index,
+        [`list[${i}].choosen`]: true,
+        [`list[${i}].color`]: "#cccccc",
+      })
+      if (this.data.previourIndex != i) {
+        if (this.data.list[this.data.previourIndex].color == "#cccccc") {
+          this.setData({
+            [`list[${this.data.previourIndex}].choosen`]: false,
+            [`list[${this.data.previourIndex}].color`]: "#eeeeee",
+          })
+        }
+      }
+      this.setData({
+        previourIndex: e.currentTarget.dataset.index
+      })
+    }
+  },
+
+  //添加日程-old
+  addTaskOld:function(e){
     var i = e.currentTarget.dataset.index;
     var self = this;
     if(this.data.list[i].hasTask){
@@ -555,6 +623,7 @@ Page({
     this.setData({
       onInvite: false
     })
+    app.globalData.invitations.splice(this.data.currentInvitationIndex, 1);
   },
   inviteCancel:function(e){
     var json = JSON.parse(JSON.stringify(this.data.nowInvitation));
@@ -576,9 +645,11 @@ Page({
       onInvite: false
     })
     console.log("拒绝邀请");
+    //删除本地的invitation[index]
+    app.globalData.invitations.splice(this.data.currentInvitationIndex,1);
   },
+  //点击了任务邀请
   onClickInvite:function(e){
-   
     var self = this;
     var dataSet = e.currentTarget.dataset;
     var index = dataSet.index;
@@ -591,5 +662,103 @@ Page({
       nowInvitation: this.data.invitations[index]
     })
     console.log(this.data.nowInvitation);
+  },
+  // 任务审批通过
+  checkConfirm:function(e){
+    var json = JSON.parse(JSON.stringify(this.data.nowCheck));
+    var temp = json.Receiver;
+    json.Receiver = json.Sender;
+    json.Sender = temp;
+    //拒绝了
+    json.TypeCode = 51;
+    wx.sendSocketMessage({
+      data: JSON.stringify(json),
+      success: function (res) {
+        console.log("51Code发送成功")
+        //发一条消息通知任务审批通过
+        var msg = {
+          "Title": "任务审批通过",
+          "Pusher": json.Sender,
+          "Content": "恭喜,您在" + json.TimeOut + "发起的对" + json.ContentId + "任务的进度完成审批通过了。",
+          "NotRead": json.Receiver + ";",
+          "FinalDeleteDate": "2050-05-30T00:00:00Z"
+        };
+        sendMessage(msg);
+      },
+      fail: function (e) {
+        console.log("51Code发送失败")
+      }
+    })
+    this.setData({
+      onCheck: false
+    })
+    //删除本地的checks[index]
+    app.globalData.checks.splice(this.data.currentCheckIndex, 1);
+  },
+  //任务审批驳回
+  checkCancel:function(e){
+    var json = JSON.parse(JSON.stringify(this.data.nowCheck));
+    var temp = json.Receiver;
+    json.Receiver = json.Sender;
+    json.Sender = temp;
+    //拒绝了
+    json.TypeCode = 52;
+    wx.sendSocketMessage({
+      data: JSON.stringify(json),
+      success: function (res) {
+        console.log("52Code发送成功")
+        //发一条消息通知任务审批驳回
+        var msg = {
+          "Title": "任务审批被驳回",
+          "Pusher": json.Sender,
+          "Content": "很遗憾,您在" + json.TimeOut + "发起的对" + json.ContentId + "任务的进度完成审批被驳回了。",
+          "NotRead": json.Receiver + ";",
+          "FinalDeleteDate": "2050-05-30T00:00:00Z"
+        };
+        sendMessage(msg);
+      },
+      fail: function (e) {
+        console.log("52Code发送失败")
+      }
+    })
+    this.setData({
+      onCheck: false
+    })
+    //删除本地的checks[index]
+    app.globalData.checks.splice(this.data.currentCheckIndex, 1);
+  },
+  checkIgnore:function(e){
+    this.setData({
+      onCheck: false
+    })
+  },
+  onClickCheck:function(e){
+    var self = this;
+    var dataSet = e.currentTarget.dataset;
+    var index = dataSet.index;
+    var check = this.data.checks[index];
+    this.setData({
+      onCheck: true,
+      currentCheckIndex: index,
+      nowCheck: this.data.checks[index]
+    })
+    console.log(this.data.nowCheck);
+  },
+  sendMessage:function(json){
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/newMessage',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function (res) {
+        console.log("发送消息成功");
+      },
+      fail: function (res) {
+        console.log("消息发送失败");
+      }
+    })
   }
 })

@@ -10,7 +10,7 @@
     <i-collapse-item title="未读消息" name="name1">
       <view slot="content" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
         <!-- <i-card wx:if="{{message.Status==false}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg"> -->
-        <view id="each-message" class="horizontal msg-view" wx:if="{{!tools.testCheckRead(message.Read)}}">
+        <view id="each-message" class="horizontal msg-view" wx:if="{{!tools.testCheckRead(message.Read,user)}}">
           <view>
             <image class="msg-image" src='/images/icon2.jpg'></image>
           </view>
@@ -48,7 +48,7 @@
     </i-collapse-item>
     <i-collapse-item title="已读消息" name="name2">
       <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
-       <view id="each-message" class="horizontal msg-view" wx:if="{{tools.testCheckRead(message.Read)}}">
+       <view id="each-message" class="horizontal msg-view" wx:if="{{tools.testCheckRead(message.Read,user)}}">
           <view>
             <image class="msg-image" src='/images/icon2.jpg'></image>
           </view>
@@ -67,7 +67,7 @@
     </i-collapse-item>
     <i-collapse-item title="已发布消息" name="name3">
       <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
-        <view id="each-message" class="horizontal msg-view" wx:if="{{message.Status==true}}">
+        <view id="each-message" class="horizontal msg-view" wx:if="{{message.Pusher == user}}">
           <view>
             <image class="msg-image" src='/images/icon2.jpg'></image>
           </view>
