@@ -165,12 +165,15 @@ Page({
           randomColorArrT: randomColorArr
         });
     // console.log(randomColorArr)
-
-    this.setData({
+      
+    self.setData({
       messages: app.globalData.messages,
       tasks: app.globalData.tasks,
       invitations: app.globalData.invitations
     })
+  }
+  
+  })
   },
 
   /**

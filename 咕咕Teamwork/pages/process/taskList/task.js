@@ -27,20 +27,6 @@ Page({
    * Page initial data
    */
   data: {
-<<<<<<< HEAD
-    "title":'测试',
-    "pusher":'',
-    user: "",
-    treeDeadLine:"",
-    "content":'',
-    "status":false,
-    "pushDate":"",
-    "deadLine":"",
-    "urgency":0,
-    "task":null,
-    oneTaskTree:{},
-    show:false,
-=======
     "title": '测试',
     "pusher": '',
     "content": '',
@@ -51,7 +37,7 @@ Page({
     "task": null,
     oneTaskTree: {},
     show: false,
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
+    treeDeadLine:"",
     text_selected_node: '...',
     isSelected: false,
     //选中的结点
@@ -75,7 +61,7 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-<<<<<<< HEAD
+
   onLoad: function (options) {
     let self = this
     wx.getStorage({
@@ -86,10 +72,6 @@ Page({
         })
       },
     })
-=======
-  onLoad: function(options) {
-
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
   },
 
   /**
@@ -102,106 +84,87 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-<<<<<<< HEAD
-  onShow: function () {
-    console.log("current task: "+app.globalData.currentTask)
-=======
+
   onShow: function() {
     console.log(app.globalData.currentTask)
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
+
     var self = this;
 
     var currentTask = app.globalData.currentTask;
     wx.getStorage({
-<<<<<<< HEAD
-      key: 'Forest',
-      success: function(res) {
-        console.log("task.js"+res.datac)
-        let findTree = false;
-        let eachData = res.data;
-        eachData.forEach(each => {
-          if(currentTask.TreeId == each.TreeId){
-            findTree = true;
-            self.setData({
-              show: true,
-              oneTaskTree: each
-            })
-            console.log("在forest里找到了")
-            self.onInitByTree();
-            self.setData({
-              treeDeadLine:each.Tree[0].Task.DeadLine
-=======
       key: 'UserInfor',
       success: function(res) {
         //获得sender's openid
         self.setData({
           user: res.data.OpenId
         })
-
+        let findTree = false;
         var arr = [];
         arr = res.data.Manage.split(";");
         var flag = false; // 不是管理者
-        arr.forEach(item => {
-          if (item == currentTask.TaskID) {
-            flag = true;
+        // arr.forEach(item => {
+        //   if (item == currentTask.TaskID) {
+        //     flag = true;
             wx.getStorage({
               key: 'Forest',
               success: function(res) {
                 res.data.forEach(each => {
-                  if (each.TreeId == item) {
+                  if (each.TreeId == currentTask.TreeId) {
                     self.setData({
                       show: true,
-                      oneTaskTree: each
+                      oneTaskTree: each,
+                      treeDeadLine:each.Tree[0].Task.DeadLine
                     })
+                    findTree = true;
                     self.onInitByTree();
                   }
                 })
-              },
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
-            })
-          }
-        })
-        if(!findTree){
-          wx.getStorage({
-            key: 'UserInfor',
-            success: function (res) {
-              var arr = [];
-              arr = res.data.Manage.split(";");
-              var flag = false;// 不是管理者
-              arr.forEach(item => {
-                if (item == currentTask.TaskID) {
-                  flag = true;
-                  // wx.getStorage({
-                  //   key: 'Forest',
-                  //   success: function (res) {
-                  //     res.data.forEach(each => {
-                  //       if (each.TreeId == item) {
-                  //         self.setData({
-                  //           show: true,
-                  //           oneTaskTree: each
-                  //         })
-                  //         self.onInitByTree();
-                  //       }
-                  //     })
-                  //   },
-                  // })
+                if (!findTree) {
+                  wx.getStorage({
+                    key: 'UserInfor',
+                    success: function (res) {
+                      var arr = [];
+                      arr = res.data.Manage.split(";");
+                      var flag = false;// 不是管理者
+                      arr.forEach(item => {
+                        if (item == currentTask.TaskID) {
+                          flag = true;
+                          // wx.getStorage({
+                          //   key: 'Forest',
+                          //   success: function (res) {
+                          //     res.data.forEach(each => {
+                          //       if (each.TreeId == item) {
+                          //         self.setData({
+                          //           show: true,
+                          //           oneTaskTree: each
+                          //         })
+                          //         self.onInitByTree();
+                          //       }
+                          //     })
+                          //   },
+                          // })
+                        }
+                      })
+                      if (!flag) {
+                        self.setData({
+                          task: currentTask,
+                          title: currentTask.Title,
+                          pusher: currentTask.Pusher,
+                          content: currentTask.Content,
+                          status: currentTask.Status,
+                          pushDate: currentTask.PushDate,
+                          deadLine: currentTask.DeadLine,
+                          urgency: currentTask.Urgency
+                        })
+                      }
+                    },
+                  })
                 }
-              })
-              if (!flag) {
-                self.setData({
-                  task: currentTask,
-                  title: currentTask.Title,
-                  pusher: currentTask.Pusher,
-                  content: currentTask.Content,
-                  status: currentTask.Status,
-                  pushDate: currentTask.PushDate,
-                  deadLine: currentTask.DeadLine,
-                  urgency: currentTask.Urgency
-                })
-              }
-            },
-          })
-        }
+              },
+            })
+          // }
+        // })
+        
       },
     })
   },
@@ -462,12 +425,11 @@ Page({
             })
           }
         })
-<<<<<<< HEAD
-=======
+
         wx.navigateBack({
 
         })
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
+
       }
     })
   },
@@ -502,16 +464,12 @@ Page({
       });
     }
   },
-<<<<<<< HEAD
-  onAddNode: function (e) {
-    var self = this;
-=======
+
   onAddNode: function(e) {
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
     CanvasDrag.onAddNode();
     var self = this;
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
-    console.log(text_selected_node)
+    // var text_selected_node = JSON.parse(self.data.text_selected_node)
+    // console.log(text_selected_node)
     var json = {
       // 这里都是默认值，全部都得改
       "OpenId": self.data.user,
@@ -533,7 +491,7 @@ Page({
       data: JSON.stringify(json),
       dataType: JSON,
       success: function(res) {
-        console.log("任务结点添加成功")
+        console.log("任务结点添加成功"+res.data)
         CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
         wx.request({
           url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
@@ -579,12 +537,12 @@ Page({
   onDoDel: function(e) {
     var self = this;
     CanvasDrag.onDoDel();
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
-    console.log(text_selected_node)
+    // var text_selected_node = JSON.parse(self.data.text_selected_node)
+    // console.log(text_selected_node)
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": text_selected_node.Task.TaskID,
-      "Parent": text_selected_node.Task.Parent
+      "TaskID": self.data.selected_node.Task.TaskID,
+      "Parent": self.data.selected_node.Task.Parent
     };
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/deleteNode',
@@ -634,20 +592,12 @@ Page({
       }
     })
   },
-<<<<<<< HEAD
-  // 显示编辑框
-  onEditNode: function (e) {
-    // this.saveCanvas();
-    var self = this;
-    this.setData({
-      isEdit: true
-=======
+
   //显示邀请好友
   onInvite: function(e) {
     this.saveCanvas();
     this.setData({
       isInvite: true
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
     })
   },
   //确认邀请按钮
@@ -680,19 +630,7 @@ Page({
     //   }
     // })
 
-<<<<<<< HEAD
-  },
-  // 编辑框确认按钮
-  editConfirm: function (e) {
-    var self = this;
-    self.setData({
-      isEdit: false
-    })
-    console.log(self.data.edit_info)
-    CanvasDrag.changeNodeInfo(self.data.edit_info);
-    var selected_node = self.data.selected_node
-    console.log(selected_node)
-=======
+
     wx.sendSocketMessage({
       data:JSON.stringify(json),
       success: function (res) {
@@ -728,17 +666,16 @@ Page({
       isEdit: false
     })
     CanvasDrag.changeNodeInfo(this.data.edit_info);
-    var self = this;
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
+    let text_selected_node = JSON.parse(this.data.text_selected_node)
     console.log(text_selected_node)
->>>>>>> 4ed7d71c1b705ffaaf644642fac8226ef9cbc69f
+    var self = this;
     var json = {
       "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": self.data.text_selected_node.Task.TaskID,
-      "Title": selected_node.Task.Title,
-      "Content": selected_node.Task.Content,
-      "Deadline": selected_node.Task.DeadLine,
-      "Urgency": self.data.text_selected_node.Task.Urgency + ""
+      "TaskID": text_selected_node.Task.TaskID,
+      "Title": self.data.selected_node.Task.Title,
+      "Content": self.data.selected_node.Task.Content,
+      "Deadline": self.data.selected_node.Task.DeadLine,
+      "Urgency": text_selected_node.Task.Urgency + ""
     }
     console.log(json)
     wx.request({
@@ -820,5 +757,5 @@ Page({
       .catch((e) => {
         console.error(e);
       })
-  }
+ }
 })
