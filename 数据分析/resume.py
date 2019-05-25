@@ -1,4 +1,5 @@
 import sqlite3 as db
+import sys
 def readFronSqllite(db_path,exectCmd):
     conn = db.connect(db_path)  # 该 API 打开一个到 SQLite 数据库文件 database 的链接，如果数据库成功打开，则返回一个连接对象
     cursor=conn.cursor()        # 该例程创建一个 cursor，将在 Python 数据库编程中用到。
@@ -16,9 +17,8 @@ def readfromDB(content):
     return infor
 if __name__=="__main__":
 
-    openID = input("OpenId:")
     # 这里改一下绝对路径
-    rows=readFronSqllite('C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db'," select * from user_infor where ID = '"+openID+"'")
+    rows=readFronSqllite('C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db'," select * from user_infor where ID = '"+sys.argv[1]+"'")
     row=rows[0] # 获取某一行的数据,类型是tuple
 
     str = ""

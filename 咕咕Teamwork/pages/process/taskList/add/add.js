@@ -34,7 +34,7 @@ Page({
     y:0,
     h:220,
     w:220,
-    date: '2019-01-01',
+    date: '2019-05-25',
     time: '12:00',
     text_selected_node: '...',
     createTask:false,

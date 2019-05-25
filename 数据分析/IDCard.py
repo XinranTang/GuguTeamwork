@@ -1,5 +1,5 @@
 import sqlite3 as db
-
+import sys
 
 def readFronSqllite(db_path, exectCmd):
     conn = db.connect(db_path)  # 该 API 打开一个到 SQLite 数据库文件 database 的链接，如果数据库成功打开，则返回一个连接对象
@@ -20,7 +20,7 @@ def readfromDB(content):
 
 if __name__ == "__main__":
 
-    openID = input("OpenId:")
+    openID = sys.argv[1]
     # 这里改一下绝对路径
     rows = readFronSqllite(
         'C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db',

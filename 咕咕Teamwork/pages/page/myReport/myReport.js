@@ -1,4 +1,5 @@
 // pages/page/myReport/myReport.js
+var app = getApp();
 Page({
 
   /**
