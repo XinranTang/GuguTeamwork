@@ -48,7 +48,7 @@
             <!-- <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view> -->
 
             <view style='margin-top:20rpx;margin-bottom:10rpx'>
-              <block class="" wx:if="{{messages.length!=0}}" style="margin-top:20rpx">
+              <block class="" wx:if="{{messages!=null&messages.length!=0}}" style="margin-top:20rpx">
                 <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message" bindtap='toMessage' style="">
                   <view class="">{{message.Title}}</view>
                 </view>
@@ -94,7 +94,7 @@
             </block>
 
             <view style='margin-top:20rpx;margin-bottom:10rpx'>
-              <block wx:if="{{tasks.length!=0}}">
+              <block wx:if="{{tasks!=null&tasks.length!=0}}">
                 <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask' style="">
                   <view>
                     <view class='text-bold' style='font-size:26rpx'>{{task.Title}}</view>

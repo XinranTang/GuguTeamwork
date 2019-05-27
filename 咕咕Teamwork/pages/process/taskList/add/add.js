@@ -237,12 +237,13 @@ Page({
       "OpenId": self.data.user,
       "Title": "no title",
       "Content": "no content",
-      "Deadline": self.data.date + "T" + self.data.time + ":00Z",
+      "Deadline": self.data.date + " " + self.data.time + ":00",
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
       "Parent": self.data.selected_node[PARENT],// 【这个要改成父节点的任务名字】
     };
-    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + "T" + self.data.time + ":00Z";
+
+    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + " " + self.data.time + ":00";
     console.log("添加节点的json:")
     console.log(json)
     wx.request({
@@ -400,7 +401,7 @@ Page({
             "OpenId": openid,
             "Name": e.detail.value.name,
             "Brief": e.detail.value.content,
-            "Deadline": that.data.date + "T" + that.data.time + ":00Z",
+            "Deadline": that.data.date + " " + that.data.time + ":00",
             "Urgency": "3"
           };
           // 连接服务器    【这里的请求服务器，是直接给我添加了一棵树吗？？这里有一点】
@@ -525,11 +526,11 @@ Page({
         arr.push({
           "TaskID": t,
           "Title": json.Name,
-          "Pusher": "testopenid", // TODO:改成昵称或者真名
+          "Pusher": self.data.user, // TODO:改成昵称或者真名
           "Content": json.Brief,
           "Status": 0,
           "Urgency": json.Urgency,
-          "PushDate": new Date(),
+          "PushDate": util.dateFormate(new Date()),
           "DeadLine": json.Deadline
         })
         res.data.Tasks = arr;
@@ -548,7 +549,7 @@ Page({
           },
           method: 'POST',
           data: {
-            OpenId: "testopenid"
+            OpenId: self.data.user
           },
           success(res1) {
             console.log(res1.data)
@@ -563,7 +564,7 @@ Page({
               },
               method: 'POST',
               data: {
-                OpenId: "testopenid"
+                OpenId: self.data.user
               },
               success(res) {
                 wx.setStorage({

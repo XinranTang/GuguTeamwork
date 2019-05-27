@@ -27,6 +27,7 @@ Page({
    * Page initial data
    */
   data: {
+    "taskId":'',
     "title": '测试',
     "pusher": '',
     "content": '',
@@ -110,6 +111,7 @@ Page({
             wx.getStorage({
               key: 'Forest',
               success: function(res) {
+                if(res.data!=null)
                 res.data.forEach(each => {
                   if (each.TreeId == currentTask.TreeId) {
                     self.setData({
@@ -128,6 +130,7 @@ Page({
                       var arr = [];
                       arr = res.data.Manage.split(";");
                       var flag = false;// 不是管理者
+                      if(arr!=null)
                       arr.forEach(item => {
                         if (item == currentTask.TaskID) {
                           flag = true;
@@ -156,7 +159,8 @@ Page({
                           status: currentTask.Status,
                           pushDate: currentTask.PushDate,
                           deadLine: currentTask.DeadLine,
-                          urgency: currentTask.Urgency
+                          urgency: currentTask.Urgency,
+                          taskId: currentTask.TaskID
                         })
                       }
                     },
@@ -229,10 +233,45 @@ Page({
   onShareAppMessage: function() {
 
   },
+  sendCheckCancel:function(e){
+    this.setData({
+      isSendCheck: false
+    })
+  },
+  sendCheckConfirm:function(e){
+    var time = util.dateFormate(new Date());
+    var reg = '.*?(?=-task)';
+    var treeid = this.data.taskId.match(reg);
+    var json = {
+      "TimeOut":time,
+      "TypeCode": 50,
+      "Sender": this.data.user,
+      "Receiver": this.data.pusher,
+      "ContentId": treeid+";"+this.data.taskId+";"
+    }
+    console.log(json);
+    wx.sendSocketMessage({
+      data:JSON.stringify(json),
+      success:function(res){
+        console.log("审批发送成功");
+        wx.showToast({
+          title:'审批发送成功',
+          icon:'none'
+        })
+      }
+    })
+
+    this.setData({
+      isSendCheck: false
+    })
+  },
   //发送任务审批
   sendCheck:function(){
-
+    this.setData({
+      isSendCheck:true
+    })
   },
+  
   /**
    * 添加测试图片
    */
@@ -486,7 +525,7 @@ Page({
       "TreeID": self.data.oneTaskTree.TreeId,
       "Parent": self.data.selected_node[PARENT]
     };
-    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + "T" + self.data.time + ":00Z";
+    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + " " + self.data.time + ":00";
     console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/newNode',
@@ -606,6 +645,11 @@ Page({
       isInvite: true
     })
   },
+  inviteChange:function(e){
+    this.setData({
+      inviteWho:e.detail.value
+    })
+  },
   //确认邀请按钮
   inviteConfirm: function(e) {
     this.setData({
@@ -616,7 +660,7 @@ Page({
     var sender = this.data.user;
     var receiver = this.data.inviteWho;
     var nowtime = new Date();
-    var time = util.dateFormate(new Date(),"YYYY-MM-DDThh:mm:ssZ");
+    var time = util.dateFormate(new Date());
     var json = {
       "TimeOut" : time,
       "TypeCode" : 100,

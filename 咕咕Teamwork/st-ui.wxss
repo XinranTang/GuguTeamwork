@@ -179,3 +179,11 @@
   margin-top: -180rpx;
   border-radius: 10rpx;
 }
+
+.two-side{
+  justify-content:space-between;
+}
+
+.icon-left{
+  margin-left:10rpx;
+}

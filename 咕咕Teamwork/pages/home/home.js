@@ -112,58 +112,33 @@ Page({
     var self = this
     var date = new Date();
     let show_day = new Array('周日', '周一', '周二', '周三', '周四', '周五', '周六');
-// <<<<<<< HEAD
-    this.setData({
-      messages:app.globalData.messages,
-      tasks:app.globalData.tasks,
-      color: app.globalData.color,
-      invitations: app.globalData.invitations,
-      checks: app.globalData.checks,
-      hour: date.getHours(),
-      schedule: {
-        timestamp: Date.parse(new Date()) / 1000 ,
-        year: date.getFullYear(),
-        month: (date.getMonth()+1)+"月",
-        day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-        hour: date.getHours(),
-        weekDay:show_day[date.getDay()],
-      },
-    })
-    var self = this
-    let labLen = self.data.messages.length;
-    let labLenT = self.data.tasks.length;
-    let colorArr = self.data.colorArr;
-    let colorLen = colorArr.length;
-    let randomColorArr = [];
-    // console.log("本地任务数量")
-    // console.log(self.data.tasks.length)
-    //判断执行
-    do {
-      let random = colorArr[Math.floor(Math.random() * colorLen)];
-      randomColorArr.push(random);
-      labLen--;
-    } while (labLen > 0)
-// =======
     wx.getStorage({
       key: 'Forest',
-      success: function(res) {
+      success: function (res) {
         let eachItem = app.globalData.tasks;
+        console.log("eachItem");
+        console.log(eachItem);
         let forests = res.data;
+        console.log("forests");
+        console.log(forests);
+
         let flag = false;
-        if(app.globalData.tasks.length!=0){
-          for (var i = 0; i < eachItem.length; i++) {
-            flag = false;
-            forests.forEach(each => {
-              if (eachItem[i].TaskID == each.TreeId) {
-                flag = true;
-              }
-            })
-            if (!flag) {
-              eachItem.splice(i, 1); // 将使后面的元素依次前移，数组长度减1
-              i--; // 如果不减，将漏掉一个元素
-            }
-          }
-        }
+        //这段什么意思？
+        // if (app.globalData.tasks.length != 0) {
+        //   for (var i = 0; i < eachItem.length; i++) {
+        //     flag = false;
+        //     if(forests!=null)
+        //     forests.forEach(each => {
+        //       if (eachItem[i].TaskID == each.TreeId) {
+        //         flag = true;
+        //       }
+        //     })
+        //     if (!flag) {
+        //       eachItem.splice(i, 1); // 将使后面的元素依次前移，数组长度减1
+        //       i--; // 如果不减，将漏掉一个元素
+        //     }
+        //   }
+        // }
         self.setData({
           messages: app.globalData.messages,
           tasks: eachItem,
@@ -178,8 +153,8 @@ Page({
             weekDay: show_day[date.getDay()],
           },
         })
-        let labLen = self.data.messages.length;
-        let labLenT = self.data.tasks.length;
+        let labLen = self.data.messages == null ? 0 : self.data.messages.length;
+        let labLenT = self.data.tasks == null ? 0 : self.data.tasks.length;
         let colorArr = self.data.colorArr;
         let colorLen = colorArr.length;
         let randomColorArr = [];
@@ -191,7 +166,6 @@ Page({
           randomColorArr.push(random);
           labLen--;
         } while (labLen > 0)
-// >>>>>>> 01aa5433c395ee219ac6a0ce2e413f0ecc05c494
 
         self.setData({
           randomColorArr: randomColorArr
@@ -206,19 +180,19 @@ Page({
         self.setData({
           randomColorArrT: randomColorArr
         });
-    // console.log(randomColorArr)
-// <<<<<<< HEAD
-// =======
-      
-    // self.setData({
-    //   messages: app.globalData.messages,
-    //   tasks: app.globalData.tasks,
-    //   invitations: app.globalData.invitations
-    // })
-  }
-  
-  })
-// >>>>>>> 01aa5433c395ee219ac6a0ce2e413f0ecc05c494
+        // console.log(randomColorArr)
+
+        self.setData({
+          messages: app.globalData.messages,
+          tasks: app.globalData.tasks,
+          invitations: app.globalData.invitations,
+          checks:app.globalData.checks,
+        })
+      }
+
+    })
+
+
   },
 
   /**
@@ -648,11 +622,12 @@ Page({
       var dataSet = e.currentTarget.dataset;
       var index = dataSet.index;
       var task = this.data.tasks[index];
+      console.log(this.data.tasks);
       console.log(e.currentTarget.dataset)
       wx.getStorage({
         key: 'Forest',
         success: function(res) {
-          let tempData = res.data;
+          let tempData = res.data == null?[]:res.data;
           let flag = false;
           tempData.forEach(each=>{
             if(each.TreeId == task.TaskID){
@@ -670,6 +645,7 @@ Page({
             app.globalData.currentTaskIndex = index;
             app.globalData.tasks = self.data.tasks;
             app.globalData.currentTask = task;
+            console.log(task)
             wx.navigateTo({
               url: '../process/taskList/task',
             });
@@ -689,6 +665,7 @@ Page({
     })
   },
   inviteConfirm:function(e){
+    var self = this;
     var json = JSON.parse(JSON.stringify(this.data.nowInvitation));
     var temp = json.Receiver;
     json.Receiver = json.Sender;
@@ -699,6 +676,14 @@ Page({
       data:JSON.stringify(json),
       success:function(res){
         console.log("101Code发送成功")
+        var msg = {
+          "Title": "任务邀请被接受",
+          "Pusher": json.Sender,
+          "Content": "恭喜,您在" + json.TimeOut + "发起的对" + json.ContentId + "的任务邀请被接受了,一起愉快地工作吧。",
+          "NotRead": json.Receiver + ";",
+          "FinalDeleteDate": "2050-05-30 00:00:00"
+        }
+        self.sendMessage(msg);
       },
       fail:function(e){
         console.log("101Code发送失败")
@@ -708,8 +693,10 @@ Page({
       onInvite: false
     })
     app.globalData.invitations.splice(this.data.currentInvitationIndex, 1);
+    this.data.invitations.splice(this.data.currentInvitationIndex, 1);
   },
   inviteCancel:function(e){
+    var self = this;
     var json = JSON.parse(JSON.stringify(this.data.nowInvitation));
     var temp = json.Receiver;
     json.Receiver = json.Sender;
@@ -720,6 +707,14 @@ Page({
       data: JSON.stringify(json),
       success: function (res) {
         console.log("102Code发送成功")
+        var msg = {
+          "Title": "任务邀请被拒绝",
+          "Pusher": json.Sender,
+          "Content": "咕咕,您在" + json.TimeOut + "发起的对" + json.ContentId + "的任务邀请被拒绝了。",
+          "NotRead": json.Receiver + ";",
+          "FinalDeleteDate": "2050-05-30 00:00:00"
+        }
+        self.sendMessage(msg);
       },
       fail: function (e) {
         console.log("102Code发送失败")
@@ -731,6 +726,7 @@ Page({
     console.log("拒绝邀请");
     //删除本地的invitation[index]
     app.globalData.invitations.splice(this.data.currentInvitationIndex,1);
+    this.data.invitations.splice(this.data.currentInvitationIndex, 1);
   },
   //点击了任务邀请
   onClickInvite:function(e){
@@ -749,6 +745,7 @@ Page({
   },
   // 任务审批通过
   checkConfirm:function(e){
+    var self = this;
     var json = JSON.parse(JSON.stringify(this.data.nowCheck));
     var temp = json.Receiver;
     json.Receiver = json.Sender;
@@ -765,9 +762,9 @@ Page({
           "Pusher": json.Sender,
           "Content": "恭喜,您在" + json.TimeOut + "发起的对" + json.ContentId + "任务的进度完成审批通过了。",
           "NotRead": json.Receiver + ";",
-          "FinalDeleteDate": "2050-05-30T00:00:00Z"
+          "FinalDeleteDate": "2050-05-30 00:00:00"
         };
-        sendMessage(msg);
+        self.sendMessage(msg);
       },
       fail: function (e) {
         console.log("51Code发送失败")
@@ -778,9 +775,11 @@ Page({
     })
     //删除本地的checks[index]
     app.globalData.checks.splice(this.data.currentCheckIndex, 1);
+    this.data.checks.splice(this.data.currentCheckIndex, 1);
   },
   //任务审批驳回
   checkCancel:function(e){
+    var self = this;
     var json = JSON.parse(JSON.stringify(this.data.nowCheck));
     var temp = json.Receiver;
     json.Receiver = json.Sender;
@@ -797,9 +796,9 @@ Page({
           "Pusher": json.Sender,
           "Content": "很遗憾,您在" + json.TimeOut + "发起的对" + json.ContentId + "任务的进度完成审批被驳回了。",
           "NotRead": json.Receiver + ";",
-          "FinalDeleteDate": "2050-05-30T00:00:00Z"
+          "FinalDeleteDate": "2050-05-30 00:00:00"
         };
-        sendMessage(msg);
+        self.sendMessage(msg);
       },
       fail: function (e) {
         console.log("52Code发送失败")
@@ -810,6 +809,7 @@ Page({
     })
     //删除本地的checks[index]
     app.globalData.checks.splice(this.data.currentCheckIndex, 1);
+    this.data.checks.splice(this.data.currentCheckIndex, 1);
   },
   checkIgnore:function(e){
     this.setData({

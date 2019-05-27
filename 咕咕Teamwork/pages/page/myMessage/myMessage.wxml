@@ -46,7 +46,7 @@
         <!-- </i-card>   -->
       </view>
     </i-collapse-item>
-    <i-collapse-item title="已读消息" name="name2">
+    <i-collapse-item title="已读消息" name="name1">
       <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
        <view id="each-message" class="horizontal msg-view" wx:if="{{tools.testCheckRead(message.Read,user)}}">
           <view>
@@ -65,7 +65,7 @@
         </view>
       </view>
     </i-collapse-item>
-    <i-collapse-item title="已发布消息" name="name3">
+    <i-collapse-item title="已发布消息" name="name1">
       <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
         <view id="each-message" class="horizontal msg-view" wx:if="{{message.Pusher == user}}">
           <view>

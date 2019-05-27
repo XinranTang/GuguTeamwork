@@ -60,7 +60,7 @@ Page({
       "Pusher": self.data.user,
       "Content": self.data.msg_content,
       "NotRead": "testopenid;",
-      "FinalDeleteDate": self.data.date + "T" + self.data.time + ":00Z"
+      "FinalDeleteDate": self.data.date + " " + self.data.time + ":00"
     };
 
     console.log(json);

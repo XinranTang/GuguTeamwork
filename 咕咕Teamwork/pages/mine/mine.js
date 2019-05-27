@@ -7,6 +7,7 @@ Page({
    */
   data: {
     userInfo: {},
+    openId:"",
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     color:{},
@@ -67,7 +68,7 @@ Page({
         "name": "提交周报",
         "url": "../../images/icon2.jpg",
         "func": "intoFunc8",
-        "icon": "iconfont icon-anonymous",
+        "icon": "iconfont icon-push",
         "color":"#B671FA",
       }
     ]
@@ -157,6 +158,21 @@ Page({
   onReachBottom: function () {
 
   },
+  copyOpenId:function(e){
+    wx.setClipboardData({
+      data: e.currentTarget.dataset.text,
+      success: function (res) {
+        wx.getClipboardData({
+          success: function (res) {
+            wx.showToast({
+              title: '复制openid成功',
+              icon:'none'
+            })
+          }
+        })
+      }
+    })
+  },
   getUserInfo: function (e) {
     var self = this;
     console.log(e)
@@ -171,64 +187,68 @@ Page({
       success: function(res) {
         openId = res.data.OpenId
         console.log(openId)
-      },
-    })
-    wx.request({
+        self.setData({
+          openId:openId
+        })
+        wx.request({
 
-      //【做了改动】 url: 'https://www.fracturesr.xyz/entry',
-      url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
-      header: {
-        'content-type': "application/x-www-form-urlencoded"
-      },
-      method: 'POST',
-      data: {
-        OpenId:"testopenid"
-      },
-      success(res) {
-        wx.setStorage({
-          key: 'Information',
-          data: res.data,
-        })
-        app.globalData.tasks=res.data.Tasks;
-        app.globalData.messages=res.data.Messages;
-        console.log("在授权后取得用户信息成功")
-        wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          //【做了改动】 url: 'https://www.fracturesr.xyz/entry',
+          url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
           header: {
             'content-type': "application/x-www-form-urlencoded"
           },
           method: 'POST',
           data: {
-            OpenId: "testopenid"
+            OpenId: openId
           },
           success(res) {
             wx.setStorage({
-              key: 'Forest',
+              key: 'Information',
               data: res.data,
             })
-          }
-        })
-        wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/personal',
-          header: {
-            'content-type': "application/x-www-form-urlencoded"
-          },
-          method: 'POST',
-          data: {
-            OpenId: "testopenid"
-          },
-          success(res) {
-            wx.setStorage({
-              key: 'Personal',
-              data: res.data,
+            app.globalData.tasks = res.data.Tasks;
+            app.globalData.messages = res.data.Messages;
+            console.log(app.globalData.tasks)
+            console.log("在授权后取得用户信息成功")
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: openId
+              },
+              success(res) {
+                wx.setStorage({
+                  key: 'Forest',
+                  data: res.data,
+                })
+              }
             })
-            app.globalData.personal = res.data
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/personal',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: openId
+              },
+              success(res) {
+                wx.setStorage({
+                  key: 'Personal',
+                  data: res.data,
+                })
+                app.globalData.personal = res.data
+              }
+            })
+          },
+          fail() {
+            console.log("在授权后取得用户信息失败")
           }
         })
       },
-      fail() {
-        console.log("在授权后取得用户信息失败")
-      }
     })
   },
 
