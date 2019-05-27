@@ -35,6 +35,9 @@ App({
               res.data.Messages = [];
             if (res.data.Task == null)
               res.data.Tasks = [];
+            // mysql的表不能有 - 号
+            res.data.OpenId = res.data.OpenId.replace(/-/g,"_");
+            console.log("更改过的openid"+res.data.OpenId)
             wx.setStorage({
               key: 'UserInfor',
               data: res.data,
