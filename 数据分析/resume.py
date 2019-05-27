@@ -18,7 +18,7 @@ def readfromDB(content):
 if __name__=="__main__":
 
     # 这里改一下绝对路径
-    rows=readFronSqllite('C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db'," select * from user_infor where ID = '"+sys.argv[1]+"'")
+    rows=readFronSqllite('.//SQLite3//UserInfor.db'," select * from user_infor where ID = '"+sys.argv[1]+"'")
     row=rows[0] # 获取某一行的数据,类型是tuple
 
     str = ""
@@ -32,7 +32,7 @@ if __name__=="__main__":
     a[6] = row[5]
     a[7] = row[6]
     a[8] = row[7]
-    f = open("out.txt", "w",encoding='utf-8')
+    f = open(".//analysis//resume//+"+ sys.argv[1] +".txt", "w",encoding='utf-8')
     for i in range(9):
         if i != 0:
             a[i] = c[i] + '  ：  ' + a[i]

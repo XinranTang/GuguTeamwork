@@ -17,16 +17,16 @@ App({
     // 登录
     wx.login({
       success: res => {
+        console.log(res.code)
+        console.log('code=' + res.code)
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+          url: 'https://www.fracturesr.xyz/gugu/entry',
           header: {
             'content-type': "application/x-www-form-urlencoded"
           },
           method: 'POST',
-          data: {
-            OpenId: "testopenid"
-          },
+          data: 'code='+ res.code,
           success: function(res) {
             wx.setStorage({
               key: 'UserInfor',
@@ -124,7 +124,7 @@ App({
                 },
                 method: 'POST',
                 data: {
-                  'code': "res.data"
+                  'code': 'res.data'
                 },
                 success(res) {
                   wx.setStorage({

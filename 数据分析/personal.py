@@ -1,8 +1,11 @@
 import sqlite3 as db
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import sys
+import os
+curPath = os.path.abspath(os.path.dirname(__file__))
+parentPath = os.path.split(curPath)[0]
+rootPath = os.path.split(parentPath)[0]
+sys.path.append(rootPath)
 
 plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
 plt.rcParams['axes.unicode_minus']=False #用来正常显示负号
@@ -25,7 +28,7 @@ def readfromDB(content):
 if __name__=="__main__":
     # openID = input("OpenId:")
     # 这里改一下绝对路径
-    results=readFronSqllite('C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db'," select totalmanage,totaljoin,goingon from user_infor where ID = '"+sys.argv[1]+"'")
+    results=readFronSqllite('.//SQLite3//UserInfor.db'," select totalmanage,totaljoin,goingon from user_infor where ID = '"+sys.argv[1]+"'")
     result = list(results[0])
     plt.pie(result[:2],colors=['#88caed','#f86e3d'],autopct='%1.1f%%',labels = [u'我管理的任务', u'我加入的任务'])
     plt.title(u"任务分布情况")
@@ -34,5 +37,5 @@ if __name__=="__main__":
     result.append(result[0]+result[1]-result[2])
     plt.pie(result[2:], colors=['#88caed', '#f86e3d'], autopct='%1.1f%%', labels=[u'未完成任务', u'已完成任务'])
     plt.title(u"任务完成情况")
-    plt.savefig("2.jpg")
-    plt.show()
+    plt.savefig(".//analysis//personal//" + sys.argv[1] + ".jpg")
+#    plt.show()

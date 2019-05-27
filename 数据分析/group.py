@@ -23,7 +23,7 @@ def readfromDB(content):
 if __name__=="__main__":
     # openID = input("OpenId:")
     # 这里改一下绝对路径
-    results=readFronSqllite('C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db'," select taskID, done,not_done,date_rate from user_task where userID = '"+sys.argv[1]+"'")
+    results=readFronSqllite('.//SQLite3//UserInfor.db'," select taskID, done,not_done,date_rate from user_task where userID = '"+sys.argv[1]+"'")
     result = []
     for each in list(results):
         print(each)
@@ -38,5 +38,5 @@ if __name__=="__main__":
         i=i+1
     plt.xticks([])
     plt.yticks([])
-    plt.savefig("3.jpg")
-    plt.show()
+    plt.savefig(".//analysis//group//"+sys.argv[1]+".jpg")
+#   plt.show()
