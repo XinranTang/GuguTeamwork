@@ -26,7 +26,7 @@
               <view style='font-size:24rpx;text-align:center'>{{(index%24
                 <10? "0"+(index%24):index%24)+ ":00"}} </view>
                   <view style='display:inline;left:30rpx;background-color:{{list[index].color}};width:300rpx;margin:5rpx;height:50rpx;color:white;font-size:20rpx;text-align:center;display: flex;flex-direction: column;  justify-content: center;align-items: center;flex-direction: row;'>
-                    <text style="font-size:25rpx">{{list[index].t.Title}}</text>
+                    <text style="color:white;font-size:25rpx">{{list[index].t.Title}}</text>
                   </view>
               </view>
             </view>
@@ -48,7 +48,7 @@
             <!-- <view class="line" style="margin-top:10rpx;margin-bottom:10rpx"></view> -->
 
             <view style='margin-top:20rpx;margin-bottom:10rpx'>
-              <block class="" wx:if="{{messages.length!=0}}" style="margin-top:20rpx">
+              <block class="" wx:if="{{messages!=null&messages.length!=0}}" style="margin-top:20rpx">
                 <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message" bindtap='toMessage' style="">
                   <view class="">{{message.Title}}</view>
                 </view>
@@ -82,8 +82,19 @@
               </view>
             </block>
 
+
+            <!-- 任务审批 -->
+            <block>
+              <view class="" style="backgroud-color:white" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{checks}}" wx:for-item="check" bindtap="onClickCheck">
+                <view class="st-radius-view-tiny horizontal">
+                  <text class="st-text-tag" style='width:auto'>new</text>
+                  <text class="invitation-text" style="margin-left:20rpx">任务审批</text>
+                </view>
+              </view>
+            </block>
+
             <view style='margin-top:20rpx;margin-bottom:10rpx'>
-              <block wx:if="{{tasks.length!=0}}">
+              <block wx:if="{{tasks!=null&tasks.length!=0}}">
                 <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask' style="">
                   <view>
                     <view class='text-bold' style='font-size:26rpx'>{{task.Title}}</view>
@@ -124,17 +135,45 @@
 
 </form> -->
 
+  <!-- 添加日程 -->
   <view wx:if='{{!hiddenmodalput}}'>
-    <modal title="添加日程" confirm-text="确认" cancel-text="取消" bindconfirm="formSubmit" bindcancel="cancel">
-      <label>
-        <view class="">
-          <input class="input" bindinput="" placeholder="日程主题" data-type='title' bindblur='editChange' />
-          <input class="input" bindinput="" placeholder="内容" data-type='content' bindblur='editChange' />
+    <view class="modal-mask" bindtap="cancel"></view>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_secretary.jpg" mode="cover"></image>
+      </view>
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text style='align-self:center;font-size:30rpx'>添加日程</text>
+        <input class="input" bindinput="" placeholder="日程主题" data-type='title' bindblur='editChange'/>
+        <input class="input" bindinput="" placeholder="内容" data-type='content' bindblur='editChange'/>
+        <view style=''>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="formSubmit">确认</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="cancel">取消</button>
         </view>
-      </label>
-    </modal>
+      </view>
+    </view>
   </view>
 
+  <!-- 查看日程 -->
+  <view wx:if='{{isSchedule}}'>
+    <view class="modal-mask" bindtap="addTaskCancel"></view>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_secretary.jpg" mode="cover"></image>
+      </view>
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text style='align-self:center;font-size:30rpx'>查看日程</text>
+        <text style="align-self:center;font-size:40rpx">{{nowSchedule.title}}</text>
+        <text style="align-self:center">{{nowSchedule.content}}</text>
+        <view style=''>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="addTaskCancel">确认</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="addTaskDel">删除</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 任务邀请 -->
   <view class="modal-mask" bindtap="inviteIgnore" wx:if='{{onInvite}}'></view>
   <view wx:if='{{onInvite}}'>
     <view class="modal-container">
@@ -146,9 +185,29 @@
         <text style='align-self:center;font-size:30rpx'>任务邀请</text>
         <text style="word-break:break-all">咕咕，openid为{{nowInvitation.Sender}}的用户在{{nowInvitation.Timeout}}邀请您加入{{nowInvitation.ContentId}}任务。</text>
         <view style=''>
-        <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%"bindtap="inviteConfirm">接受</button>
-         <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%"bindtap="inviteCancel">拒绝</button>
-         <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%"bindtap="inviteIgnore">忽略</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="inviteConfirm">接受</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="inviteCancel">拒绝</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="inviteIgnore">忽略</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 任务审批 -->
+  <view class="modal-mask" bindtap="CheckIgnore" wx:if='{{onCheck}}'></view>
+  <view wx:if='{{onCheck}}'>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_worker.jpg" mode="cover"></image>
+      </view>
+
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text style='align-self:center;font-size:30rpx'>任务审批</text>
+        <text style="word-break:break-all">咕咕，openid为{{nowCheck.Sender}}的用户在{{nowCheck.Timeout}}向您发送了{{nowCheck.ContentId}}任务的进度完成审批。</text>
+        <view style=''>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="checkConfirm">通过</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="checkCancel">驳回</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="checkIgnore">忽略</button>
         </view>
       </view>
     </view>

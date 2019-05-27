@@ -867,14 +867,14 @@ Component({
         Pusher: "tt",
         Content: "这是一个新任务",
         Status: false,
-        PushDate: "tt",
-        DeadLine: "2050-05-30T00:00:00Z",
+        PushDate: "2019-05-10 00:00:00",
+        DeadLine: "2050-05-30 00:00:00",
         Urgency: 3
       },
       Self: this.treeRawArr.length,
       Child: [0],
       Parent: -1,
-      TeamMates: ["tt"]
+      TeamMates: []
     }) {
       var x_offset = 20,
         y_offset = 20;
@@ -937,15 +937,21 @@ Component({
       this.ctx.setTextBaseline('middle');
       this.ctx.setTextAlign('center');
       for (var i = 0; i < childs.length; i++) {
+        //防止出现不应该存在的child
+        if (childs[i] >= this.treeRawArr.length)
+          continue;
         totalLen += this.ctx.measureText(this.treeRawArr[childs[i]][TASK][TITLE]).width;
       }
       //pos_x_offset = -(childs.length - 1) * d / 2;
       pos_x_offset = -(totalLen + (childs.length - 1) * 15) / 4;
-      console.log(totalLen);
+      //console.log(totalLen);
       //非叶子节点
       if (childs[0] != 0) {
         for (var i = 0; i < childs.length; i++) {
           var index = childs[i];
+          //防止出现不应该存在的child
+          if(index >= this.treeRawArr.length)
+            continue;
           var nextTaskNodeAtrr = this.treeRawArr[index];
           var newTaskGraph = new dragGraph({
             x: fromTaskGraph.x + pos_x_offset,
@@ -981,7 +987,9 @@ Component({
         for (var j = 0; j < childs.length; j++) {
           //Parent字段改成TaskIDs
           //this.treeRawArr[childs[j]][PARENT]=i;
-          this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
+          //防止出现了不应该存在的child
+          if(childs[j]<this.treeRawArr.length)
+            this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
         }
       }
 

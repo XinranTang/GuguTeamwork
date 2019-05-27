@@ -6,6 +6,10 @@
       <block wx:else class="vertical" style="">
         <image bindtap="bindViewTap" class="userinfo-avatar" style="align-self:center" src="{{userInfo.avatarUrl}}" mode="cover"></image>
         <view class="userinfo-nickname" style="align-self:center">{{userInfo.nickName}}</view>
+        <view class="horizontal" style="align-self:center">
+          <view style="color:white">openId:{{openId}}</view>
+          <view class="" style="margin-left:10rpx" data-text="{{openId}}" bindtap="copyOpenId"><text class="iconfont icon-submit" style="color:white;font-size:30rpx"></text></view>
+        </view>
       </block>
     </view>
 
@@ -44,8 +48,8 @@
         <text class="notes" style='' bindtap='toPageSetting'>更改应用皮肤</text>
       </view>
       <view class="setting" bindtap='toGiveMoney'>
-        <text class="iconfont icon-sponsor st-icon-square-tiny" style="font-size:35rpx;background:#FF6461"></text>
-        <text style="margin:0rpx 15rpx">我要打赏</text>
+        <text class="iconfont icon-team st-icon-square-tiny" style="font-size:35rpx;background:#FF6461"></text>
+        <text style="margin:0rpx 15rpx">开发者信息</text>
         <text class="notes" style=''>帮助穷苦大学生</text>
       </view>
       <view class="setting" bindtap='toHelp'>
