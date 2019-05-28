@@ -415,19 +415,20 @@ Page({
             dataType: JSON,
             success: function (res) {
 // 【这里是测试代码，以后注意要删掉】
-              wx.request({
-                url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
-                header: {
-                  'content-type': "application/x-www-form-urlencoded"
-                },
-                method: 'POST',
-                data: {
-                  OpenId: "testopenid"
-                },
-                success(res1) {
-                  console.log(res1.data)
-                }
-              })
+//  删掉了
+              // wx.request({
+              //   url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+              //   header: {
+              //     'content-type': "application/x-www-form-urlencoded"
+              //   },
+              //   method: 'POST',
+              //   data: {
+              //     OpenId: "testopenid"
+              //   },
+              //   success(res1) {
+              //     console.log(res1.data)
+              //   }
+              // })
               // 服务器请求成功，设置页面数据
               var index = 'oneTaskTree.Tree'
               var t = res.data
@@ -441,10 +442,10 @@ Page({
                       "Task": {
                         "TaskID": res.data,
                         "Title": json.Name,
-                        "Pusher": "testopenid", // TODO:改成昵称或者真名
+                        "Pusher": app.globalData.OpenId, // TODO:改成昵称或者真名
                         "Content": json.Brief,
                         "Status": 0,
-                        "PushDate": new Date(),
+                        "PushDate": util.dateFormate(new Date()),
                         "DeadLine": json.Deadline,
                         "Urgency": json.Urgency,
                       },

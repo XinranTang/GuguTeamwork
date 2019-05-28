@@ -1,1 +1,4 @@
 /* pages/page/myReport/myReport.wxss */
+.msg-all{
+ padding: 20rpx;
+}

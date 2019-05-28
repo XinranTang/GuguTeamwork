@@ -8,7 +8,7 @@ Page({
     msg_title: '',
     msg_content: '',
     socket_open: false,
-    msg_to_who: 'testopenid',
+    msg_to_who: '',
     date: '2020-01-01',
     time: '12:00',
     user: "",
@@ -59,7 +59,7 @@ Page({
       "Title": self.data.msg_title,
       "Pusher": self.data.user,
       "Content": self.data.msg_content,
-      "NotRead": "testopenid;",
+      "NotRead": msg_to_who+";",
       "FinalDeleteDate": self.data.date + " " + self.data.time + ":00"
     };
 

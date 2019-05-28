@@ -198,9 +198,7 @@ Page({
             'content-type': "application/x-www-form-urlencoded"
           },
           method: 'POST',
-          data: {
-            OpenId: openId
-          },
+          data: "OpenId="+openId,
           success(res) {
             wx.setStorage({
               key: 'Information',
@@ -236,11 +234,21 @@ Page({
                 OpenId: openId
               },
               success(res) {
+                console.log("获取的personal为:");
+                console.log(res.data);
+                //如果这人没设置信息，获取到的是空字符串
+                if (res.data == null || res.data == "") {
+                  res.data = {};
+                }
                 wx.setStorage({
                   key: 'Personal',
                   data: res.data,
                 })
                 app.globalData.personal = res.data
+              },
+              fail(res){
+                  console.log("获取personal失败");
+                  console.log(res.data);
               }
             })
           },

@@ -1,4 +1,6 @@
 <!--pages/page/myReport/myReport.wxml-->
+<view class="st-bg-image"></view>
+<view class="msg-all st-radius-view">
 <i-collapse>
   <i-collapse-item title="选择加入的项目提交周报" name="name1">
     <view slot="content" wx:for="{{ctasks}}" bindtap='toTask' wx:for-item="task" data-data="{{task.data}}" data-index="{{index}}" data-id="{{task.TaskID}}">
@@ -20,3 +22,4 @@
     </view>
   </i-collapse-item>
 </i-collapse>
+</view>

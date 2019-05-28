@@ -439,7 +439,7 @@ Page({
           },
           method: 'POST',
           data: {
-            OpenId: "testopenid"
+            OpenId: self.user
           },
           success(res1) {
             console.log(res1.data)
@@ -454,7 +454,7 @@ Page({
               },
               method: 'POST',
               data: {
-                OpenId: "testopenid"
+                OpenId: _this.user
               },
               success(res) {
                 wx.setStorage({
@@ -545,7 +545,7 @@ Page({
           },
           method: 'POST',
           data: {
-            OpenId: "testopenid"
+            OpenId: self.user
           },
           success(res1) {
             console.log(res1.data)
@@ -560,7 +560,7 @@ Page({
               },
               method: 'POST',
               data: {
-                OpenId: "testopenid"
+                OpenId: self.data.user
               },
               success(res) {
                 wx.setStorage({
@@ -606,7 +606,7 @@ Page({
           },
           method: 'POST',
           data: {
-            OpenId: "testopenid"
+            OpenId: self.data.user
           },
           success(res1) {
             console.log(res1.data)
@@ -621,7 +621,7 @@ Page({
               },
               method: 'POST',
               data: {
-                OpenId: "testopenid"
+                OpenId: self.data.user
               },
               success(res) {
                 wx.setStorage({
@@ -745,7 +745,7 @@ Page({
           },
           method: 'POST',
           data: {
-            OpenId: "testopenid"
+            OpenId: self.data.user
           },
           success(res1) {
             console.log(res1.data)
@@ -760,7 +760,7 @@ Page({
               },
               method: 'POST',
               data: {
-                OpenId: "testopenid"
+                OpenId: self.data.user
               },
               success(res) {
                 wx.setStorage({
