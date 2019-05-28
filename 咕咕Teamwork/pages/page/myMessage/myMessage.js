@@ -30,7 +30,8 @@ Page({
    */
   onShow: function () {
     this.setData({
-      messages: app.globalData.messages
+      messages: app.globalData.messages,
+      user:app.globalData.openId
     })
     console.log(this.data.messages);
   },

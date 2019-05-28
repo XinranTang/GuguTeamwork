@@ -23,7 +23,7 @@ if __name__ == "__main__":
     openID = sys.argv[1]
     # 这里改一下绝对路径
     rows = readFronSqllite(
-        'C://Users//gmf//Desktop//微信小程序大赛//咕咕TeamWork//GuguTeamwork//GuguTeamwork//SQLite3//UserInfor.db',
+        './/SQLite3//UserInfor.db',
         " select * from user_infor where ID = '" + openID + "'")
     row = rows[0]  # 获取某一行的数据,类型是tuple
 
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     else:
         touxiang = "gugu_female.jpg"
 
-    f = open("idOut.html", "w", encoding='utf-8')
+    f = open(".//analysis//IDCard//"+ openID + ".html", "w", encoding='utf-8')
     str = "<!DOCTYPE html>" + \
           "<html>" + \
           "<head>" + \

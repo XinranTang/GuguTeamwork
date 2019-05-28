@@ -6,9 +6,8 @@ var sub = function (val, begin, end) {
 }
 module.exports.sub = sub;
 
-var testCheckRead = function (str){
-  var app = getApp();
-  var openId = app.globalData.openId;
+var testCheckRead = function (str,openId){
+  //console.log(str+"里有"+openId+"吗");
   if(str.indexOf(openId)>=0){
     return true
   }
@@ -16,3 +15,15 @@ var testCheckRead = function (str){
 }
 
 module.exports.testCheckRead = testCheckRead;
+
+var shortopenids = function (openids){
+  if(openids == null)
+    return "无"
+  var temp = JSON.parse(JSON.stringify(openids))
+  for(var i = 0;i<temp.length;i++){
+    temp[i] = temp[i].length > 12 ? temp[i].substring(0,10) + '...':temp[i];
+  }
+  return temp
+}
+
+module.exports.shortopenids = shortopenids;

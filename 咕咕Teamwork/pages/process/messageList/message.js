@@ -89,7 +89,23 @@ Page({
     var list = app.globalData.messages;
     var index = app.globalData.currentMessageIndex;
     var currentMessage = list[index];
-    currentMessage.Status = true;
+    var openid = app.globalData.openId;
+   // currentMessage.Status = true;
+    //告诉服务器读过了
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/readMessage?OpenId='+openid+'&MessageID='+currentMessage.MessageID,
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'GET',
+      success(res) {
+        console.log(currentMessage.MessageID + "已读");
+        currentMessage.Read.push(openid);
+        wx.showToast({
+          title: '已标记为已读',
+        })
+      }
+    })
   },
   markDown:function(){
     app.globalData.markDownChoice=0;

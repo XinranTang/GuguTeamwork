@@ -56,3 +56,33 @@ func CreateMessage(db *sql.DB, message *utils.Message) error {
 	}
 	return nil
 }
+
+func CreateProjectRecord(pusher string, taskid string) error {
+	db := ConnectPersonalDB()
+	defer DisConnectDB(db)
+	stmt, err := db.Prepare("INSERT INTO user_task(userID,taskID,done,notdone)VALUES(?,?,?,?)")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(pusher, taskid, 0, 0)
+	if err != nil {
+		return err
+	}
+	stmt, err = db.Prepare("UPDATE user_infor SET totalmanage=(totalmanage+1) WHERE ID=?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(pusher)
+	if err != nil {
+		return err
+	}
+	stmt, err = db.Prepare("UPDATE user_infor SET goingon=(goingon+1) WHERE ID=?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(pusher)
+	if err != nil {
+		return err
+	}
+	return nil
+}

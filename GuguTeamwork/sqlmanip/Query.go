@@ -62,7 +62,7 @@ func QueryUserInfo(db *sql.DB, openid string) *utils.UserInfo {
 func QueryPrivateInfo(db *sql.DB, openid string) *utils.PrivateInfo {
 	var AInfo utils.PrivateInfo
 
-	var order = "SELECT * FROM user_infor WHERE ID='" + openid + "';"
+	var order = "SELECT ID,Name,Sign,Sex,Phone,Mail,Position,Ability FROM user_infor WHERE ID='" + openid + "';"
 	err := db.QueryRow(order).Scan(
 		&AInfo.ID,
 		&AInfo.Name,

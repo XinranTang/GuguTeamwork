@@ -75,6 +75,7 @@ func Online(w http.ResponseWriter, r *http.Request) {
 
 func wsListener(msgChan chan WsMsg, conn *websocket.Conn, openid string) {
 	var msg WsMsg
+	var flag = int8(0)
 	readChan := make(chan WsMsg, 3)
 	go wsReader(readChan, conn)
 	for {
@@ -133,6 +134,7 @@ func wsListener(msgChan chan WsMsg, conn *websocket.Conn, openid string) {
 							//并未找到该成员,且在101状态码下添加
 							if !have && (msg.TypeCode == 101) {
 								t = append(t, msg.Sender)
+								flag = 1
 							} else if !have && (msg.TypeCode == 51) {
 								//该任务不存在但是是51状态码，想批准的任务已经被删除了
 								msgChan <- NotExistNotice
@@ -143,11 +145,7 @@ func wsListener(msgChan chan WsMsg, conn *websocket.Conn, openid string) {
 								if len(t) == 0 {
 									tree.GetForest().Projects[tmp[0]][k].Task.Status = 1
 								}
-								//任务对于Receiver来说完成了,放到Completer里面去
-								db := sqlmanip.ConnetUserDB()
-								err := sqlmanip.Append(db, "TaskToPeople", "TaskID", "Completer", msg.Receiver+";", tmp[1])
-								utils.CheckErr(err, "wsListener:move to completer")
-								sqlmanip.DisConnectDB(db)
+								flag = 2
 							}
 							//存在且是101码时无所谓
 							tree.GetForest().Projects[tmp[0]][k].TeamMates = t
@@ -155,6 +153,27 @@ func wsListener(msgChan chan WsMsg, conn *websocket.Conn, openid string) {
 					}
 				}
 				tree.GetForest().PRMMutex.Unlock()
+
+				//减少锁内代码
+				//任务对于Receiver来说完成了,放到Completer里面去
+				if flag == 2 {
+					db := sqlmanip.ConnetUserDB()
+					err := sqlmanip.Append(db, "TaskToPeople", "TaskID", "Completer", msg.Receiver+";", tmp[1])
+					utils.CheckErr(err, "wsListener:move to completer")
+					sqlmanip.DisConnectDB(db)
+					sqlmanip.IncDec("user_task", "taskID", "done", tmp[1], true)
+					sqlmanip.IncDec("user_task", "taskID", "notdone", tmp[1], false)
+					sqlmanip.IncDec("user_infor", "ID", "goingon", msg.Receiver, false)
+				} else if flag == 1 {
+					if tmp[1] == tmp[0] {
+						sqlmanip.IncDec("user_infor", "ID", "totalmanage", msg.Sender, true)
+					} else {
+						sqlmanip.IncDec("user_infor", "ID", "toaljoin", msg.Sender, false)
+					}
+					sqlmanip.IncDec("user_infor", "ID", "goingon", msg.Sender, true)
+				}
+				flag = 0
+
 				tree.GetForest().MRMMutex.Lock()
 				{
 					t := tree.GetForest().Monitors[tmp[0]]

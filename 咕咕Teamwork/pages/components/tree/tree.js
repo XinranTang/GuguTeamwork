@@ -56,8 +56,8 @@ Component({
             "Pusher": "咕咕鸡",
             "Content": "这是一个测试任务",
             "Status": false,
-            "PushDate": "2019-04-01T00:00:00Z",
-            "DeadLine": "2100-01-01T00:00:00Z",
+            "PushDate": "2019-04-01 00:00:00",
+            "DeadLine": "2100-01-01 00:00:00",
             "Urgency": 3
           },
           "Self": 0,
@@ -76,8 +76,8 @@ Component({
             "Pusher": "咕咕鸡",
             "Content": "这是一个测试子任务",
             "Status": false,
-            "PushDate": "2019-04-01T00:00:00Z",
-            "DeadLine": "2100-01-01T00:00:00Z",
+            "PushDate": "2019-04-01 00:00:00 ",
+            "DeadLine": "2100-01-01 00:00:00 ",
             "Urgency": 3
           },
           "Self": 1,
@@ -95,8 +95,8 @@ Component({
             "Pusher": "咕咕鸡",
             "Content": "这是一个测试子任务",
             "Status": false,
-            "PushDate": "2019-04-01T00:00:00Z",
-            "DeadLine": "2100-01-01T00:00:00Z",
+            "PushDate": "2019-04-01 00:00:00",
+            "DeadLine": "2100-01-01 00:00:00",
             "Urgency": 3
           },
           "Self": 2,

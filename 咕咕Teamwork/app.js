@@ -18,16 +18,26 @@ App({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        console.log("code:"+res.code);
+        var code = res.code;
+        //用自己的code登录
         wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+          url: 'https://www.fracturesr.xyz/gugu/entry',
           header: {
             'content-type': "application/x-www-form-urlencoded"
           },
           method: 'POST',
-          data: {
-            OpenId: "testopenid"
-          },
-          success: function(res) {
+          data: "code=" + res.code,
+          success: function (res) {
+            console.log("entry获取openid成功")
+            console.log(res)
+            if (res.data.Messages == null)
+              res.data.Messages = [];
+            if (res.data.Task == null)
+              res.data.Tasks = [];
+            // mysql的表不能有 - 号
+            res.data.OpenId = res.data.OpenId.replace(/-/g,"_");
+            console.log("更改过的openid"+res.data.OpenId)
             wx.setStorage({
               key: 'UserInfor',
               data: res.data,
@@ -43,7 +53,7 @@ App({
               url: wsuri
             })
 
-            wx.onSocketMessage(function(res) {
+            wx.onSocketMessage(function (res) {
               console.log('收到服务器信息');
               var json = JSON.parse(res.data);
               console.log(json);
@@ -52,14 +62,19 @@ App({
                 that.globalData.invitations.push(json);
                 console.log(that.globalData.invitations);
               }
+              //如果是任务审批信息，加入checks
+              if (json.TypeCode == 50) {
+                that.globalData.checks.push(json);
+                console.log(that.globalData.checks);
+              }
             })
 
-            wx.onSocketOpen(function(res) {
+            wx.onSocketOpen(function (res) {
               console.log("socket open");
               if (!that.globalData.socketOpen) {
                 wx.sendSocketMessage({
                   data: openid,
-                  success: function(res) {
+                  success: function (res) {
                     console.log("发送openId:" + openid);
                   }
                 })
@@ -67,7 +82,7 @@ App({
               that.globalData.socketOpen = true;
             })
 
-            wx.onSocketClose(function(res) {
+            wx.onSocketClose(function (res) {
               //如果是60s自动断开则restart
               console.log("socketOpen:" + that.globalData.socketOpen)
               if (that.globalData.socketOpen) {
@@ -82,12 +97,91 @@ App({
             })
 
             //--------------连接WebSocket-------------
-
           },
-          fail() {
-            console.log("fail")
+          fail:function(res){
+            console.log("entry获取openid失败");
           }
         })
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        // wx.request({
+        //   url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+        //   header: {
+        //     'content-type': "application/x-www-form-urlencoded"
+        //   },
+        //   method: 'POST',
+        //   data: {
+        //     OpenId: "testopenid"
+        //   },
+        //   success: function(res) {
+        //     if(res.data.Messages==null)
+        //       res.data.Messages = [];
+        //     if(res.data.Task == null)
+        //       res.data.Tasks = [];
+        //     wx.setStorage({
+        //       key: 'UserInfor',
+        //       data: res.data,
+        //     })
+        //     console.log(res.data)
+
+        //     //--------------连接WebSocket-------------
+
+        //     var openid = res.data.OpenId;
+        //     var wsuri = "wss://www.fracturesr.xyz/guguWss/online";
+
+        //     wx.connectSocket({
+        //       url: wsuri
+        //     })
+
+        //     wx.onSocketMessage(function(res) {
+        //       console.log('收到服务器信息');
+        //       var json = JSON.parse(res.data);
+        //       console.log(json);
+        //       //如果是邀请信息，加入invitations
+        //       if (json.TypeCode == 100) {
+        //         that.globalData.invitations.push(json);
+        //         console.log(that.globalData.invitations);
+        //       }
+        //       //如果是任务审批信息，加入checks
+        //       if(json.TypeCode == 50){
+        //         that.globalData.checks.push(json);
+        //         console.log(that.globalData.checks);
+        //       }
+        //     })
+
+        //     wx.onSocketOpen(function(res) {
+        //       console.log("socket open");
+        //       if (!that.globalData.socketOpen) {
+        //         wx.sendSocketMessage({
+        //           data: openid,
+        //           success: function(res) {
+        //             console.log("发送openId:" + openid);
+        //           }
+        //         })
+        //       }
+        //       that.globalData.socketOpen = true;
+        //     })
+
+        //     wx.onSocketClose(function(res) {
+        //       //如果是60s自动断开则restart
+        //       console.log("socketOpen:" + that.globalData.socketOpen)
+        //       if (that.globalData.socketOpen) {
+        //         console.log('socket close');
+        //         console.log('socket restart');
+        //         wx.connectSocket({
+        //           url: wsuri
+        //         })
+        //       } else {
+        //         console.log('quit page, socket close');
+        //       }
+        //     })
+
+        //     //--------------连接WebSocket-------------
+
+        //   },
+        //   fail() {
+        //     console.log("fail")
+        //   }
+        // })
       }
     })
     // 获取用户信息
@@ -124,7 +218,7 @@ App({
                 },
                 method: 'POST',
                 data: {
-                  'code': "res.data"
+                  'code': 'res.data'
                 },
                 success(res) {
                   wx.setStorage({
@@ -186,6 +280,8 @@ App({
     currentMessageIndex: 0,
     currentTask: {},
     markDownChoice: 2,
+    //任务审批
+    checks:[],
     invitations: [],
     tasks: [],
     messages: [],
