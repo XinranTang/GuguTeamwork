@@ -860,22 +860,23 @@ Component({
       })
     },
     //这是一些测试本地绘图的东西
-    addNewNode(newNodeAttr = {
-      Task: {
-        TaskID: "tt",
-        Title: "新任务",
-        Pusher: "tt",
-        Content: "这是一个新任务",
-        Status: false,
-        PushDate: "2019-05-10 00:00:00",
-        DeadLine: "2050-05-30 00:00:00",
-        Urgency: 3
-      },
-      Self: this.treeRawArr.length,
-      Child: [0],
-      Parent: -1,
-      TeamMates: []
-    }) {
+    addNewNode(newNodeAttr) {
+      newNodeAttr = newNodeAttr || {
+        Task: {
+          TaskID: "tt",
+          Title: "新任务",
+          Pusher: "tt",
+          Content: "这是一个新任务",
+          Status: false,
+          PushDate: "2019-05-10 00:00:00",
+          DeadLine: "2050-05-30 00:00:00",
+          Urgency: 3
+        },
+        Self: this.treeRawArr.length,
+        Child: [0],
+        Parent: -1,
+        TeamMates: []
+      }
       var x_offset = 20,
         y_offset = 20;
       //↓↓把这部分换成访问服务器就可以了
@@ -950,7 +951,7 @@ Component({
         for (var i = 0; i < childs.length; i++) {
           var index = childs[i];
           //防止出现不应该存在的child
-          if(index >= this.treeRawArr.length)
+          if (index >= this.treeRawArr.length)
             continue;
           var nextTaskNodeAtrr = this.treeRawArr[index];
           var newTaskGraph = new dragGraph({
@@ -981,18 +982,21 @@ Component({
       }
 
       //初始化Parent
-
+      this.treeRawArr[0][PARENT] = "";
       for (var i = 0; i < this.treeRawArr.length; i++) {
+        if (this.treeRawArr[i] == null)
+          continue;
         var childs = this.treeRawArr[i][CHILD];
         for (var j = 0; j < childs.length; j++) {
           //Parent字段改成TaskIDs
           //this.treeRawArr[childs[j]][PARENT]=i;
           //防止出现了不应该存在的child
-          if(childs[j]<this.treeRawArr.length)
+          if (childs[j] < this.treeRawArr.length)
             this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
         }
       }
-
+      console.log("treeRawArr");
+      console.log(this.treeRawArr);
       var rootTaskNode = this.treeRawArr[0];
       var newgraph = new dragGraph({
         x: initX,

@@ -30,28 +30,29 @@ Page({
     deadline: '',
     infor: '',
     hide: false,
-    x:0,
-    y:0,
-    h:220,
-    w:220,
+    x: 0,
+    y: 0,
+    h: 220,
+    w: 220,
     date: '2019-05-25',
     time: '12:00',
     text_selected_node: '...',
-    createTask:false,
-    clicked:false,
-    tempT:{},
+    createTask: false,
+    clicked: false,
+    tempT: {},
     edit_info: {
       Title: '',
       DeadLine: '',
       Content: ''
     },
     isSelected: false,
+    isDel: false,
     //解决Canvas层级太高的问题
     canvasImg: "",
-    isEdit:false,
+    isEdit: false,
     oneTaskTree: {
       "Tree": [
-        
+
       ],
       "TreeId": "testtasktree",
       "TreeName": "testproject"
@@ -62,13 +63,13 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function (e) {
+  onLoad: function(e) {
     var self = this;
     wx.getStorage({
       key: 'UserInfor',
       success: function(res) {
         self.setData({
-          user:res.data.OpenId
+          user: res.data.OpenId
         })
       },
     })
@@ -77,12 +78,12 @@ Page({
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function () {
+  onReady: function() {
 
   },
   /**
-     * 添加测试图片
-     */
+   * 添加测试图片
+   */
   onAddTest() {
     this.setData({
       graph: {
@@ -176,7 +177,24 @@ Page({
 
   onImport() {
     // 无背景
-    let temp_theme = [{ "type": "image", "url": "../../assets/images/test.jpg", "y": 103, "x": 91, "w": 120, "h": 120, "rotate": 0, "sourceId": null }, { "type": "text", "text": "helloworld", "color": "blue", "fontSize": 20, "y": 243, "x": 97, "rotate": 0 }];
+    let temp_theme = [{
+      "type": "image",
+      "url": "../../assets/images/test.jpg",
+      "y": 103,
+      "x": 91,
+      "w": 120,
+      "h": 120,
+      "rotate": 0,
+      "sourceId": null
+    }, {
+      "type": "text",
+      "text": "helloworld",
+      "color": "blue",
+      "fontSize": 20,
+      "y": 243,
+      "x": 97,
+      "rotate": 0
+    }];
 
     CanvasDrag.initByArr(temp_theme);
   },
@@ -188,7 +206,7 @@ Page({
     CanvasDrag.initByTreeArr(this.data.oneTaskTree.Tree);
 
   },
-  onClearCanvas: function (event) {
+  onClearCanvas: function(event) {
     let _this = this;
     _this.setData({
       canvasBg: null,
@@ -197,16 +215,16 @@ Page({
     });
     CanvasDrag.clearCanvas();
   },
-  switchZoom: function (e) {
+  switchZoom: function(e) {
     CanvasDrag.enableZoom(e.detail.value);
   },
-  switchAdd: function (e) {
+  switchAdd: function(e) {
     CanvasDrag.enableAdd(e.detail.value);
   },
-  switchDel: function (e) {
+  switchDel: function(e) {
     CanvasDrag.enableDel(e.detail.value);
   },
-  onSelectedChange: function (e) {
+  onSelectedChange: function(e) {
     this.setData({
       text_selected_node: e.detail
     });
@@ -227,11 +245,15 @@ Page({
       });
     }
   },
-  onAddNode: function (e) {
+  onAddNode: function(e) {
     var self = this;
-    CanvasDrag.onAddNode();
-    var text_selected_node = JSON.parse(self.data.text_selected_node)
-    console.log(text_selected_node)
+    var parent = self.data.selected_node[PARENT];
+    var treeid = self.data.oneTaskTree.TreeId;
+    var user = self.data.user;
+    var ddl = self.data.date + " " + self.data.time + ":00";
+    //CanvasDrag.onAddNode();
+    //var text_selected_node = JSON.parse(self.data.text_selected_node)
+    //console.log(text_selected_node)
     var json = {
       // 这里都是默认值，全部都得改
       "OpenId": self.data.user,
@@ -240,10 +262,9 @@ Page({
       "Deadline": self.data.date + " " + self.data.time + ":00",
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": self.data.selected_node[PARENT],// 【这个要改成父节点的任务名字】
+      "Parent": self.data.selected_node.Task.TaskID, // 【这个要改成父节点的任务名字】
     };
-
-    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + " " + self.data.time + ":00";
+    // CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + " " + self.data.time + ":00";
     console.log("添加节点的json:")
     console.log(json)
     wx.request({
@@ -254,22 +275,79 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function (res) {
-        console.log(res.data)
-        CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
-        // edit_info: {
-        //   Title: '',
-        //     DeadLine: '',
-        //       Content: ''
-        // },
-        // CanvasDrag.changeNodeInfo(self.data.edit_info);
+      success: function(res) {
+        console.log(res.data);
+        // CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
+        // 传完服务器再进行绘图更为合理
+        var newid = res.data;
+        var newNodeAttr = {
+          Task: {
+            TaskID: newid,
+            Title: "no title",
+            Pusher: user,
+            Content: "no content",
+            Status: false,
+            PushDate: util.dateFormate(new Date()),
+            DeadLine: ddl,
+            Urgency: 0
+          },
+          Self: 0,
+          Child: [0],
+          Parent: -1,
+          TeamMates: []
+        };
+        CanvasDrag.onAddNode(newNodeAttr);
+      },
+      fail:function(res){
+        console.log("添加失败!")
+        console.log(res);
       }
     })
   },
-  onDelNode: function (e) {
-    CanvasDrag.onDelNode();
+  //这些删除操作太危险了
+  //换成弹出一个框框
+  onDelNode: function(e) {
+    //CanvasDrag.onDelNode();
+    this.saveCanvas();
+    this.setData({
+      isDel: true
+    })
   },
-  onDoDel: function (e) {
+  delCancel: function(e) {
+    this.setData({
+      isDel: false
+    })
+  },
+  delConfirm: function(e) {
+    var self = this;
+    // var text_selected_node = JSON.parse(self.data.text_selected_node)
+    // console.log(text_selected_node)
+    var json = {
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "TaskID": self.data.selected_node.Task.TaskID,
+      "Parent": self.data.selected_node.Parent
+    };
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function(res) {
+        console.log("任务结点删除成功")
+        CanvasDrag.onDelNode();
+        CanvasDrag.onDoDel();
+        self.refreshForest();
+        self.setData({
+          isDel: false
+        })
+      }
+    })
+  },
+  // 用不到你了
+  onDoDel: function(e) {
     var self = this;
     CanvasDrag.onDoDel();
     var text_selected_node = JSON.parse(self.data.text_selected_node)
@@ -287,7 +365,7 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function (res) {
+      success: function(res) {
         console.log("任务结点删除成功")
       }
     })
@@ -295,64 +373,64 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function () {
+  onShow: function() {
 
   },
 
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function () {
-   
+  onHide: function() {
+
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function () {
+  onUnload: function() {
     var self = this;
     if (this.data.createTask == false) {
-          if(this.data.clicked==true){
-              var json = {
-                "TreeID": self.data.oneTaskTree.TreeId,
-                "TaskID": self.data.oneTaskTree.TreeId,
-                "Parent": ""// 【传的是这个参但后端说不对，气气】
-              };
-              console.log(json)
-              wx.request({
-                url: 'https://www.fracturesr.xyz/gugu/deleteNode',
-                header: {
-                  'content-type': "application/x-www-form-urlencoded"
-                },
-                method: 'POST',
-                data: JSON.stringify(json),
-                dataType: JSON,
-                success: function (res) {
-                  console.log("任务取消创建成功")
-                }
-              })
-            }
+      if (this.data.clicked == true) {
+        var json = {
+          "TreeID": self.data.oneTaskTree.TreeId,
+          "TaskID": self.data.oneTaskTree.TreeId,
+          "Parent": "" // 【传的是这个参但后端说不对，气气】
+        };
+        console.log(json)
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: JSON.stringify(json),
+          dataType: JSON,
+          success: function(res) {
+            console.log("任务取消创建成功")
           }
+        })
+      }
+    }
   },
 
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   },
   /**
@@ -367,35 +445,35 @@ Page({
    * 
    */
   // 用户点击新建按钮
-  handleClick: function(e){
+  handleClick: function(e) {
     var that = this;
     var openid = '';
     var start_date = new Date(that.data.date.replace(/-/g, "/"))
     var current_date = new Date()
     that.setData({
-      clicked:true
+      clicked: true
     })
     // 输入检查
-    if(e.detail.value.name==null||e.detail.value.name.length==0){
+    if (e.detail.value.name == null || e.detail.value.name.length == 0) {
       wx.showToast({
         title: '请输入任务名',
-        icon:'none'
+        icon: 'none'
       })
     } else if (e.detail.value.content == null || e.detail.value.content.length == 0) {
       wx.showToast({
         title: '请输入任务信息',
         icon: 'none'
       })
-    }else if(current_date.getTime()>=start_date.getTime()){
+    } else if (current_date.getTime() >= start_date.getTime()) {
       wx.showToast({
         title: '截止时间无效',
-        icon:'none'
+        icon: 'none'
       })
-    }else{
+    } else {
       // 本地储存调UserInfor
       wx.getStorage({
         key: 'UserInfor',
-        success: function (res) {
+        success: function(res) {
           openid = res.data.OpenId
           var json = {
             "OpenId": openid,
@@ -413,9 +491,9 @@ Page({
             method: 'POST',
             data: JSON.stringify(json),
             dataType: JSON,
-            success: function (res) {
-// 【这里是测试代码，以后注意要删掉】
-//  删掉了
+            success: function(res) {
+              // 【这里是测试代码，以后注意要删掉】
+              //  删掉了
               // wx.request({
               //   url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
               //   header: {
@@ -433,31 +511,30 @@ Page({
               var index = 'oneTaskTree.Tree'
               var t = res.data
               that.setData({
-                tempT:{
-                  't':t,
-                  'json':json},
+                tempT: {
+                  't': t,
+                  'json': json
+                },
                 oneTaskTree: {
-                  Tree: [
-                    {
-                      "Task": {
-                        "TaskID": res.data,
-                        "Title": json.Name,
-                        "Pusher": app.globalData.OpenId, // TODO:改成昵称或者真名
-                        "Content": json.Brief,
-                        "Status": 0,
-                        "PushDate": util.dateFormate(new Date()),
-                        "DeadLine": json.Deadline,
-                        "Urgency": json.Urgency,
-                      },
-                      "Self": 0,
-                      "Child": [
-                        0
-                      ],
-                      "TeamMates": [
-                        json.OpenId
-                      ]
+                  Tree: [{
+                    "Task": {
+                      "TaskID": res.data,
+                      "Title": json.Name,
+                      "Pusher": app.globalData.OpenId, // TODO:改成昵称或者真名
+                      "Content": json.Brief,
+                      "Status": 0,
+                      "PushDate": util.dateFormate(new Date()),
+                      "DeadLine": json.Deadline,
+                      "Urgency": json.Urgency,
                     },
-                  ],
+                    "Self": 0,
+                    "Child": [
+                      0
+                    ],
+                    "TeamMates": [
+                      json.OpenId
+                    ]
+                  }, ],
                   // 树的名字和ID等于根节点任务的名字和ID
                   "TreeId": res.data,
                   "TreeName": json.Name
@@ -465,9 +542,9 @@ Page({
                 hide: true
               });
               that.onInitByTree();
-              
+
             },
-            fail: function (res) {
+            fail: function(res) {
               wx.showToast({
                 title: '创建失败',
                 icon: 'none'
@@ -476,48 +553,48 @@ Page({
           })
         },
       })
-    }    
+    }
   },
-  handleTouchMove: function(event){
+  handleTouchMove: function(event) {
     var that = this;
     that.data.x = event.touches[0].pageX
     that.data.y = event.touches[0].pageY
     console.log(that.data.x)
   },
-  handleLongtap: function(){
-    
+  handleLongtap: function() {
+
   },
-  tapItem: function (e) {
+  tapItem: function(e) {
     console.log('index接收到的itemid: ' + e.detail.itemid);
   },
-  bindDateChange: function (e) {
+  bindDateChange: function(e) {
     this.setData({
       date: e.detail.value
     })
   },
-  bindTimeChange: function (e) {
+  bindTimeChange: function(e) {
     this.setData({
       time: e.detail.value
     })
   },
-/**
- * createTask逻辑
- * 这里表示用户确定任务创建完成了，点击按钮以后应该让用户回到上一层界面
- * 获取本地UserInfor储存，把新任务（根节点）添加到用户的Tasks和Manage字符串里面【只用添加根结点就可以了吗？】【马上去任务显示的界面看一下管理任务的那棵树是怎么从本地找的】
- * 【这里不能传一整课树】
- * 【每一步都要跟服务器连接改，这里在本地添加一棵整的就可以】
- * 
- */
+  /**
+   * createTask逻辑
+   * 这里表示用户确定任务创建完成了，点击按钮以后应该让用户回到上一层界面
+   * 获取本地UserInfor储存，把新任务（根节点）添加到用户的Tasks和Manage字符串里面【只用添加根结点就可以了吗？】【马上去任务显示的界面看一下管理任务的那棵树是怎么从本地找的】
+   * 【这里不能传一整课树】
+   * 【每一步都要跟服务器连接改，这里在本地添加一棵整的就可以】
+   * 
+   */
   // 用户点击了树形图里的任务创建完成按钮，正式创建任务
-  createTask: function () {
+  createTask: function() {
     var self = this;
     var arr = [];
     var manage = "";
     wx.getStorage({
       key: 'UserInfor',
-      success: function (res) {
+      success: function(res) {
         self.setData({
-          createTask:true
+          createTask: true
         })
         arr = res.data.Tasks;
         manage = res.data.Manage;
@@ -542,7 +619,7 @@ Page({
           key: 'UserInfor',
           data: res.data,
         })
-       
+
         wx.request({
           url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
           header: {
@@ -578,7 +655,7 @@ Page({
                     node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
                   }
                 }
-      //fuck time formate end
+                //fuck time formate end
                 wx.setStorage({
                   key: 'Information',
                   data: res.data,
@@ -588,11 +665,11 @@ Page({
                 wx.navigateBack({
 
                 })
-                }
+              }
             })
           }
         })
-          
+
 
       },
     })
@@ -602,13 +679,13 @@ Page({
    * 这里能不能不用modal，因为要添加小组成员
    */
   // 【modal和view差不太多吧？modal里添个按钮，或者独立出一个跟编辑同层次的按钮看上去也行】
-  onEditNode: function (e) {
+  onEditNode: function(e) {
     this.setData({
       isEdit: true
     });
   },
   // 编辑框确认按钮
-  editConfirm: function (e) {
+  editConfirm: function(e) {
     var self = this;
     this.setData({
       isEdit: false
@@ -622,7 +699,7 @@ Page({
       "Title": text_selected_node.Task.Title,
       "Content": text_selected_node.Task.Content,
       "Deadline": text_selected_node.Task.DeadLine,
-      "Urgency": text_selected_node.Task.Urgency+""
+      "Urgency": text_selected_node.Task.Urgency + ""
     }
     console.log(json)
     wx.request({
@@ -633,19 +710,19 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function (res) {
+      success: function(res) {
         console.log("把结点编辑信息传给服务器成功")
       }
     })
   },
   // 编辑框取消按钮
-  editCancel: function (e) {
+  editCancel: function(e) {
     this.setData({
       isEdit: false
     })
   },
   // 编辑框失去焦点
-  editChange: function (e) {
+  editChange: function(e) {
     var _edit_info = this.data.edit_info;
     var type = e.target.dataset.type;
     _edit_info[type] = e.detail.value;
@@ -656,7 +733,7 @@ Page({
       }
     });
   },
-onShareAppMessage: function (res) {
+  onShareAppMessage: function(res) {
     const that = this;
     var boss = "";
     console.log('this.data', this.data.cpId)
@@ -672,9 +749,21 @@ onShareAppMessage: function (res) {
     }
     return {
       title: '邀请您加入我的项目',
-      path: '/pages/home/home?boss='+boss,
+      path: '/pages/home/home?boss=' + boss,
       // path:'/pages/process/taskList/add/add',
-      imageUrl:'/images/image_gugu_secretary.jpg',
+      imageUrl: '/images/image_gugu_secretary.jpg',
     }
+  },
+  saveCanvas: function (e) {
+    CanvasDrag.export()
+      .then((filePath) => {
+        console.log(filePath);
+        this.setData({
+          canvasImg: filePath,
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      })
   }
 })

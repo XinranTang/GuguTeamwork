@@ -33,3 +33,7 @@ var dateStrForm = function(datestr){
 }
 
 module.exports.dateStrForm = dateStrForm;
+
+var getNickname = function(openid){
+  
+}
