@@ -1,6 +1,6 @@
 // pages/mine/mine.js
 const app = getApp()
-
+var util = require('../../utils/util.js');
 Page({
   /**
    * Page initial data
@@ -200,6 +200,16 @@ Page({
           method: 'POST',
           data: "OpenId="+openId,
           success(res) {
+            //fuck time formate
+            var tasks = res.data.Tasks || [];
+            for(var i = 0; i < tasks.length;i++ ){
+              tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
+              tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
+            }
+            var msgs = res.data.Messages || [];
+            for(var i = 0; i < msgs.length;i++){
+              msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut);
+            }
             wx.setStorage({
               key: 'Information',
               data: res.data,
@@ -218,6 +228,19 @@ Page({
                 OpenId: openId
               },
               success(res) {
+                console.log("getManageTrees:");
+                console.log(res.data);
+                //fuck time formate
+                var trees = res.data || [];
+                for(var i = 0;i<trees.length;i++){
+                  var nodes = trees[i].Tree || [];
+                  for(var j =0;j<nodes.length;j++){
+                    var node = nodes[j];
+                    node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
+                    node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+                  }
+                }
+                //fuck time formate end
                 wx.setStorage({
                   key: 'Forest',
                   data: res.data,

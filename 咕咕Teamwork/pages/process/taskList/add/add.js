@@ -568,6 +568,17 @@ Page({
                 OpenId: self.data.user
               },
               success(res) {
+                //fuck time formate
+                var trees = res.data || [];
+                for (var i = 0; i < trees.length; i++) {
+                  var nodes = trees[i].Tree || [];
+                  for (var j = 0; j < nodes.length; j++) {
+                    var node = nodes[j];
+                    node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
+                    node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+                  }
+                }
+      //fuck time formate end
                 wx.setStorage({
                   key: 'Information',
                   data: res.data,

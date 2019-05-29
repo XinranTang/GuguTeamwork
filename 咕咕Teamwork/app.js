@@ -1,4 +1,5 @@
 //app.js
+var util = require('utils/util.js');
 App({
   onLaunch: function() {
     // 展示本地存储能力
@@ -33,6 +34,13 @@ App({
             console.log(res)
             if (res.data.Messages == null)
               res.data.Messages = [];
+            // fuck time formate
+            else{
+              var msgs = res.data.Messages;
+              for(var i =0 ;i<msgs.length;i++){
+                msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut)
+              }
+            }
             if (res.data.Task == null)
               res.data.Tasks = [];
             // mysql的表不能有 - 号
@@ -56,6 +64,8 @@ App({
             wx.onSocketMessage(function (res) {
               console.log('收到服务器信息');
               var json = JSON.parse(res.data);
+              //fuck time formate
+              json.TimeOut = util.dateStrForm(json.TimeOut);
               console.log(json);
               //如果是邀请信息，加入invitations
               if (json.TypeCode == 100) {

@@ -59,7 +59,7 @@ Page({
       "Title": self.data.msg_title,
       "Pusher": self.data.user,
       "Content": self.data.msg_content,
-      "NotRead": msg_to_who+";",
+      "NotRead": self.data.msg_to_who+";",
       "FinalDeleteDate": self.data.date + " " + self.data.time + ":00"
     };
 

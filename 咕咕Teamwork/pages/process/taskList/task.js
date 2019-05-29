@@ -432,44 +432,7 @@ Page({
       dataType: JSON,
       success: function(res) {
         console.log("任务结点删除成功")
-        wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
-          header: {
-            'content-type': "application/x-www-form-urlencoded"
-          },
-          method: 'POST',
-          data: {
-            OpenId: self.user
-          },
-          success(res1) {
-            console.log(res1.data)
-            wx.setStorage({
-              key: 'Forest',
-              data: res1.data,
-            })
-            wx.request({
-              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
-              header: {
-                'content-type': "application/x-www-form-urlencoded"
-              },
-              method: 'POST',
-              data: {
-                OpenId: _this.user
-              },
-              success(res) {
-                wx.setStorage({
-                  key: 'UserInfor',
-                  data: res.data,
-                })
-                app.globalData.tasks = res.data.Tasks;
-                app.globalData.messages = res.data.Messages;
-                wx.navigateBack({
-
-                })
-              }
-            })
-          }
-        })
+        self.refreshForest();
 
         wx.navigateBack({
 
@@ -538,41 +501,7 @@ Page({
       success: function(res) {
         console.log("任务结点添加成功"+res.data)
         CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
-        wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
-          header: {
-            'content-type': "application/x-www-form-urlencoded"
-          },
-          method: 'POST',
-          data: {
-            OpenId: self.user
-          },
-          success(res1) {
-            console.log(res1.data)
-            wx.setStorage({
-              key: 'Forest',
-              data: res1.data,
-            })
-            wx.request({
-              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
-              header: {
-                'content-type': "application/x-www-form-urlencoded"
-              },
-              method: 'POST',
-              data: {
-                OpenId: self.data.user
-              },
-              success(res) {
-                wx.setStorage({
-                  key: 'Information',
-                  data: res.data,
-                })
-                app.globalData.tasks = res.data.Tasks;
-                app.globalData.messages = res.data.Messages;
-              }
-            })
-          }
-        })
+        self.refreshForest();
       }
     })
   },
@@ -599,41 +528,7 @@ Page({
       dataType: JSON,
       success: function(res) {
         console.log("任务结点删除成功")
-        wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
-          header: {
-            'content-type': "application/x-www-form-urlencoded"
-          },
-          method: 'POST',
-          data: {
-            OpenId: self.data.user
-          },
-          success(res1) {
-            console.log(res1.data)
-            wx.setStorage({
-              key: 'Forest',
-              data: res1.data,
-            })
-            wx.request({
-              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
-              header: {
-                'content-type': "application/x-www-form-urlencoded"
-              },
-              method: 'POST',
-              data: {
-                OpenId: self.data.user
-              },
-              success(res) {
-                wx.setStorage({
-                  key: 'Information',
-                  data: res.data,
-                })
-                app.globalData.tasks = res.data.Tasks;
-                app.globalData.messages = res.data.Messages;
-              }
-            })
-          }
-        })
+        self.refreshForest();
       }
     })
   },
@@ -738,41 +633,7 @@ Page({
       dataType: JSON,
       success: function(res) {
         console.log("把结点编辑信息传给服务器成功")
-        wx.request({
-          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
-          header: {
-            'content-type': "application/x-www-form-urlencoded"
-          },
-          method: 'POST',
-          data: {
-            OpenId: self.data.user
-          },
-          success(res1) {
-            console.log(res1.data)
-            wx.setStorage({
-              key: 'Forest',
-              data: res1.data,
-            })
-            wx.request({
-              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
-              header: {
-                'content-type': "application/x-www-form-urlencoded"
-              },
-              method: 'POST',
-              data: {
-                OpenId: self.data.user
-              },
-              success(res) {
-                wx.setStorage({
-                  key: 'Information',
-                  data: res.data,
-                })
-                app.globalData.tasks = res.data.Tasks;
-                app.globalData.messages = res.data.Messages;
-              }
-            })
-          }
-        })
+        self.refreshForest();
       }
     })
 
@@ -807,5 +668,74 @@ Page({
       .catch((e) => {
         console.error(e);
       })
+ },
+  //复制代码一时爽
+  //现在重构火葬场
+  //横批：我爱封装
+refreshForest:function(e){
+  var self = this;
+  console.log("在getManagerTree之前")
+  console.log(self.data.user);
+  wx.request({
+    url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+    header: {
+      'content-type': "application/x-www-form-urlencoded"
+    },
+    method: 'POST',
+    data: {
+      OpenId: self.data.user
+    },
+    success(res1) {
+      console.log(self.data.user);
+      //fuck time formate
+      var trees = res1.data || [];
+      for (var i = 0; i < trees.length; i++) {
+        var nodes = trees[i].Tree || [];
+        for (var j = 0; j < nodes.length; j++) {
+          var node = nodes[j];
+          node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
+          node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+        }
+      }
+      //fuck time formate end
+      console.log(res1.data)
+      wx.setStorage({
+        key: 'Forest',
+        data: res1.data,
+      })
+      self.refreshTaskAndMsg();
+    }
+  })
+},
+
+ refreshTaskAndMsg:function(e){
+   var self = this;
+   wx.request({
+     url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+     header: {
+       'content-type': "application/x-www-form-urlencoded"
+     },
+     method: 'POST',
+     data: {
+       OpenId: self.data.user
+     },
+     success(res) {
+       var tasks = res.data.Tasks || [];
+       for (var i = 0; i < tasks.length; i++) {
+         tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
+         tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
+       }
+       var msgs = res.data.Messages || [];
+       for (var i = 0; i < msgs.length; i++) {
+         msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut);
+       }
+       wx.setStorage({
+         key: 'Information',
+         data: res.data,
+       })
+       app.globalData.tasks = res.data.Tasks;
+       app.globalData.messages = res.data.Messages;
+     }
+   })
  }
 })
