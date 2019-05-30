@@ -688,7 +688,7 @@ Page({
   editConfirm: function(e) {
     var self = this;
     var info = self.data.edit_info;
-    info.DeadLine = info.DeatLine+" 00:00:00"
+    info.DeadLine = info.DeadLine+" 00:00:00"
     self.setData({
       isEdit: false,
       edit_info:info
