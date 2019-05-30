@@ -66,6 +66,7 @@ Page({
         wx.getStorage({// 【这里这么写对吗】
           key: 'Forest',
           success: function(res) {
+            console.log("获得本地的Forest"+res.data)
             self.setData({
               mtasks:res.data
             })

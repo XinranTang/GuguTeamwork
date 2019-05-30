@@ -1,14 +1,9 @@
 <!--pages/page/myAnalysis/myAnalysis.wxml-->
 <view class="st-bg-image"></view>
 <view class="st-radius-view msg-all">
-  <i-collapse name="{{name}}">
-    <i-collapse-item title="项目完成情况" name="name1">
-
-    </i-collapse-item>
-  </i-collapse>
-  <i-collapse name="{{name}}">
-    <i-collapse-item title="个人数据分析" name="name2">
-
-    </i-collapse-item>
-  </i-collapse>
+<view class="text-bold" style='text-indent:1.2em'>项目情况</view>
+  <canvas canvas-id='task1Canvas' style='height:500rpx'></canvas>
+  <canvas canvas-id='task2Canvas' style='height:500rpx'></canvas>
+<view class="text-bold" style='text-indent:1.2em; margin-top:30rpx'>个人数据分析</view>
+  <canvas canvas-id='personalCanvas' style='height:500rpx'></canvas>
 </view>

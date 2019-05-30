@@ -1,5 +1,5 @@
 // pages/page/myAnalysis/myAnalysis.js
-
+var wxCharts = require('../../../utils/wxcharts.js');
 var app = getApp();
 Page({
 
@@ -33,6 +33,64 @@ Page({
       dataType: JSON,
       success: function(res) {
         console.log(res.data);
+        new wxCharts({
+          canvasId: 'task1Canvas',
+          type:'ring',
+          series: [{
+            name: '总加入任务',
+            // data: res.data.Totaljoin,
+            data:3
+          }, {
+            name: '总管理任务',
+            // data: res.data.TotalManage,
+            data:2
+          }],
+          width: 320,
+          height: 250,
+          dataLabel: true
+        });
+        new wxCharts({
+          canvasId: 'task2Canvas',
+          type: 'ring',
+          title:"项目状态分析",
+          series: [{
+            name: '正在进行任务',
+            // data: res.data.Totaljoin,
+            data: 3
+          }, {
+            name: '已完成任务',
+            // data:res.data.Done,
+            data: 4
+            }, {
+              name: '过期任务',
+              // data: res.data.Totaljoin+res.data.TotalManage-res.data.Goingon,
+              data: 1
+            }],
+          width: 320,
+          height: 250,
+          dataLabel: true
+        });
+        new wxCharts({
+          canvasId: 'personalCanvas',
+          title:"项目完成情况分析",
+          type: 'pie',
+          series: [{
+            name: '被退回任务',
+            // data: res.data.Setback,
+            data: 3
+          }, {
+            name: '合格任务',
+            // data:res.data.Done,
+            data: 4
+            },{
+              name: '过期任务',
+              // data: res.data.Totaljoin+res.data.TotalManage-res.data.Goingon,
+              data: 1
+            }],
+          width: 320,
+          height: 250,
+          dataLabel: true
+        });
       }
     })
   },
