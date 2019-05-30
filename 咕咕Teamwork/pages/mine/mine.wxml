@@ -5,9 +5,9 @@
       <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
       <block wx:else class="vertical" style="">
         <image bindtap="bindViewTap" class="userinfo-avatar" style="align-self:center" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <view class="userinfo-nickname" style="align-self:center">{{userInfo.nickName}}</view>
+        <view class="userinfo-nickname" style="align-self:center;font-size:30rpx">{{userInfo.nickName}}</view>
         <view class="horizontal" style="align-self:center">
-          <view style="color:white">openId:{{openId}}</view>
+          <view class="text-cut" style="color:white;width:130rpx">ID:{{openId}}</view>
           <view class="" style="margin-left:10rpx" data-text="{{openId}}" bindtap="copyOpenId"><text class="iconfont icon-submit" style="color:white;font-size:30rpx"></text></view>
         </view>
       </block>

@@ -6,11 +6,11 @@
     <view class="st-radius-view" style='padding-left:30rpx;padding-right:30rpx'>
       <view class="cu-form-group">
         <view class='title'>任务名</view>
-        <input placeholder="任务名称" class='radius' name='name'></input>
+        <input placeholder="任务名称" class='radius' maxlength="10"  name='name'></input>
       </view>
       <view class="cu-form-group">
         <view class='title'>任务内容</view>
-        <input placeholder="内容描述" class='radius' name='content'></input>
+        <input placeholder="内容描述" class='radius' maxlength="20"  name='content'></input>
       </view>
       <view class="cu-form-group">
         <view class='title'>截止日期</view>
@@ -107,7 +107,7 @@
 </view>
 
 <view>
-  <modal title="编辑任务信息" confirm-text="确认" hidden='{{!isEdit}}' cancel-text="取消" bindconfirm="editConfirm" bindcancel="editCancel">
+  <!-- <modal title="编辑任务信息" confirm-text="确认" hidden='{{!isEdit}}' cancel-text="取消" bindconfirm="editConfirm" bindcancel="editCancel">
     <label>
       <view class="">
         <input class="input" bindinput="" placeholder="名称" data-type='Title' value="{{edit_info['Title']}}" bindblur='editChange' />
@@ -115,5 +115,31 @@
         <input class="input" bindinput="" placeholder="截止日期" data-type='DeadLine' value="{{edit_info['DeadLine']}} " bindblur='editChange' />
       </view>
     </label>
-  </modal>
+  </modal> -->
+  <view wx:if='{{isEdit}}'>
+    <view class="modal-mask" bindtap="cancel"></view>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_secretary.jpg" mode="cover"></image>
+      </view>
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text class="text-bold" style='align-self:center;font-size:30rpx'>编辑任务信息</text>
+        <view class='title'>名称:</view>
+        <input class="input" bindinput="" placeholder="名称" data-type='Title' maxlength="10" value="{{edit_info['Title']}}" bindblur='editChange'/>
+        <view class='title'>内容:</view>
+        <input class="input" bindinput="" placeholder="内容" data-type='Content' maxlength="20" value="{{edit_info['Content']}} " bindblur='editChange' />
+        <!-- <input class="input" bindinput="" placeholder="截止日期" data-type='content' bindblur='editChange'/> -->
+        <view class='title'>截止日期:</view>
+        <picker mode="date" value="{{edit_info['DeadLine']}}" start="2000-01-01" end="2050-12-31" bindchange="editChange">
+          <view class="picker">
+            {{date}}
+          </view>
+        </picker>
+        <view style=''>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="editConfirm">确认</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="editCancel">取消</button>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>

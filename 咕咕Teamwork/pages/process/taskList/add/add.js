@@ -687,10 +687,13 @@ Page({
   // 编辑框确认按钮
   editConfirm: function(e) {
     var self = this;
-    this.setData({
-      isEdit: false
+    var info = self.data.edit_info;
+    info.DeadLine = info.DeatLine+" 00:00:00"
+    self.setData({
+      isEdit: false,
+      edit_info:info
     })
-    CanvasDrag.changeNodeInfo(this.data.edit_info);
+    CanvasDrag.changeNodeInfo(self.data.edit_info);
     var text_selected_node = JSON.parse(self.data.text_selected_node)
     console.log(text_selected_node)
     var json = {
