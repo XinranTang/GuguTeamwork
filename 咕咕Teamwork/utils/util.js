@@ -25,3 +25,15 @@ module.exports.dateFormate = function (date, format) {
   format = format || 'YYYY-MM-DD hh:mm:ss';
   return date.formatStr(format);
 }
+
+var dateStrForm = function(datestr){
+  datestr = datestr.replace("T"," ");
+  datestr = datestr.replace("Z","");
+  return datestr;
+}
+
+module.exports.dateStrForm = dateStrForm;
+
+var getNickname = function(openid){
+  
+}

@@ -1,0 +1,15 @@
+<!--pages/page/myAnalysis/myAnalysis.wxml-->
+<view class="st-bg-image"></view>
+<view class="st-radius-view msg-all">
+</view>
+<view class="st-radius-view" style="padding:20rpx">
+  <view class="vertical" wx:for="{{miniprog}}" wx:for-index="idx" wx:for-item="item">
+    <view class="horizontal" bindtap="{{item.link}}">
+      <image class=" circle " src='{{item.icon}}'></image>
+      <view class="vertical two-side " style='margin-top:20rpx;margin-bottom:20rpx'>
+        <text class="name">{{item.name}}</text>
+        <text class="intro">{{item.intro}}</text>
+      </view>
+    </view>
+  </view>
+</view>

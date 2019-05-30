@@ -96,6 +96,7 @@ Page({
     })
   },
   formSubmit: function(e){
+    app.globalData.personal ={};
     var self = this;
     let { name, sign, phone, mail,position } = e.detail.value;
     if ((name == null || name.length == 0)&&self.data.noNeedToCheck==false){
@@ -125,39 +126,57 @@ Page({
         if (position != null && position.length != 0){ // TODO： 这里有一个bug 没想好怎么改
           app.globalData.personal.Position = self.data.region.join("") + position
         }
+        console.log(app.globalData.personal);
         app.globalData.userInfo.Complete = true;
         this.setData({
           userInfo: app.globalData.personal,
           complete: true,
           noNeedToCheck:true,
         })
-    //  // TODO: 向服务器发起post 【这个后端还没写】
-    //     wx.request({
-    //       url: 'https://www.fracturesr.xyz/gugu/personal',
-    //       header: {
-    //         'content-type': "application/x-www-form-urlencoded"
-    //       },
-    //       method: 'POST',
-    //       data: {
-            
-    //       }
-    //     })
-      wx.getStorage({
-        key: 'Personal',
-        success: function(res) {
-          res.data.Name = app.globalData.personal.Name;
-          res.data.Sign = app.globalData.personal.Sign;
-          res.data.Phone = app.globalData.personal.Phone;
-          res.data.Mail = app.globalData.personal.Mail;
-          res.data.Position = app.globalData.personal.Position;
-          res.data.Complete = app.globalData.personal.Complete;
-
-          wx.setStorage({
-            key: 'Personal',
-            data: res.data,
-          })
-        },
-      })
+     // TODO: 向服务器发起post 【这个后端还没写】
+     // 
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/setPersonal',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            ID:app.globalData.openId,
+            Name:name,
+            Sex:"",
+            Ability:"",
+            Sign:sign,
+            Phone:phone,
+            Mail:mail,
+            Position:position,
+          },
+          success:function(e){
+            wx.showToast({
+              title: '设置个人信息成功!',
+              icon:'none'
+            })
+            //为什么要先get再set?
+            wx.getStorage({
+              key: 'Personal',
+              success: function (res) {
+                console.log(res.data);
+                res.data.ID = app.globalData.personal.ID;
+                res.data.Name = app.globalData.personal.Name;
+                res.data.Sign = app.globalData.personal.Sign;
+                res.data.Phone = app.globalData.personal.Phone;
+                res.data.Mail = app.globalData.personal.Mail;
+                res.data.Position = app.globalData.personal.Position;
+                res.data.Complete = app.globalData.personal.Complete;
+                wx.setStorage({
+                  key: 'Personal',
+                  data: res.data,
+                })
+              },
+            })
+          }
+        })
+      
       }
     }
   },

@@ -38,7 +38,7 @@
           <text class="icon-left">{{selected_node['Task']['Title']}}</text>
         </view>
         <view>
-        <text></text>
+          <text></text>
           <text style="" class="st-date">{{selected_node['Task']['Pusher']}} {{selected_node['Task']['PushDate']}}</text>
         </view>
       </view>
@@ -62,22 +62,22 @@
   </view>
 
   <view style='margin-left:45rpx;margin-right:45rpx;margin-right:45rpx'>
-    <view class="horizontal " style=" ">
+    <view class="horizontal" style=" ">
       <!-- <view class="btn " bindtap="onClearCanvas ">清空</view> -->
       <!-- <view class="btn " bindtap='onSetData'>连接服务器以设置data数据</view> -->
-      <view class="btn " bindtap="onInitByTree ">
-        <text class="iconfont icon-refresh "></text>刷新</view>
-      <view class="btn " bindtap="onDoDel ">
-        <text class="iconfont icon-delete "></text>执行删除</view>
+      <view class="btn " bindtap="onInitByTree">
+        <text class="iconfont icon-refresh"></text>刷新</view>
+      <view class="btn " bindtap="onDoDel">
+        <text class="iconfont icon-delete"></text>执行删除</view>
     </view>
     <view class="horizontal " style=" ">
-      <view class="btn " bindtap="onEditNode " hidden='{{!isSelected}}'>
+      <view class="btn " bindtap="onEditNode" hidden='{{!isSelected}}'>
         <text class="iconfont icon-edit "></text>编辑</view>
-      <view class="btn " bindtap="onAddNode " hidden='{{!isSelected}}'>
+      <view class="btn " bindtap="onAddNode" hidden='{{!isSelected}}'>
         <text class=" iconfont icon-add "></text>添加</view>
-      <view class="btn " bindtap="onDelNode " hidden='{{!isSelected}}'>
+      <view class="btn " bindtap="onDelNode" hidden='{{!isSelected}}'>
         <text class="iconfont icon-delete "></text>删除</view>
-      <view class="btn " bindtap="onInvite " hidden='{{!isSelected}}'>
+      <view class="btn " bindtap="onInvite" hidden='{{!isSelected}}'>
         <text class="iconfont icon-invitefriends "></text>邀请</view>
     </view>
   </view>

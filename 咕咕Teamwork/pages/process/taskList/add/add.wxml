@@ -38,9 +38,9 @@
 <view wx:if="{{hide==true}}">
 
   <view class="st-radius-view" style='margin-top:40rpx'>
-    <view hidden="{{isEdit}}">
+    <view hidden="{{isEdit|isDel}}">
       <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
-      <image hidden="{{!isEdit}}" src="{{canvasImg}}" style="width:700rpx;height:750rpx;"></image>
+      <image hidden="{{!(isEdit|isDel)}}" src="{{canvasImg}}" style="width:700rpx;height:750rpx;"></image>
     </view>
   </view>
   <view class="vertical">
@@ -74,6 +74,17 @@
         </view>
       </view>
     </view>
+
+ <!-- 删除任务 -->
+  <view>
+    <modal title="确认删除吗？" confirm-text="确认" hidden='{{!isDel}}' cancel-text="取消" bindconfirm="delConfirm" bindcancel="delCancel">
+      <label>
+        <view class="vertical">
+         <text>删除该任务后，其子任务信息也会一并删除。</text>
+        </view>
+      </label>
+    </modal>
+  </view>
 
     <view class="vertical" style="margin-right:45rpx;margin-left:45rpx">
       <view class="horizontal" style="">
