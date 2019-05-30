@@ -15,6 +15,7 @@ func BuildTask(TreeId string, OpenId string, Title string, Content string, Deadl
 	var size int
 	tree.GetForest().PRMMutex.RLock()
 	{
+		//如果该项目已经存在了
 		if v, ok := tree.GetForest().Projects[TreeId]; ok {
 			l := len(v) - 1
 			if l >= 1 {
@@ -38,8 +39,8 @@ func BuildTask(TreeId string, OpenId string, Title string, Content string, Deadl
 	task.Pusher = OpenId
 	task.Content = Content
 	task.Status = -1
-	task.PushDate = time.Now().UTC()
-	task.DeadLine, err = time.Parse("2006-01-02T15:04:05Z", Deadline)
+	task.PushDate = time.Now()
+	task.DeadLine, err = time.Parse("2006-01-02 15:04:05", Deadline)
 	utils.CheckErr(err, "BuildTask:time parsing")
 	if Urgency != "" {
 		tempInt, err := strconv.Atoi(Urgency)

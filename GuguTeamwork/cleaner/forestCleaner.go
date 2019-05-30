@@ -19,7 +19,7 @@ func CleanForest() {
 				if len(v.Timer.C) > 0 {
 					delete(tree.GetForest().Projects, k)
 					delete(tree.GetForest().Monitors, k)
-					log.Println(k + " time out")
+					log.Println(k + " timeout")
 					log.Println(tree.GetForest().Projects)
 				}
 			}

@@ -26,6 +26,16 @@ type MiniProgCodePara struct {
 	Width int
 }
 
+type WxUserInfo struct {
+	ID        string
+	NickName  string
+	HeadImage string
+	Sex       string
+	City      string
+	Country   string
+	Province  string
+}
+
 func GetAccessToken() {
 	var url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSecret
 	timer := time.NewTimer(time.Minute * 115)

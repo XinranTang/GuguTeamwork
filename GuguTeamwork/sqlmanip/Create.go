@@ -5,15 +5,13 @@ import (
 	"time"
 
 	"GuguTeamwork/utils"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func CreateNewUser(db *sql.DB, openid string) {
 	//在用户表中添加新用户
 	stmt, err := db.Prepare("INSERT INTO UserInfo(OpenId, LastTimeAccess, SuccessiveAccessDays, Level, Manage, Messages, Tasks) VALUES(?, ?, ?, ?, ? ,? ,?)")
 	utils.CheckErr(err, "CreateNewUser:prepare")
-	_, err = stmt.Exec(openid, time.Now().Format("2006-01-02T15:04:05Z"), 1, "lowLevel", "", "", "")
+	_, err = stmt.Exec(openid, time.Now().Format("2006-01-02 15:04:05"), 1, "lowLevel", "", "", "")
 	utils.CheckErr(err, "CreateNewUser:exec")
 }
 
@@ -39,7 +37,7 @@ func CreateMessage(db *sql.DB, message *utils.Message) error {
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(message.MessageID, message.Title, message.Pusher, message.Content, message.Read, message.NotRead, message.PushDate, message.FinalDeleteDate)
+	_, err = stmt.Exec(message.MessageID, message.Title, message.Pusher, message.Content, message.HaveRead, message.NotRead, message.PushDate, message.FinalDeleteDate)
 	if err != nil {
 		return err
 	}
@@ -81,6 +79,21 @@ func CreateProjectRecord(pusher string, taskid string) error {
 		return err
 	}
 	_, err = stmt.Exec(pusher)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CreatePrivateInfo(data *utils.WxUserInfo) error {
+	db := ConnectPersonalDB()
+	defer DisConnectDB(db)
+
+	stmt, err := db.Prepare("INSERT INTO user_infor(ID,Name,Sex,Position,HeadImage) VALUES(?,?,?,?,?)")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(data.ID, data.NickName, data.Sex, data.Country+data.Province+data.City, data.HeadImage)
 	if err != nil {
 		return err
 	}

@@ -57,15 +57,16 @@ type AlterNodeData struct {
 
 //这个处理器返回一个用户所管理的所有项目的项目树
 func GetTrees(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
 	db := sqlmanip.ConnetUserDB()
 	var trees []ProjectTree
 	var projectTree ProjectTree
-	if !utils.CheckEmp(r.PostFormValue("OpenId")) {
+	if !utils.CheckEmp(r.Form["OpenId"][0]) {
 		err := new(utils.EmptyPostFormValueError)
 		err.DealWithError(w)
 		return
 	}
-	tempStr, err := sqlmanip.QueryOpenIdToString(db, "Manage", "UserInfo", r.PostFormValue("OpenId"))
+	tempStr, err := sqlmanip.QueryOpenIdToString(db, "Manage", "UserInfo", r.Form["OpenId"][0])
 	utils.CheckErr(err, "Trees:query")
 	sqlmanip.DisConnectDB(db)
 
@@ -87,8 +88,6 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 		utils.CheckErr(err, "Trees:query project name")
 		trees = append(trees, projectTree)
 	}
-	log.Println("表中树")
-	log.Println(trees)
 
 	sqlmanip.DisConnectDB(db)
 	//还需要加上刚刚新添加的树,但是不能是删掉的树
@@ -98,7 +97,7 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 			if len(v) == 0 {
 				continue
 			}
-			if v[0].Task.Pusher == r.PostFormValue("OpenId") && !strings.Contains(tempStr, v[0].Task.TaskID) {
+			if v[0].Task.Pusher == r.Form["OpenId"][0] && !strings.Contains(tempStr, v[0].Task.TaskID) {
 				projectTree.TreeId = v[0].Task.TaskID
 				projectTree.Tree = v
 				projectTree.TreeName = v[0].Task.Title
@@ -107,8 +106,6 @@ func GetTrees(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	tree.GetForest().PRMMutex.RUnlock()
-	log.Println("最终树")
-	log.Println(trees)
 
 	output, err := json.MarshalIndent(trees, "", "\t\t")
 	utils.CheckErr(err, "Trees:form json")
@@ -240,8 +237,8 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 	copy(tmp, tree.GetForest().Projects[ADeleteNodeData.TreeID])
 	tree.GetForest().PRMMutex.RUnlock()
 
-	log.Println("trees before delete")
-	log.Println(tree.GetForest().Projects)
+	log.Println("tree before delete")
+	log.Println(tree.GetForest().Projects[ADeleteNodeData.TreeID])
 
 	var flag = -1
 	for k, v := range tmp {
@@ -256,12 +253,16 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//先从父节点的child中删除此点
 	if ADeleteNodeData.Parent != "" {
 		for k, _ := range tmp {
 			if tmp[k].Task.TaskID == ADeleteNodeData.Parent {
 				for i, j := range tmp[k].Child {
 					if j == flag {
 						tmp[k].Child = append(tmp[k].Child[:i], tmp[k].Child[i+1:]...)
+						if len(tmp[k].Child) == 0 {
+							tmp[k].Child = append(tmp[k].Child, 0)
+						}
 					}
 				}
 			}
@@ -269,11 +270,6 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var apra = make([]bool, len(tmp))
-	var apra2 = make([]int, len(tmp))
-	for k, _ := range tmp {
-		apra2[k] = tmp[k].Self
-	}
-
 	tree.MarkNode(tmp, flag, apra)
 	apra[flag] = true
 
@@ -295,19 +291,22 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 	var count = 0
 	for k, v := range apra {
 		if v {
-			for i := k + 1; i < len(tmp); i++ {
-				tmp[i].Self--
-				apra2[i]--
-			}
 			tmp = append(tmp[:k-count], tmp[k-count+1:]...)
 			count++
 		}
 	}
 
 	for k, _ := range tmp {
-		for i, _ := range tmp[k].Child {
-			tmp[k].Child[i] = apra2[tmp[k].Child[i]]
+	flag:
+		for i, _ := range tmp {
+			for x, y := range tmp[i].Child {
+				if y == tmp[k].Self {
+					tmp[i].Child[x] = k
+					break flag
+				}
+			}
 		}
+		tmp[k].Self = k
 	}
 
 	tree.GetForest().PRMMutex.Lock()
@@ -323,7 +322,7 @@ func DropFromTree(w http.ResponseWriter, r *http.Request) {
 	}
 	tree.GetForest().MRMMutex.Unlock()
 	log.Println("after delete")
-	log.Println(tree.GetForest().Projects)
+	log.Println(tree.GetForest().Projects[ADeleteNodeData.TreeID])
 }
 
 //这个处理器修改一个task的内部内容
@@ -361,7 +360,7 @@ func AlterNode(w http.ResponseWriter, r *http.Request) {
 		}
 		replica.Task.Title = AAlterNodeData.Title
 		replica.Task.Content = AAlterNodeData.Content
-		t, err := time.Parse("2006-01-02T15:04:05Z", AAlterNodeData.Deadline)
+		t, err := time.Parse("2006-01-02 15:04:05", AAlterNodeData.Deadline)
 		replica.Task.DeadLine = t
 		utils.CheckErr(err, "AlterNode:time parse")
 		if AAlterNodeData.Urgency != "" {

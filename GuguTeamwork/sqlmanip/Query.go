@@ -2,27 +2,30 @@ package sqlmanip
 
 import (
 	"database/sql"
+	"log"
+	"time"
 
 	"GuguTeamwork/utils"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func QueryUserInfo(db *sql.DB, openid string) *utils.UserInfo {
 	var AUserInfo utils.UserInfo
-	var strMessages, strTasks string
+	var strMessages, strTasks, tmpStr, tmpStr2 string
 
 	//填充登陆时间信息
+	log.Println(openid)
 	var order = "SELECT * FROM UserInfo WHERE OpenId='" + openid + "';"
 	err := db.QueryRow(order).Scan(
 		&AUserInfo.OpenId,
-		&AUserInfo.LastTimeAccess,
+		&tmpStr,
 		&AUserInfo.SuccessiveAccessDays,
 		&AUserInfo.Level,
 		&AUserInfo.Manage,
 		&strMessages,
 		&strTasks)
 	utils.CheckErr(err, "QueryUserInfo:query user")
+	AUserInfo.LastTimeAccess, err = time.Parse("2006-01-02 15:04:05", tmpStr)
+	utils.CheckErr(err, "QueryUserInfo:parse time")
 
 	//填充消息和任务信息
 	var AMessage utils.Message
@@ -33,11 +36,15 @@ func QueryUserInfo(db *sql.DB, openid string) *utils.UserInfo {
 			&AMessage.Title,
 			&AMessage.Pusher,
 			&AMessage.Content,
-			&AMessage.Read,
+			&AMessage.HaveRead,
 			&AMessage.NotRead,
-			&AMessage.PushDate,
-			&AMessage.FinalDeleteDate)
+			&tmpStr,
+			&tmpStr2)
 		utils.CheckErr(err, "QueryUserInfo:query message")
+		AMessage.PushDate, err = time.Parse("2006-01-02 15:04:05", tmpStr)
+		utils.CheckErr(err, "QueryUserInfo:parse time")
+		AMessage.FinalDeleteDate, err = time.Parse("2006-01-02 15:04:05", tmpStr2)
+		utils.CheckErr(err, "QueryUserInfo:parse time")
 		AUserInfo.Messages = append(AUserInfo.Messages, AMessage)
 	}
 
@@ -50,18 +57,21 @@ func QueryUserInfo(db *sql.DB, openid string) *utils.UserInfo {
 			&ATask.Pusher,
 			&ATask.Content,
 			&ATask.Status,
-			&ATask.PushDate,
-			&ATask.DeadLine,
+			&tmpStr,
+			&tmpStr2,
 			&ATask.Urgency)
 		utils.CheckErr(err, "QueryUserInfo:query task")
+		ATask.PushDate, err = time.Parse("2006-01-02 15:04:05", tmpStr)
+		utils.CheckErr(err, "QueryUserInfo:parse time")
+		ATask.DeadLine, err = time.Parse("2006-01-02 15:04:05", tmpStr2)
+		utils.CheckErr(err, "QueryUserInfo:parse time")
 		AUserInfo.Tasks = append(AUserInfo.Tasks, ATask)
 	}
 	return &AUserInfo
 }
 
-func QueryPrivateInfo(db *sql.DB, openid string) *utils.PrivateInfo {
+func QueryPrivateInfo(db *sql.DB, openid string) (*utils.PrivateInfo, error) {
 	var AInfo utils.PrivateInfo
-
 	var order = "SELECT ID,Name,Sign,Sex,Phone,Mail,Position,Ability FROM user_infor WHERE ID='" + openid + "';"
 	err := db.QueryRow(order).Scan(
 		&AInfo.ID,
@@ -72,8 +82,10 @@ func QueryPrivateInfo(db *sql.DB, openid string) *utils.PrivateInfo {
 		&AInfo.Mail,
 		&AInfo.Position,
 		&AInfo.Ability)
-	utils.CheckErr(err, "QueryPrivateInfo:query")
-	return &AInfo
+	if err != nil {
+		return nil, err
+	}
+	return &AInfo, nil
 }
 
 func QueryOpenIdToString(db *sql.DB, header string, table string, openid string) (string, error) {
@@ -135,6 +147,7 @@ func QueryTaskNode(db *sql.DB, treeName string) []utils.TaskNodeInDB {
 
 func QueryTaskFromID(db *sql.DB, TaskID string) (utils.Task, error) {
 	var order = "SELECT * FROM Tasks WHERE TaskID='" + TaskID + "';"
+	var tmpStrA, tmpStrB string
 	rows, err := db.Query(order)
 	var emp = utils.Task{}
 	if err != nil {
@@ -142,10 +155,14 @@ func QueryTaskFromID(db *sql.DB, TaskID string) (utils.Task, error) {
 	}
 	var ATask utils.Task
 	for rows.Next() {
-		err = rows.Scan(&ATask.TaskID, &ATask.Title, &ATask.Pusher, &ATask.Content, &ATask.Status, &ATask.PushDate, &ATask.DeadLine, &ATask.Urgency)
+		err = rows.Scan(&ATask.TaskID, &ATask.Title, &ATask.Pusher, &ATask.Content, &ATask.Status, &tmpStrA, &tmpStrB, &ATask.Urgency)
 		if err != nil {
 			return emp, err
 		}
+		ATask.PushDate, err = time.Parse("2006-01-02 15:04:05", tmpStrA)
+		utils.CheckErr(err, "QueryTaskFromID:parse time")
+		ATask.DeadLine, err = time.Parse("2006-01-02 15:04:05", tmpStrB)
+		utils.CheckErr(err, "QueryTaskFromID:parse time")
 	}
 	return ATask, nil
 }

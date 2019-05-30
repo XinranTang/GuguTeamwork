@@ -4,84 +4,45 @@ import (
 	"GuguTeamwork/utils"
 	"database/sql"
 
-	_ "github.com/mattn/go-sqlite3"
+	//_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func ConnetUserDB() *sql.DB {
-	db, err := sql.Open("sqlite3", "./SQLite3/GuguTeamwork.db")
+	//db, err := sql.Open("sqlite3", "./SQLite3/GuguTeamwork.db")
+	db, err := sql.Open("mysql", "root:FractureSR1998@NEU@tcp(localhost:3306)/GuguTeamwork?charset=utf8")
 	utils.CheckErr(err, "ConnectUserDB:open db")
-
-	stmt, err := db.Prepare("PRAGMA synchronous = NORMAL;")
-	utils.CheckErr(err, "ConnectUserDB:synchronous prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectUserDB:synchronous exec")
-
-	stmt, err = db.Prepare("BEGIN TRANSACTION;")
-	utils.CheckErr(err, "ConnectUserDB:transaction prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectUserDB:transaction exec")
 	return db
 }
 
 func ConnectTaskDB() *sql.DB {
-	db, err := sql.Open("sqlite3", "./SQLite3/TaskTrees.db")
+	//db, err := sql.Open("sqlite3", "./SQLite3/TaskTrees.db")
+	db, err := sql.Open("mysql", "root:FractureSR1998@NEU@tcp(localhost:3306)/TaskTrees?charset=utf8")
 	utils.CheckErr(err, "ConnectTaskDB:open db")
-
-	stmt, err := db.Prepare("PRAGMA synchronous = NORMAL;")
-	utils.CheckErr(err, "ConnectTaskDB:synchronous prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectTaskDB:synchronous exec")
-
-	stmt, err = db.Prepare("BEGIN TRANSACTION;")
-	utils.CheckErr(err, "ConnectTaskDB:transaction prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectTaskDB:transaction exec")
 	return db
 }
 
 func ConnectPersonalDB() *sql.DB {
-	db, err := sql.Open("sqlite3", "./SQLite3/UserInfor.db")
+	//db, err := sql.Open("sqlite3", "./SQLite3/UserInfor.db")
+	db, err := sql.Open("mysql", "root:FractureSR1998@NEU@tcp(localhost:3306)/UserInfor?charset=utf8")
 	utils.CheckErr(err, "ConnectPersonalDB:open db")
-
-	stmt, err := db.Prepare("PRAGMA synchronous = NORMAL;")
-	utils.CheckErr(err, "ConnectPersonalDB:synchronous prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectPersonalDB:synchronous exec")
-
-	stmt, err = db.Prepare("BEGIN TRANSACTION;")
-	utils.CheckErr(err, "ConnectPersonalDB:transaction prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectPersonalDB:transaction exec")
 	return db
 }
 
 func ConnectTmpDB() *sql.DB {
-	db, err := sql.Open("sqlite3", "./SQLite3/tmp.db")
+	//db, err := sql.Open("sqlite3", "./SQLite3/tmp.db")
+	db, err := sql.Open("mysql", "root:FractureSR1998@NEU@tcp(localhost:3306)/tmp?charset=utf8")
 	utils.CheckErr(err, "ConnectTmpDB:open db")
-
-	stmt, err := db.Prepare("PRAGMA synchronous = NORMAL;")
-	utils.CheckErr(err, "ConnectTmpDB:synchronous prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectTmpDB:synchronous exec")
-
-	stmt, err = db.Prepare("BEGIN TRANSACTION;")
-	utils.CheckErr(err, "ConnectTmpDB:transaction prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectTmpDB:transaction exec")
 	return db
 }
 
 func DisConnectDB(db *sql.DB) {
-	stmt, err := db.Prepare("COMMIT;")
-	utils.CheckErr(err, "ConnectUserDB:commit prepare")
-	_, err = stmt.Exec()
-	utils.CheckErr(err, "ConnectUserDB:commit exec")
 	db.Close()
 }
 
 func Try(db *sql.DB, openid string) bool {
-	var tempStrA, tempStrB, tempStrC, tempStrD string
+	var tempStrA, tempStrB, tempStrC, tempStrD, tempStrE, tempStrF string
 	var tempInt int
-	err := db.QueryRow("SELECT * FROM UserInfo WHERE OpenId LIKE ?", openid).Scan(&tempStrA, &tempStrB, &tempInt, &tempStrC, &tempStrD)
+	err := db.QueryRow("SELECT * FROM UserInfo WHERE OpenId LIKE ?", openid).Scan(&tempStrA, &tempStrB, &tempInt, &tempStrC, &tempStrD, &tempStrE, &tempStrF)
 	return utils.HasErr(err)
 }

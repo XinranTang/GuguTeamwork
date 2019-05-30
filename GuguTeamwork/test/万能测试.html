@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Content-type" content="text/html">
+		<meta name="author" content="fracturesr">
+		<title>万能测试</title>
+		<script src="./jquery-3.3.1.min.js"></script>
+		<script>
+		function url() {
+			$.get({
+		url:"https://www.fracturesr.xyz/gugu/personalsta?OpenId=testopenid",
+		success: function(res) {
+			alert("SUCCESS")
+			alert(res)
+			},
+		})
+		}
+		</script>
+	</head>
+	<body>
+		<div>
+			<button type="button" onclick="url()">
+			点击
+			</button>
+		</div>
+	<body>
+</html>

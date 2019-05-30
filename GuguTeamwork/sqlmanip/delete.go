@@ -2,8 +2,6 @@ package sqlmanip
 
 import (
 	"database/sql"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 //从数据库中删除一张树表

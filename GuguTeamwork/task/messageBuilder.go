@@ -20,15 +20,15 @@ func BuildMessage(Title string, Pusher string, Content string, NotRead string, F
 	message.Pusher = Pusher
 	message.Content = Content
 	message.NotRead = NotRead
-	message.Read = ""
-	message.PushDate = time.Now().UTC()
+	message.HaveRead = ""
+	message.PushDate = time.Now()
 	if FinalDeleteDate != "" {
-		message.FinalDeleteDate, err = time.Parse("2006-01-02T15:04:05Z", FinalDeleteDate)
+		message.FinalDeleteDate, err = time.Parse("2006-01-02 15:04:05", FinalDeleteDate)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		message.FinalDeleteDate = time.Now().AddDate(0, 0, 3).UTC()
+		message.FinalDeleteDate = time.Now().AddDate(0, 0, 3)
 	}
 
 	return &message, nil

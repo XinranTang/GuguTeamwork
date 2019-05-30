@@ -3,7 +3,6 @@ package tree
 import (
 	"log"
 	"sort"
-	"strconv"
 
 	"GuguTeamwork/sqlmanip"
 	"GuguTeamwork/utils"
@@ -76,9 +75,11 @@ func (f *Forest) NewTask(Project string, parent string, TaskNode *utils.TaskNode
 	var j = len(TaskNode.Task.TaskID)
 	for i = j - 1; TaskNode.Task.TaskID[i] != '-'; i-- {
 	}
-	size, err := strconv.Atoi(TaskNode.Task.TaskID[i+1 : j])
-	utils.CheckErr(err, "NewTask:get size")
-	TaskNode.Self = size
+	forest.PRMMutex.RLock()
+	{
+		TaskNode.Self = len(forest.Projects[Project])
+	}
+	forest.PRMMutex.RUnlock()
 
 	var flag = true
 	forest.PRMMutex.Lock()

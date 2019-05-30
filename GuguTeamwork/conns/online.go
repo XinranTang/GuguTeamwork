@@ -155,8 +155,8 @@ func wsListener(msgChan chan WsMsg, conn *websocket.Conn, openid string) {
 				tree.GetForest().PRMMutex.Unlock()
 
 				//减少锁内代码
-				//任务对于Receiver来说完成了,放到Completer里面去
 				if flag == 2 {
+					//任务对于Receiver来说完成了,放到Completer里面去
 					db := sqlmanip.ConnetUserDB()
 					err := sqlmanip.Append(db, "TaskToPeople", "TaskID", "Completer", msg.Receiver+";", tmp[1])
 					utils.CheckErr(err, "wsListener:move to completer")
@@ -197,6 +197,8 @@ func wsListener(msgChan chan WsMsg, conn *websocket.Conn, openid string) {
 				db := sqlmanip.ConnectTmpDB()
 				if msg.TypeCode == 51 {
 					sqlmanip.DeleteFromDB(db, "TaskCheckRequest", "ContentId", msg.ContentId)
+				} else if msg.TypeCode == 52 {
+					sqlmanip.IncDec("user_infor", "ID", "setback", msg.Receiver, true)
 				} else {
 					sqlmanip.DeleteFromDB(db, "WsMsg", "ContentId", msg.ContentId)
 				}
