@@ -58,12 +58,12 @@
       </view>
       <view class="setting" bindtap='toTree'>
         <text class="iconfont icon-help st-icon-square-tiny" style="font-size:35rpx"></text>
-        <text style='margin:0rpx 15rpx'>树状图测试</text>
+        <text style='margin:0rpx 15rpx'>咕咕树状图练习</text>
       </view>
-      <view class="setting" bindtap='toInvitation'>
+      <!-- <view class="setting" bindtap='toInvitation'>
         <text class="iconfont icon-help st-icon-square-tiny" style="font-size:35rpx"></text>
         <text style='margin:0rpx 15rpx'>邀请函测试</text>
-      </view>
+      </view> -->
       <!-- <view class="setting" bindtap='quit'>
         <text class="iconfont icon-help st-icon-square-tiny" style="font-size:35rpx"></text>
         <text style='margin:0rpx 15rpx'>退出</text>

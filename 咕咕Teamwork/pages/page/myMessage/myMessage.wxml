@@ -10,7 +10,7 @@
     <i-collapse-item title="未读消息" name="name1">
       <view slot="content" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
         <!-- <i-card wx:if="{{message.Status==false}}" title="{{message.Title}}" extra="{{message.PushDate}}" thumb="../../images/icon2.jpg"> -->
-        <view id="each-message" class="horizontal msg-view" wx:if="{{!tools.testCheckRead(message.Read,user)}}">
+        <view id="each-message" class="horizontal msg-view" wx:if="{{!tools.testCheckRead(message.HaveRead,user)}}">
           <view>
             <image class="msg-image" src='/images/icon2.jpg'></image>
           </view>
@@ -20,7 +20,7 @@
             </view>
             <view class="horizontal" style="height:50%;align-items:flex-end">
               <text class="iconfont icon-ionc--1"></text>
-              <view slot="content" class="msg-pusher" style="width:50%">{{message.Pusher}}</view>
+              <view slot="content" class="msg-pusher" style="width:50%">{{tools.subPoint(message.Pusher)}}</view>
               <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">{{tools.sub(message.PushDate,0,10)}}</view>
             </view>
           </view>
@@ -48,7 +48,7 @@
     </i-collapse-item>
     <i-collapse-item title="已读消息" name="name1">
       <view slot="content" i-class-content="green-text" bindtap='toMessage' wx:for="{{messages}}" wx:for-item="message" data-data="{{item.data}}" data-index="{{index}}">
-       <view id="each-message" class="horizontal msg-view" wx:if="{{tools.testCheckRead(message.Read,user)}}">
+       <view id="each-message" class="horizontal msg-view" wx:if="{{tools.testCheckRead(message.HaveRead,user)}}">
           <view>
             <image class="msg-image" src='/images/icon2.jpg'></image>
           </view>
@@ -58,7 +58,7 @@
             </view>
             <view class="horizontal" style="height:50%;align-items:flex-end">
               <text class="iconfont icon-ionc--1"></text>
-              <view slot="content" class="msg-pusher" style="width:50%">{{message.Pusher}}</view>
+              <view slot="content" class="msg-pusher" style="width:50%">{{tools.subPoint(message.Pusher)}}</view>
               <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">{{tools.sub(message.PushDate,0,10)}}</view>
             </view>
           </view>
@@ -77,7 +77,7 @@
             </view>
             <view class="horizontal" style="height:50%;align-items:flex-end">
               <text class="iconfont icon-ionc--1"></text>
-              <view slot="content" class="msg-pusher" style="width:50%">{{message.Pusher}}</view>
+              <view slot="content" class="msg-pusher" style="width:50%">{{tools.subPoint(message.Pusher)}}</view>
               <view class="st-date" style="width:50%;text-align:right;align-self:flex-end">{{tools.sub(message.PushDate,0,10)}}</view>
             </view>
           </view>

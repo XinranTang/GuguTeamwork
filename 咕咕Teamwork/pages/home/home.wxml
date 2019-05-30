@@ -51,8 +51,8 @@
 
             <view style='margin-top:20rpx;margin-bottom:10rpx'>
               <block class="" wx:if="{{messages!=null&messages.length!=0}}" style="margin-top:20rpx">
-                <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message" bindtap='toMessage' style="">
-                  <view class="">{{message.Title}}</view>
+                <view class="" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{messages}}" wx:for-item="message"  bindtap='toMessage' style="">
+                  <view  class="st-radius-view-tiny" wx:if="{{!tools.testCheckRead(message.HaveRead,user)}}">{{message.Title}}</view>
                 </view>
               </block>
               <block wx:else>
@@ -196,7 +196,7 @@
   </view>
 
   <!-- 任务审批 -->
-  <view class="modal-mask" bindtap="CheckIgnore" wx:if='{{onCheck}}'></view>
+  <view class="modal-mask" bindtap="checkIgnore" wx:if='{{onCheck}}'></view>
   <view wx:if='{{onCheck}}'>
     <view class="modal-container">
       <view class='modal-photo'>

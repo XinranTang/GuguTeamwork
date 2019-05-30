@@ -350,10 +350,27 @@ Page({
     })
   },
   toInvitation:function(){
-    
-    wx.navigateTo({
-      url: '../invitation/invitation',
+    var json ={
+      Scence: "testopenid&test_project&测试任务",
+      Page:"pages/invitation/invitation",
+      Width:300
+    }
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/sendQR',
+      method: 'POST',
+      data: {
+        Scence: "testopenid&test_project&测试任务",
+        Page: "pages/invitation/invitation",
+        Width: 300
+      },
+      success:function(res){
+        console.log(res);
+      }
     })
+
+    // wx.navigateTo({
+    //   url: '../invitation/invitation',
+    // })
   },
   quit:function(){
     var self = this;

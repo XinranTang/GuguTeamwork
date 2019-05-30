@@ -27,8 +27,10 @@ module.exports.dateFormate = function (date, format) {
 }
 
 var dateStrForm = function(datestr){
+  if (datestr!=null && datestr!=undefined){
   datestr = datestr.replace("T"," ");
   datestr = datestr.replace("Z","");
+  }
   return datestr;
 }
 

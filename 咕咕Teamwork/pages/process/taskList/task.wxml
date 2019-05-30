@@ -2,20 +2,20 @@
 <wxs src="../../../wxs/sub.wxs" module="tools" />
 
 <view wx:if='{{!show}}'>
-<!-- 不是pusher的人看到的 -->
+  <!-- 不是pusher的人看到的 -->
   <view id="title">
     <text>任务信息</text>
   </view>
   <view class="st-bg-image"></view>
-<view class="vertical st-radius-view" style="padding:30rpx">
-  <view>名称：{{title}}</view>
-  <view>发布者：{{pusher}}</view>
-  <view>内容：{{content}}</view>
-  <view>状态：{{status}}</view>
-  <view>发布日期：{{pushDate}}</view>
-  <view>截止日期：{{deadLine}}</view>
-  <view>优先级：{{urgency}}</view>
-</view>
+  <view class="vertical st-radius-view" style="padding:30rpx">
+    <view>名称：{{title}}</view>
+    <view>发布者：{{pusher}}</view>
+    <view>内容：{{content}}</view>
+    <view>状态：{{status}}</view>
+    <view>发布日期：{{pushDate}}</view>
+    <view>截止日期：{{deadLine}}</view>
+    <view>优先级：{{urgency}}</view>
+  </view>
   <button class="st-button no-border" bindtap="sendCheck">任务完成</button>
   <!-- 提交审批 -->
   <view wx:if='{{isSendCheck}}'>
@@ -55,23 +55,39 @@
           <view class="horizontal">
             <text style='align-self:center'>对方的openID</text>
             <input class="input" style='padding-left:10rpx' bindinput="" placeholder="openID" data-type='Title' value="{{inviteWho}}" bindblur='inviteChange' />
-</view>
-            <button style='font-size:30rpx;width:100%'>分享链接到微信</button>
-          
+          </view>
+          <button style='font-size:30rpx;width:100%'>分享链接到微信</button>
+
         </view>
       </label>
     </modal>
   </view>
 
-  <!-- 删除任务 -->
+  <!-- 删除任务
   <view>
     <modal title="确认删除吗？" confirm-text="确认" hidden='{{!isDel}}' cancel-text="取消" bindconfirm="delConfirm" bindcancel="delCancel">
       <label>
         <view class="vertical">
-         <text>删除该任务后，其子任务信息也会一并删除。</text>
+          <text>删除该任务后，其子任务信息也会一并删除。</text>
         </view>
       </label>
     </modal>
+  </view> -->
+  <view hidden='{{!isDel}}'>
+    <view class="modal-mask" bindtap="delCancel"></view>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_secretary.jpg" mode="cover"></image>
+      </view>
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text class="text-bold" style='align-self:center;font-size:30rpx'>确认要删除吗?</text>
+        <text>删除该任务后，其子任务信息也会一并删除。</text>
+        <view style=''>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="delConfirm">确认</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="delCancel">取消</button>
+        </view>
+      </view>
+    </view>
   </view>
 
 
@@ -94,47 +110,52 @@
 
     <view class="vertical" style="margin:30rpx 45rpx 30rpx 45rpx;height:100rpx">
       <view hidden='{{!isSelected}}'>
-      <view class="horizontal two-side">
-        <view class="horizontal" style="">
-          <text class="iconfont icon-weibiaoti201"></text>
-          <text class="icon-left">{{selected_node['Task']['Title']}}</text>
+        <view class="horizontal two-side">
+          <view class="horizontal" style="">
+            <text class="iconfont icon-weibiaoti201"></text>
+            <text class="icon-left">{{selected_node['Task']['Title']}}</text>
+          </view>
+          <view>
+            <text></text>
+            <text style="" class="st-date">{{tools.subPoint(selected_node['Task']['Pusher'])}} {{tools.sub(selected_node['Task']['PushDate'],0,10)}}</text>
+          </view>
         </view>
-        <view>
-        <text></text>
-          <text style="" class="st-date">{{tools.subPoint(selected_node['Task']['Pusher'])}} {{tools.sub(selected_node['Task']['PushDate'],0,10)}}</text>
+        <view class="horizontal two-side" style="">
+          <view>
+            <text class="iconfont icon-urgent"></text>
+            <text class="icon-left">{{selected_node['Task']['Urgency']}}</text>
+          </view>
+          <text style=" " class="st-date ">{{selected_node['Task']['DeadLine']}}</text>
         </view>
-      </view>
-      <view class="horizontal two-side" style="">
-        <view>
-          <text class="iconfont icon-urgent"></text>
-          <text class="icon-left">{{selected_node['Task']['Urgency']}}</text>
+        <view class="horizontal ">
+          <text class="iconfont icon-content"></text>
+          <text class="icon-left" style="width:100% ">{{selected_node['Task']['Content']}}</text>
         </view>
-        <text style=" " class="st-date ">{{selected_node['Task']['DeadLine']}}</text>
+        <view class="horizontal">
+          <text class="iconfont icon-team"></text>
+          <text class="icon-left" style="width:100% ">{{tools.shortopenids(selected_node['TeamMates'])}}</text>
+        </view>
+        <!-- <text>{{text_selected_node}}</text> -->
       </view>
-      <view class="horizontal ">
-        <text class="iconfont icon-content"></text>
-        <text class="icon-left" style="width:100% ">{{selected_node['Task']['Content']}}</text>
-      </view>
-      <view class="horizontal">
-        <text class="iconfont icon-team"></text>
-        <text class="icon-left" style="width:100% ">{{tools.shortopenids(selected_node['TeamMates'])}}</text>
-      </view>
-      <!-- <text>{{text_selected_node}}</text> -->
-    </view>
     </view>
 
     <view style='margin-left:45rpx;margin-right:45rpx;margin-right:45rpx'>
       <view class="horizontal" style="">
         <!-- <view class="btn" bindtap="onClearCanvas">清空</view> -->
         <!-- <view class="btn" bindtap='onSetData'>连接服务器以设置data数据</view> -->
-        <view class="btn" bindtap="onInitByTree"><text class="iconfont icon-refresh"></text>刷新</view>
+        <view class="btn" bindtap="onInitByTree">
+          <text class="iconfont icon-refresh"></text>刷新</view>
         <!-- <view class="btn" bindtap="onDoDel"><text class="iconfont icon-delete"></text>执行删除</view> -->
       </view>
       <view class="horizontal" style="">
-        <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'><text class="iconfont icon-edit"></text>编辑</view>
-        <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'><text class=" iconfont icon-add"></text>添加</view>
-        <view class="btn " bindtap="onDelNode" hidden='{{!isSelected}}'><text class="iconfont icon-delete"></text>删除</view>
-        <view class="btn" bindtap="onInvite" hidden='{{!isSelected}}'><text class="iconfont icon-invitefriends"></text>邀请</view>
+        <view class="btn" bindtap="onEditNode" hidden='{{!isSelected}}'>
+          <text class="iconfont icon-edit"></text>编辑</view>
+        <view class="btn" bindtap="onAddNode" hidden='{{!isSelected}}'>
+          <text class=" iconfont icon-add"></text>添加</view>
+        <view class="btn " bindtap="onDelNode" hidden='{{!isSelected}}'>
+          <text class="iconfont icon-delete"></text>删除</view>
+        <view class="btn" bindtap="onInvite" hidden='{{!isSelected}}'>
+          <text class="iconfont icon-invitefriends"></text>邀请</view>
       </view>
     </view>
   </view>

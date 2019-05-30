@@ -42,9 +42,9 @@ Page({
       "Tree": [{
           "Task": {
             "TaskID": "testopenidtaskid1",
-            "Title": "熟悉咕咕",
-            "Pusher": "咕咕鸡",
-            "Content": "这是一个测试任务",
+            "Title": "欢迎使用咕咕Teamwork",
+            "Pusher": "咕老板",
+            "Content": "利用树状图进行团队任务的管理和可视化",
             "Status": false,
             "PushDate": "2019-04-01 00:00:00",
             "DeadLine": "2100-01-01 00:00:00",
@@ -52,38 +52,38 @@ Page({
           },
           "Self": 0,
           "Child": [
-            1,2
+            1,2,3
           ],
           "TeamMates": [
-            "testopenid"
+            "咕老板"
           ]
         },
         {
           "Task": {
             "TaskID": "testopenidtaskid2",
-            "Title": "跟随教学引导",
-            "Pusher": "咕咕鸡",
-            "Content": "这是一个测试子任务",
-            "Status": false,
+            "Title": "建立总任务树",
+            "Pusher": "咕组长",
+            "Content": "根据实际情况建立相应的任务树",
+            "Status": 1,
             "PushDate": "2019-04-01 00:00:00",
             "DeadLine": "2100-01-01 00:00:00",
             "Urgency": 3
           },
           "Self": 1,
           "Child": [
-            0
+            4,5
           ],
           "TeamMates": [
-            "testopenid", "testopenid2"
+            "咕组长"
           ]
         },
         {
           "Task": {
             "TaskID": "testopenidtaskid3",
-            "Title": "尝试使用咕咕",
-            "Pusher": "咕咕鸡",
-            "Content": "这是一个测试子任务",
-            "Status": true,
+            "Title": "提交和审批",
+            "Pusher": "咕秘书",
+            "Content": "每个子任务的成员均需要分别提交并进行审批",
+            "Status": -1,
             "PushDate": "2019-04-01 00:00:00",
             "DeadLine": "2100-01-01 00:00:00",
             "Urgency": 3
@@ -93,7 +93,60 @@ Page({
             0
           ],
           "TeamMates": null
-        }
+        },
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid4",
+            "Title": "数据分析",
+            "Pusher": "咕技术",
+            "Content": "通过图表直观地观察自己和团队的完成情况",
+            "Status": -1,
+            "PushDate": "2019-04-01 00:00:00",
+            "DeadLine": "2100-01-01 00:00:00",
+            "Urgency": 3
+          },
+          "Self": 3,
+          "Child": [
+            0
+          ],
+          "TeamMates": ["咕技术"]
+        },
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid5",
+            "Title": "前期工作",
+            "Pusher": "咕组长",
+            "Content": "任务的前期工作",
+            "Status": 1,
+            "PushDate": "2019-04-01 00:00:00",
+            "DeadLine": "2100-01-01 00:00:00",
+            "Urgency": 3
+          },
+          "Self": 4,
+          "Child": [
+            0
+          ],
+          "TeamMates": [
+            "咕员工A", "咕员工B", "咕员工C"
+          ]
+        },
+        {
+          "Task": {
+            "TaskID": "testopenidtaskid5",
+            "Title": "后期工作",
+            "Pusher": "咕老板",
+            "Content": "任务的后期工作",
+            "Status": -1,
+            "PushDate": "2019-04-01 00:00:00",
+            "DeadLine": "2100-01-01 00:00:00",
+            "Urgency": 3
+          },
+          "Self": 5,
+          "Child": [
+            0
+          ],
+          "TeamMates": ["咕员工D","咕员工E"]
+        },
       ],
       "TreeId": "testtasktree",
       "TreeName": "testproject"

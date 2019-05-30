@@ -8,6 +8,7 @@ Page({
    */
   data: {
     isSchedule:false,
+    user:"",
     nowSchedule:{"title":"","content":""},
     nowScheduleIndex:0,
     hiddenmodalput:true,
@@ -53,6 +54,7 @@ Page({
       { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }, { t: null, color: "#eeeeee", choosen: false, hasTask: false }
        ]
   },
+ 
 
   /**
    * Lifecycle function--Called when page load
@@ -102,6 +104,7 @@ Page({
       tasks:app.globalData.tasks,
       invitations:app.globalData.invitations,
       checks:app.globalData.checks,
+      user:app.globalData.openId
     })
   },
 
@@ -225,7 +228,12 @@ Page({
               key: 'Schedule',
               data: res.data,
             })
+            return;
           }
+        })
+        wx.setStorage({
+          key: 'Schedule',
+          data: [{ "Date": self.data.dateNow, 'List': self.data.list },],
         })
       },
       fail: function () {
@@ -272,8 +280,112 @@ Page({
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function (e) { 
+    var self = this;
+    var openId = '';
+    wx.getStorage({
+      key: 'UserInfor',
+      success: function (res) {
+        openId = res.data.OpenId
+        console.log(openId)
+        self.setData({
+          user: openId
+        })
+        wx.request({
 
+          //【做了改动】 url: 'https://www.fracturesr.xyz/entry',
+          url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: "OpenId=" + openId,
+          success(res) {
+            //fuck time formate
+            var tasks = res.data.Tasks || [];
+            for (var i = 0; i < tasks.length; i++) {
+              tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
+              tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
+            }
+            var msgs = res.data.Messages || [];
+            for (var i = 0; i < msgs.length; i++) {
+              msgs[i].Timeout = util.dateStrForm(msgs[i].Timeout);
+            }
+            wx.setStorage({
+              key: 'Information',
+              data: res.data,
+            })
+            app.globalData.tasks = res.data.Tasks;
+            app.globalData.messages = res.data.Messages;
+            console.log(app.globalData.tasks)
+            console.log("在授权后取得用户信息成功")
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: openId
+              },
+              success(res) {
+                console.log("getManageTrees:");
+                console.log(res.data);
+                //fuck time formate
+                var trees = res.data || [];
+                for (var i = 0; i < trees.length; i++) {
+                  var nodes = trees[i].Tree || [];
+                  for (var j = 0; j < nodes.length; j++) {
+                    var node = nodes[j];
+                    node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
+                    node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+                  }
+                }
+                //fuck time formate end
+                wx.setStorage({
+                  key: 'Forest',
+                  data: res.data,
+                })
+              }
+            })
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/personal',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: openId
+              },
+              success(res) {
+                console.log("获取的personal为:");
+                console.log(res.data);
+                //如果这人没设置信息，获取到的是空字符串
+                if (res.data == null || res.data == "") {
+                  res.data = {};
+                }
+                wx.setStorage({
+                  key: 'Personal',
+                  data: res.data,
+                })
+                app.globalData.personal = res.data
+              },
+              fail(res) {
+                console.log("获取personal失败");
+                console.log(res.data);
+              }
+            })
+          },
+          fail() {
+            console.log("在授权后取得用户信息失败")
+          }
+        })
+      },
+    })
+    wx.showToast({
+      title: '更新中....',
+      icon: 'loading'
+    })
   },
 
   /**
@@ -289,6 +401,8 @@ Page({
   onShareAppMessage: function () {
 
   },
+
+  
   DateChange(e) {
     var self = this;
     let show_day = new Array('周日', '周一', '周二', '周三', '周四', '周五', '周六');
@@ -546,10 +660,10 @@ Page({
         previourIndex: e.currentTarget.dataset.index
       })
     }
-    // wx.setStorage({
-    //   key: 'Schedule',
-    //   data: [ { "Date": self.data.dateNow, 'List': self.data.list }],
-    // })
+    //  wx.setStorage({
+    //    key: 'Schedule',
+    //    data: [ { "Date": self.data.dateNow, 'List': self.data.list }],
+    //  })
   },
   onDel:function(e){
 

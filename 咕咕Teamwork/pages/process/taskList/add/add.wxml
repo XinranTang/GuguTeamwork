@@ -38,9 +38,9 @@
 <view wx:if="{{hide==true}}">
 
   <view class="st-radius-view" style='margin-top:40rpx'>
-    <view hidden="{{isEdit|isDel}}">
+    <view hidden="{{isEdit||isDel}}">
       <canvas-drag id="canvas-drag" bind:onSelectedChange='onSelectedChange' bind:onRefresh='onInitByTree' graph="{{graph}}" width="700" height="750"></canvas-drag>
-      <image hidden="{{!(isEdit|isDel)}}" src="{{canvasImg}}" style="width:700rpx;height:750rpx;"></image>
+      <image hidden="{{!(isEdit||isDel)}}" src="{{canvasImg}}" style="width:700rpx;height:750rpx;"></image>
     </view>
   </view>
   <view class="vertical">
@@ -76,15 +76,23 @@
     </view>
 
  <!-- 删除任务 -->
-  <view>
-    <modal title="确认删除吗？" confirm-text="确认" hidden='{{!isDel}}' cancel-text="取消" bindconfirm="delConfirm" bindcancel="delCancel">
-      <label>
-        <view class="vertical">
-         <text>删除该任务后，其子任务信息也会一并删除。</text>
+  <view hidden='{{!isDel}}'>
+    <view class="modal-mask" bindtap="delCancel"></view>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_secretary.jpg" mode="cover"></image>
+      </view>
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text class="text-bold" style='align-self:center;font-size:30rpx'>确认要删除吗?</text>
+        <text>删除该任务后，其子任务信息也会一并删除。</text>
+        <view style=''>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="delConfirm">确认</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="delCancel">取消</button>
         </view>
-      </label>
-    </modal>
+      </view>
+    </view>
   </view>
+
 
     <view class="vertical" style="margin-right:45rpx;margin-left:45rpx">
       <view class="horizontal" style="">

@@ -63,11 +63,11 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function(e) {
+  onLoad: function (e) {
     var self = this;
     wx.getStorage({
       key: 'UserInfor',
-      success: function(res) {
+      success: function (res) {
         self.setData({
           user: res.data.OpenId
         })
@@ -78,7 +78,7 @@ Page({
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function() {
+  onReady: function () {
 
   },
   /**
@@ -206,7 +206,7 @@ Page({
     CanvasDrag.initByTreeArr(this.data.oneTaskTree.Tree);
 
   },
-  onClearCanvas: function(event) {
+  onClearCanvas: function (event) {
     let _this = this;
     _this.setData({
       canvasBg: null,
@@ -215,16 +215,16 @@ Page({
     });
     CanvasDrag.clearCanvas();
   },
-  switchZoom: function(e) {
+  switchZoom: function (e) {
     CanvasDrag.enableZoom(e.detail.value);
   },
-  switchAdd: function(e) {
+  switchAdd: function (e) {
     CanvasDrag.enableAdd(e.detail.value);
   },
-  switchDel: function(e) {
+  switchDel: function (e) {
     CanvasDrag.enableDel(e.detail.value);
   },
-  onSelectedChange: function(e) {
+  onSelectedChange: function (e) {
     this.setData({
       text_selected_node: e.detail
     });
@@ -245,7 +245,7 @@ Page({
       });
     }
   },
-  onAddNode: function(e) {
+  onAddNode: function (e) {
     var self = this;
     var parent = self.data.selected_node[PARENT];
     var treeid = self.data.oneTaskTree.TreeId;
@@ -275,7 +275,7 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function(res) {
+      success: function (res) {
         console.log(res.data);
         // CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
         // 传完服务器再进行绘图更为合理
@@ -298,7 +298,7 @@ Page({
         };
         CanvasDrag.onAddNode(newNodeAttr);
       },
-      fail:function(res){
+      fail: function (res) {
         console.log("添加失败!")
         console.log(res);
       }
@@ -306,19 +306,19 @@ Page({
   },
   //这些删除操作太危险了
   //换成弹出一个框框
-  onDelNode: function(e) {
+  onDelNode: function (e) {
     //CanvasDrag.onDelNode();
     this.saveCanvas();
     this.setData({
       isDel: true
     })
   },
-  delCancel: function(e) {
+  delCancel: function (e) {
     this.setData({
       isDel: false
     })
   },
-  delConfirm: function(e) {
+  delConfirm: function (e) {
     var self = this;
     // var text_selected_node = JSON.parse(self.data.text_selected_node)
     // console.log(text_selected_node)
@@ -335,7 +335,7 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function(res) {
+      success: function (res) {
         console.log("任务结点删除成功")
         CanvasDrag.onDelNode();
         CanvasDrag.onDoDel();
@@ -347,7 +347,7 @@ Page({
     })
   },
   // 用不到你了
-  onDoDel: function(e) {
+  onDoDel: function (e) {
     var self = this;
     CanvasDrag.onDoDel();
     var text_selected_node = JSON.parse(self.data.text_selected_node)
@@ -365,7 +365,7 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function(res) {
+      success: function (res) {
         console.log("任务结点删除成功")
       }
     })
@@ -373,21 +373,21 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function() {
+  onShow: function () {
 
   },
 
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function() {
+  onUnload: function () {
     var self = this;
     if (this.data.createTask == false) {
       if (this.data.clicked == true) {
@@ -405,7 +405,7 @@ Page({
           method: 'POST',
           data: JSON.stringify(json),
           dataType: JSON,
-          success: function(res) {
+          success: function (res) {
             console.log("任务取消创建成功")
           }
         })
@@ -416,21 +416,21 @@ Page({
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function () {
 
   },
 
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
 
   },
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
 
   },
   /**
@@ -445,7 +445,7 @@ Page({
    * 
    */
   // 用户点击新建按钮
-  handleClick: function(e) {
+  handleClick: function (e) {
     var that = this;
     var openid = '';
     var start_date = new Date(that.data.date.replace(/-/g, "/"))
@@ -473,7 +473,7 @@ Page({
       // 本地储存调UserInfor
       wx.getStorage({
         key: 'UserInfor',
-        success: function(res) {
+        success: function (res) {
           openid = res.data.OpenId
           var json = {
             "OpenId": openid,
@@ -491,7 +491,7 @@ Page({
             method: 'POST',
             data: JSON.stringify(json),
             dataType: JSON,
-            success: function(res) {
+            success: function (res) {
               // 【这里是测试代码，以后注意要删掉】
               //  删掉了
               // wx.request({
@@ -534,7 +534,7 @@ Page({
                     "TeamMates": [
                       json.OpenId
                     ]
-                  }, ],
+                  },],
                   // 树的名字和ID等于根节点任务的名字和ID
                   "TreeId": res.data,
                   "TreeName": json.Name
@@ -544,7 +544,7 @@ Page({
               that.onInitByTree();
 
             },
-            fail: function(res) {
+            fail: function (res) {
               wx.showToast({
                 title: '创建失败',
                 icon: 'none'
@@ -555,24 +555,24 @@ Page({
       })
     }
   },
-  handleTouchMove: function(event) {
+  handleTouchMove: function (event) {
     var that = this;
     that.data.x = event.touches[0].pageX
     that.data.y = event.touches[0].pageY
     console.log(that.data.x)
   },
-  handleLongtap: function() {
+  handleLongtap: function () {
 
   },
-  tapItem: function(e) {
+  tapItem: function (e) {
     console.log('index接收到的itemid: ' + e.detail.itemid);
   },
-  bindDateChange: function(e) {
+  bindDateChange: function (e) {
     this.setData({
       date: e.detail.value
     })
   },
-  bindTimeChange: function(e) {
+  bindTimeChange: function (e) {
     this.setData({
       time: e.detail.value
     })
@@ -586,13 +586,13 @@ Page({
    * 
    */
   // 用户点击了树形图里的任务创建完成按钮，正式创建任务
-  createTask: function() {
+  createTask: function () {
     var self = this;
     var arr = [];
     var manage = "";
     wx.getStorage({
       key: 'UserInfor',
-      success: function(res) {
+      success: function (res) {
         self.setData({
           createTask: true
         })
@@ -679,19 +679,20 @@ Page({
    * 这里能不能不用modal，因为要添加小组成员
    */
   // 【modal和view差不太多吧？modal里添个按钮，或者独立出一个跟编辑同层次的按钮看上去也行】
-  onEditNode: function(e) {
+  onEditNode: function (e) {
     this.setData({
       isEdit: true
     });
+    this.saveCanvas();
   },
   // 编辑框确认按钮
-  editConfirm: function(e) {
+  editConfirm: function (e) {
     var self = this;
     var info = self.data.edit_info;
-    info.DeadLine = info.DeadLine+" 00:00:00"
+    info.DeadLine = info.DeadLine + " 00:00:00"
     self.setData({
       isEdit: false,
-      edit_info:info
+      edit_info: info
     })
     CanvasDrag.changeNodeInfo(self.data.edit_info);
     var text_selected_node = JSON.parse(self.data.text_selected_node)
@@ -713,19 +714,19 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function(res) {
+      success: function (res) {
         console.log("把结点编辑信息传给服务器成功")
       }
     })
   },
   // 编辑框取消按钮
-  editCancel: function(e) {
+  editCancel: function (e) {
     this.setData({
       isEdit: false
     })
   },
   // 编辑框失去焦点
-  editChange: function(e) {
+  editChange: function (e) {
     var _edit_info = this.data.edit_info;
     var type = e.target.dataset.type;
     _edit_info[type] = e.detail.value;
@@ -736,13 +737,13 @@ Page({
       }
     });
   },
-  onShareAppMessage: function(res) {
+  onShareAppMessage: function (res) {
     const that = this;
     var boss = "";
     console.log('this.data', this.data.cpId)
     wx.getStorage({
       key: 'UserInfor',
-      success: function(res) {
+      success: function (res) {
         boss = res.data.OpenId
       },
     })
