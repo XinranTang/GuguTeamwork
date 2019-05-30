@@ -32,7 +32,7 @@ type Message struct {
 	Title           string
 	Pusher          string
 	Content         string
-	Read            string
+	HaveRead        string
 	NotRead         string
 	PushDate        time.Time
 	FinalDeleteDate time.Time

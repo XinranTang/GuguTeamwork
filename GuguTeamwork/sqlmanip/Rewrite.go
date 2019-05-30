@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"GuguTeamwork/utils"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func RewriteAccessInfo(db *sql.DB, openid string) {
@@ -15,18 +13,18 @@ func RewriteAccessInfo(db *sql.DB, openid string) {
 	var tempInt int
 	err := db.QueryRow("SELECT LastTimeAccess,SuccessiveAccessDays FROM UserInfo WHERE OpenId LIKE ?", openid).Scan(&tempStr, &tempInt)
 	utils.CheckErr(err, "RewriteAccessInfo:Query")
-	Date, err := time.Parse("2006-01-02T15:04:05Z", tempStr)
+	Date, err := time.Parse("2006-01-02 15:04:05", tempStr)
 	utils.CheckErr(err, "RewriteAccessInfo:Time parsing")
 	if Date.AddDate(0, 0, 1).Format("20060102") == time.Now().Format("20060102") {
 		err = RewriteItemInt(db, "UserInfo", "OpenId", "SuccessiveAccessDays", tempInt+1, openid)
 		utils.CheckErr(err, "RewriteAccessInfo:write int")
-		err = RewriteItemString(db, "UserInfo", "OpenId", "LastTimeAccess", time.Now().Format("2006-01-02T15:04:05Z"), openid)
+		err = RewriteItemString(db, "UserInfo", "OpenId", "LastTimeAccess", time.Now().Format("2006-01-02 15:04:05"), openid)
 		utils.CheckErr(err, "RewriteAccessInfo:write string")
 	} else if Date.Format("20060102") == time.Now().Format("20060102") {
 	} else {
 		err = RewriteItemInt(db, "UserInfo", "OpenId", "SuccessiveAccessDays", 1, openid)
 		utils.CheckErr(err, "RewriteAccessInfo:write int")
-		err = RewriteItemString(db, "UserInfo", "OpenId", "LastTimeAccess", time.Now().Format("2006-01-02T15:04:05Z"), openid)
+		err = RewriteItemString(db, "UserInfo", "OpenId", "LastTimeAccess", time.Now().Format("2006-01-02 15:04:05"), openid)
 		utils.CheckErr(err, "RewriteAccessInfo:write string")
 	}
 }
@@ -156,14 +154,18 @@ func FlushTreeData(db *sql.DB, table string, data []utils.TaskNode) error {
 		}
 
 		order = "DROP TABLE " + table + ";"
-		//可能的情况是之前没有这棵树
 		stmt, err = db.Prepare(order)
-		if err == nil {
-			_, err = stmt.Exec()
-			if err != nil {
-				return err
-			}
+		//sqlite3 和 mysql不同
+		if err != nil {
+			return err
 		}
+		_, err = stmt.Exec()
+		//		if err == nil {
+		//			_, err = stmt.Exec()
+		//			if err != nil {
+		//				return err
+		//			}
+		//		}
 
 		order = "ALTER TABLE " + replica + " RENAME To " + table + ";"
 		stmt, err = db.Prepare(order)
@@ -174,22 +176,6 @@ func FlushTreeData(db *sql.DB, table string, data []utils.TaskNode) error {
 		if err != nil {
 			return err
 		}
-	}
-	stmt, err := db.Prepare("COMMIT")
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec()
-	if err != nil {
-		return err
-	}
-	stmt, err = db.Prepare("BEGIN TRANSACTION")
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec()
-	if err != nil {
-		return err
 	}
 
 	return nil
@@ -413,22 +399,6 @@ func FlushTaskData(db *sql.DB, opes []*utils.Ope, data map[string][]utils.TaskNo
 			IncDec("user_task", "taskID", "notdone", t.Task.TaskID, true)
 		default:
 			return new(utils.OtherError)
-		}
-		stmt, err := db.Prepare("COMMIT")
-		if err != nil {
-			return err
-		}
-		_, err = stmt.Exec()
-		if err != nil {
-			return err
-		}
-		stmt, err = db.Prepare("BEGIN TRANSACTION")
-		if err != nil {
-			return err
-		}
-		_, err = stmt.Exec()
-		if err != nil {
-			return err
 		}
 	}
 	return nil

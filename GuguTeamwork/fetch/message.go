@@ -86,6 +86,6 @@ func ReadMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	err = sqlmanip.RewriteItemString(db, "Messages", "MessageID", "NotRead", notRead, r.Form["MessageID"][0])
 	utils.CheckErr(err, "ReadMessage:reset not read in db")
-	err = sqlmanip.Append(db, "Messages", "MessageID", "Read", r.Form["OpenId"][0]+";", r.Form["MessageID"][0])
+	err = sqlmanip.Append(db, "Messages", "MessageID", "HaveRead", r.Form["OpenId"][0]+";", r.Form["MessageID"][0])
 	utils.CheckErr(err, "ReadMessage:set read in db")
 }

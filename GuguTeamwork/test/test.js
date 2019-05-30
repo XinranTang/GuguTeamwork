@@ -111,10 +111,10 @@ function nodeJson() {
 		"OpenId":"testopenid",
 		"Title":"test",
 		"Content":"a simple test",	
-		"Deadline":"2100-01-01T00:00:00Z",
+		"Deadline":"2100-01-01 00:00:00",
 		"Urgency":"",
-		"TreeID":"testopenid_project_3",
-		"Parent":"testopenid_project_3",
+		"TreeID":"testopenid_project_1",
+		"Parent":"testopenid_project_1-task-3",
 	};
 	return JSON.stringify(json)
 }
@@ -122,9 +122,9 @@ function nodeJson() {
 function treeJson() {
 	var json = {
 		"OpenId":"testopenid",
-		"Name":"test3",
+		"Name":"test",
 		"Brief":"content",
-		"Deadline":"2100-01-01T00:00:00Z",
+		"Deadline":"2100-01-01 00:00:00",
 		"Urgency":"3"
 	};
 	return JSON.stringify(json)
@@ -132,9 +132,9 @@ function treeJson() {
 
 function deleteNodeJson() {
 	var json = {
-		"TreeID":"testopenid_project_3",
-		"TaskID":"testopenid_project_3",
-		"Parent":""
+		"TreeID":"testopenid_project_1",
+		"TaskID":"testopenid_project_1-task-3",
+		"Parent":"testopenid_project_1-task-2"
 	};
 	return JSON.stringify(json)
 }
@@ -145,7 +145,7 @@ function alterJson() {
 		"TaskID":"testopenid_project_3-task-5",
 		"Title":"altered title",
 		"Content":"altered content",
-		"Deadline":"2099-01-01T00:00:00Z",
+		"Deadline":"2099-01-01 00:00:00",
 		"Urgency":"2"
 	};
 	return JSON.stringify(json)

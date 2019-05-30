@@ -3,7 +3,9 @@ package fetch
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"GuguTeamwork/sqlmanip"
@@ -13,15 +15,16 @@ import (
 const tryLoop = 3
 
 func Entry(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
 	db := sqlmanip.ConnetUserDB()
 	defer sqlmanip.DisConnectDB(db)
 	var output []byte
-	ATencentRes := utils.GetOpenIdFromTencent(r.PostFormValue("code"))
+	ATencentRes := utils.GetOpenIdFromTencent(r.Form["code"][0])
 	if ATencentRes.Errcode != 0 {
 		var tryTime = 0
 		if ATencentRes.Errcode == -1 {
 			for ATencentRes.Errcode == -1 && tryTime < tryLoop {
-				ATencentRes = utils.GetOpenIdFromTencent(r.PostFormValue("code"))
+				ATencentRes = utils.GetOpenIdFromTencent(r.Form["code"][0])
 				tryTime++
 			}
 			if ATencentRes.Errcode == -1 {
@@ -35,10 +38,21 @@ func Entry(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	if !try(db, ATencentRes.Openid) {
-		output = exist(db, ATencentRes.Openid)
+	deltStr := strings.Replace(ATencentRes.Openid, "-", "_", -1)
+	if !try(db, deltStr) {
+		output = exist(db, deltStr)
 	} else {
-		output = nonexsit(db, ATencentRes.Openid)
+		//		var AWxInfo utils.WxUserInfo
+		//		AWxInfo.ID = deltStr
+		//		AWxInfo.NickName = r.Form["nickName"][0]
+		//		AWxInfo.Sex = r.Form["sex"][0]
+		//		AWxInfo.City = r.Form["city"][0]
+		//		AWxInfo.Country = r.Form["country"][0]
+		//		AWxInfo.Province = r.Form["province"][0]
+		//		AWxInfo.HeadImage = r.Form["headurl"][0]
+		//		err := sqlmanip.CreatePrivateInfo(&AWxInfo)
+		//		utils.CheckErr(err, "Entry:private info")
+		output = nonexsit(db, deltStr)
 	}
 
 	w.Header().Set("Content-type", "application/json")
@@ -64,6 +78,8 @@ func try(db *sql.DB, openid string) bool {
 
 func exist(db *sql.DB, openid string) []byte {
 	UserInfo := sqlmanip.QueryUserInfo(db, openid)
+	log.Println("exist")
+	log.Println(UserInfo)
 	sqlmanip.RewriteAccessInfo(db, openid)
 
 	output, err := json.MarshalIndent(UserInfo, "", "\t\t")
