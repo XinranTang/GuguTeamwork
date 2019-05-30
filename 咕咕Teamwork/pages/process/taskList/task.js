@@ -27,7 +27,7 @@ Page({
    * Page initial data
    */
   data: {
-    "taskId":'',
+    "taskId": '',
     "title": '测试',
     "pusher": '',
     "content": '',
@@ -38,7 +38,7 @@ Page({
     "task": null,
     oneTaskTree: {},
     show: false,
-    treeDeadLine:"",
+    treeDeadLine: "",
     text_selected_node: '...',
     isSelected: false,
     //选中的结点
@@ -54,10 +54,11 @@ Page({
     isEdit: false,
     //是否在邀请好友界面
     isInvite: false,
+    isDel: false,
     inviteWho: "testopenid",
     user: '',
     //提交任务完成的提示
-    isSendCheck:false,
+    isSendCheck: false,
     graph: {}
   },
 
@@ -65,13 +66,13 @@ Page({
    * Lifecycle function--Called when page load
    */
 
-  onLoad: function (options) {
+  onLoad: function(options) {
     let self = this
     wx.getStorage({
       key: 'UserInfor',
       success: function(res) {
         self.setData({
-          user:res.data.OpenId
+          user: res.data.OpenId
         })
       },
     })
@@ -108,69 +109,70 @@ Page({
         // arr.forEach(item => {
         //   if (item == currentTask.TaskID) {
         //     flag = true;
-            wx.getStorage({
-              key: 'Forest',
-              success: function(res) {
-                if(res.data!=null)
-                res.data.forEach(each => {
-                  if (each.TreeId == currentTask.TreeId) {
-                    self.setData({
-                      show: true,
-                      oneTaskTree: each,
-                      treeDeadLine:each.Tree[0].Task.DeadLine
-                    })
-                    findTree = true;
-                    self.onInitByTree();
-                  }
-                })
-                if (!findTree) {
-                  wx.getStorage({
-                    key: 'UserInfor',
-                    success: function (res) {
-                      var arr = [];
-                      arr = res.data.Manage.split(";");
-                      var flag = false;// 不是管理者
-                      if(arr!=null)
-                      arr.forEach(item => {
-                        if (item == currentTask.TaskID) {
-                          flag = true;
-                          // wx.getStorage({
-                          //   key: 'Forest',
-                          //   success: function (res) {
-                          //     res.data.forEach(each => {
-                          //       if (each.TreeId == item) {
-                          //         self.setData({
-                          //           show: true,
-                          //           oneTaskTree: each
-                          //         })
-                          //         self.onInitByTree();
-                          //       }
-                          //     })
-                          //   },
-                          // })
-                        }
-                      })
-                      if (!flag) {
-                        self.setData({
-                          task: currentTask,
-                          title: currentTask.Title,
-                          pusher: currentTask.Pusher,
-                          content: currentTask.Content,
-                          status: currentTask.Status,
-                          pushDate: currentTask.PushDate,
-                          deadLine: currentTask.DeadLine,
-                          urgency: currentTask.Urgency,
-                          taskId: currentTask.TaskID
-                        })
-                      }
-                    },
+        wx.getStorage({
+          key: 'Forest',
+          success: function(res) {
+            if (res.data != null)
+              res.data.forEach(each => {
+                if (each.TreeId == currentTask.TreeId) {
+                  self.setData({
+                    show: true,
+                    oneTaskTree: each,
+                    treeDeadLine: each.Tree[0].Task.DeadLine
                   })
+                  findTree = true;
+                  self.onInitByTree();
                 }
-              },
-            })
-          // }
+              })
+            if (!findTree) {
+              wx.getStorage({
+                key: 'UserInfor',
+                success: function(res) {
+                  var arr = [];
+                  arr = res.data.Manage.split(";");
+                  console.log(arr);
+                  var flag = false; // 不是管理者
+                  if (arr != null)
+                    arr.forEach(item => {
+                      if (item == currentTask.TaskID) {
+                        flag = true;
+                        // wx.getStorage({
+                        //   key: 'Forest',
+                        //   success: function (res) {
+                        //     res.data.forEach(each => {
+                        //       if (each.TreeId == item) {
+                        //         self.setData({
+                        //           show: true,
+                        //           oneTaskTree: each
+                        //         })
+                        //         self.onInitByTree();
+                        //       }
+                        //     })
+                        //   },
+                        // })
+                      }
+                    })
+                  if (!flag) {
+                    self.setData({
+                      task: currentTask,
+                      title: currentTask.Title,
+                      pusher: currentTask.Pusher,
+                      content: currentTask.Content,
+                      status: currentTask.Status,
+                      pushDate: currentTask.PushDate,
+                      deadLine: currentTask.DeadLine,
+                      urgency: currentTask.Urgency,
+                      taskId: currentTask.TaskID
+                    })
+                  }
+                },
+              })
+            }
+          },
+        })
+        // }
         // })
-        
+
       },
     })
   },
@@ -233,30 +235,30 @@ Page({
   onShareAppMessage: function() {
 
   },
-  sendCheckCancel:function(e){
+  sendCheckCancel: function(e) {
     this.setData({
       isSendCheck: false
     })
   },
-  sendCheckConfirm:function(e){
+  sendCheckConfirm: function(e) {
     var time = util.dateFormate(new Date());
     var reg = '.*?(?=-task)';
     var treeid = this.data.taskId.match(reg);
     var json = {
-      "TimeOut":time,
+      "TimeOut": time,
       "TypeCode": 50,
       "Sender": this.data.user,
       "Receiver": this.data.pusher,
-      "ContentId": treeid+";"+this.data.taskId+";"
+      "ContentId": treeid + ";" + this.data.taskId + ";"
     }
     console.log(json);
     wx.sendSocketMessage({
-      data:JSON.stringify(json),
-      success:function(res){
+      data: JSON.stringify(json),
+      success: function(res) {
         console.log("审批发送成功");
         wx.showToast({
-          title:'审批发送成功',
-          icon:'none'
+          title: '审批发送成功',
+          icon: 'none'
         })
       }
     })
@@ -266,12 +268,12 @@ Page({
     })
   },
   //发送任务审批
-  sendCheck:function(){
+  sendCheck: function() {
     this.setData({
-      isSendCheck:true
+      isSendCheck: true
     })
   },
-  
+
   /**
    * 添加测试图片
    */
@@ -474,10 +476,14 @@ Page({
   },
 
   onAddNode: function(e) {
-    CanvasDrag.onAddNode();
     var self = this;
-    // var text_selected_node = JSON.parse(self.data.text_selected_node)
-    // console.log(text_selected_node)
+    var parent = self.data.selected_node[PARENT];
+    var treeid = self.data.oneTaskTree.TreeId;
+    var user = self.data.user;
+    var ddl = self.data.treeDeadLine;
+    //CanvasDrag.onAddNode();
+    //var text_selected_node = JSON.parse(self.data.text_selected_node)
+    //console.log(text_selected_node)
     var json = {
       // 这里都是默认值，全部都得改
       "OpenId": self.data.user,
@@ -486,9 +492,10 @@ Page({
       "Deadline": self.data.treeDeadLine,
       "Urgency": "0",
       "TreeID": self.data.oneTaskTree.TreeId,
-      "Parent": self.data.selected_node[PARENT]
+      "Parent": self.data.selected_node.Task.TaskID, // 【这个要改成父节点的任务名字】
     };
-    CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + " " + self.data.time + ":00";
+    // CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][DEADLINE] = self.data.date + " " + self.data.time + ":00";
+    console.log("添加节点的json:")
     console.log(json)
     wx.request({
       url: 'https://www.fracturesr.xyz/gugu/newNode',
@@ -498,15 +505,88 @@ Page({
       method: 'POST',
       data: JSON.stringify(json),
       dataType: JSON,
-      success: function(res) {
-        console.log("任务结点添加成功"+res.data)
-        CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
+      success: function (res) {
+        console.log(res.data);
+        // CanvasDrag.getTaskByIndex(self.data.selected_node[SELF])[TASK][TASK_ID] = res.data;
+        // 传完服务器再进行绘图更为合理
+        var newid = res.data;
+        var newNodeAttr = {
+          Task: {
+            TaskID: newid,
+            Title: "no title",
+            Pusher: user,
+            Content: "no content",
+            Status: false,
+            PushDate: util.dateFormate(new Date()),
+            DeadLine: ddl,
+            Urgency: 0
+          },
+          Self: 0,
+          Child: [0],
+          Parent: -1,
+          TeamMates: []
+        };
+        CanvasDrag.onAddNode(newNodeAttr);
         self.refreshForest();
+      },
+      fail: function (res) {
+        console.log("添加失败!")
+        console.log(res);
       }
     })
   },
+  //这些删除操作太危险了，换成弹个框框出来
   onDelNode: function(e) {
-    CanvasDrag.onDelNode();
+    //CanvasDrag.onDelNode();
+    this.saveCanvas();
+    this.setData({
+      isDel: true
+    })
+  },
+  delCancel: function(e) {
+    this.setData({
+      isDel: false
+    })
+  },
+  delConfirm: function(e) {
+    var self = this;
+    //记录下标
+    var index = self.data.selected_node.Self;
+  
+    // var text_selected_node = JSON.parse(self.data.text_selected_node)
+    // console.log(text_selected_node)
+    var json = {
+      "TreeID": self.data.oneTaskTree.TreeId,
+      "TaskID": self.data.selected_node.Task.TaskID,
+      "Parent": self.data.selected_node.Parent
+    };
+    console.log("删除时传的json");
+    console.log(json);
+    //先不访问服务器
+    //return;
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: JSON.stringify(json),
+      dataType: JSON,
+      success: function(res) {
+        console.log("任务结点删除成功")
+        self.refreshForest();
+        self.setData({
+          isDel: false
+        })
+        if(index==0){
+          wx.navigateBack({
+
+          })
+        }
+        CanvasDrag.onDelNode();
+        CanvasDrag.onDoDel();
+      }
+    })
   },
   onDoDel: function(e) {
     var self = this;
@@ -540,9 +620,9 @@ Page({
       isInvite: true
     })
   },
-  inviteChange:function(e){
+  inviteChange: function(e) {
     this.setData({
-      inviteWho:e.detail.value
+      inviteWho: e.detail.value
     })
   },
   //确认邀请按钮
@@ -557,11 +637,11 @@ Page({
     var nowtime = new Date();
     var time = util.dateFormate(new Date());
     var json = {
-      "TimeOut" : time,
-      "TypeCode" : 100,
-      "Sender" : sender,
-      "Receiver" : receiver,
-      "ContentId" : treeId + ";" + nodeId  + ";"
+      "TimeOut": time,
+      "TypeCode": 100,
+      "Sender": sender,
+      "Receiver": receiver,
+      "ContentId": treeId + ";" + nodeId + ";"
     }
     console.log(json);
     // wx.sendSocketMessage({
@@ -577,8 +657,8 @@ Page({
 
 
     wx.sendSocketMessage({
-      data:JSON.stringify(json),
-      success: function (res) {
+      data: JSON.stringify(json),
+      success: function(res) {
         console.log("json邀请发送成功");
       }
     })
@@ -668,74 +748,74 @@ Page({
       .catch((e) => {
         console.error(e);
       })
- },
+  },
   //复制代码一时爽
   //现在重构火葬场
   //横批：我爱封装
-refreshForest:function(e){
-  var self = this;
-  console.log("在getManagerTree之前")
-  console.log(self.data.user);
-  wx.request({
-    url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
-    header: {
-      'content-type': "application/x-www-form-urlencoded"
-    },
-    method: 'POST',
-    data: {
-      OpenId: self.data.user
-    },
-    success(res1) {
-      console.log(self.data.user);
-      //fuck time formate
-      var trees = res1.data || [];
-      for (var i = 0; i < trees.length; i++) {
-        var nodes = trees[i].Tree || [];
-        for (var j = 0; j < nodes.length; j++) {
-          var node = nodes[j];
-          node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
-          node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+  refreshForest: function(e) {
+    var self = this;
+    console.log("在getManagerTree之前")
+    console.log(self.data.user);
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: {
+        OpenId: self.data.user
+      },
+      success(res1) {
+        console.log(self.data.user);
+        //fuck time formate
+        var trees = res1.data || [];
+        for (var i = 0; i < trees.length; i++) {
+          var nodes = trees[i].Tree || [];
+          for (var j = 0; j < nodes.length; j++) {
+            var node = nodes[j];
+            node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
+            node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+          }
         }
+        //fuck time formate end
+        console.log(res1.data)
+        wx.setStorage({
+          key: 'Forest',
+          data: res1.data,
+        })
+        self.refreshTaskAndMsg();
       }
-      //fuck time formate end
-      console.log(res1.data)
-      wx.setStorage({
-        key: 'Forest',
-        data: res1.data,
-      })
-      self.refreshTaskAndMsg();
-    }
-  })
-},
+    })
+  },
 
- refreshTaskAndMsg:function(e){
-   var self = this;
-   wx.request({
-     url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
-     header: {
-       'content-type': "application/x-www-form-urlencoded"
-     },
-     method: 'POST',
-     data: {
-       OpenId: self.data.user
-     },
-     success(res) {
-       var tasks = res.data.Tasks || [];
-       for (var i = 0; i < tasks.length; i++) {
-         tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
-         tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
-       }
-       var msgs = res.data.Messages || [];
-       for (var i = 0; i < msgs.length; i++) {
-         msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut);
-       }
-       wx.setStorage({
-         key: 'Information',
-         data: res.data,
-       })
-       app.globalData.tasks = res.data.Tasks;
-       app.globalData.messages = res.data.Messages;
-     }
-   })
- }
+  refreshTaskAndMsg: function(e) {
+    var self = this;
+    wx.request({
+      url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+      header: {
+        'content-type': "application/x-www-form-urlencoded"
+      },
+      method: 'POST',
+      data: {
+        OpenId: self.data.user
+      },
+      success(res) {
+        var tasks = res.data.Tasks || [];
+        for (var i = 0; i < tasks.length; i++) {
+          tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
+          tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
+        }
+        var msgs = res.data.Messages || [];
+        for (var i = 0; i < msgs.length; i++) {
+          msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut);
+        }
+        wx.setStorage({
+          key: 'Information',
+          data: res.data,
+        })
+        app.globalData.tasks = res.data.Tasks;
+        app.globalData.messages = res.data.Messages;
+      }
+    })
+  }
 })

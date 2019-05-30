@@ -27,3 +27,15 @@ var shortopenids = function (openids){
 }
 
 module.exports.shortopenids = shortopenids;
+
+var subPoint = function(str,len){
+  len = len || 12;
+  var temp = "" + str;
+  if (temp==null)
+    return ""
+  if(temp.length <= len)
+    return temp;
+  return temp.substring(0,len + 1)+"...";
+}
+
+module.exports.subPoint = subPoint;

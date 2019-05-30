@@ -1,5 +1,5 @@
 // pages/tree.js
-
+var util = require('../../utils/util.js');
 // 服务器数据库字段名
 var TREE = 'Tree';
 var TREE_NAME = 'TreeName';
@@ -282,7 +282,23 @@ Page({
 
   },
   onAddNode: function(e) {
-    CanvasDrag.onAddNode();
+    var newNodeAttr = {
+      Task: {
+        TaskID: "newid",
+        Title: "no title",
+        Pusher: "user",
+        Content: "no content",
+        Status: false,
+        PushDate: util.dateFormate(new Date()),
+        DeadLine: "ddl",
+        Urgency: 0
+      },
+      Self: 0,
+      Child: [0],
+      Parent: -1,
+      TeamMates: []
+    };
+    CanvasDrag.onAddNode(newNodeAttr);
   },
   onDelNode: function(e) {
     CanvasDrag.onDelNode();

@@ -41,11 +41,19 @@ App({
                 msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut)
               }
             }
-            if (res.data.Task == null)
+            if (res.data.Tasks == null)
               res.data.Tasks = [];
+            else{
+              var tasks = res.data.Tasks;
+              for(var i =0;i< tasks.length;i++){
+                tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
+                tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
+              }
+            }
             // mysql的表不能有 - 号
             res.data.OpenId = res.data.OpenId.replace(/-/g,"_");
-            console.log("更改过的openid"+res.data.OpenId)
+            console.log("更改过的openid"+res.data.OpenId);
+            that.globalData.openId = res.data.OpenId;
             wx.setStorage({
               key: 'UserInfor',
               data: res.data,
