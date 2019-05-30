@@ -38,7 +38,7 @@ App({
             else{
               var msgs = res.data.Messages;
               for(var i =0 ;i<msgs.length;i++){
-                msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut)
+                msgs[i].Timeout = util.dateStrForm(msgs[i].Timeout)
               }
             }
             if (res.data.Tasks == null)
@@ -73,7 +73,8 @@ App({
               console.log('收到服务器信息');
               var json = JSON.parse(res.data);
               //fuck time formate
-              json.TimeOut = util.dateStrForm(json.TimeOut);
+              // if(json.Timeout)
+              //     json.Timeout = util.dateStrForm(json.Timeout);
               console.log(json);
               //如果是邀请信息，加入invitations
               if (json.TypeCode == 100) {

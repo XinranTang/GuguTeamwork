@@ -163,7 +163,7 @@ dragGraph.prototype = {
       //如果是主任务 显示小房子图标 不显示是否完成图标
       if (this.taskattrs[SELF] == 0)
         this.ctx.drawImage(this.selected ? MAIN_ICON : MAIN_ICON_2, this.x + textWidth - 10, this.y - 15, 20, 20);
-      else if (this.taskattrs[TASK][STATUS] == true)
+      else if (this.taskattrs[TASK][STATUS] == 1 || this.taskattrs[TASK][STATUS] == "1")
         this.ctx.drawImage(this.selected ? FINISH_ICON : FINISH_ICON_2, this.x + textWidth - 10, this.y - 15, 20, 20);
 
       //显示有几个成员参与
@@ -995,6 +995,8 @@ Component({
             this.treeRawArr[childs[j]][PARENT] = this.treeRawArr[i][TASK][TASK_ID];
         }
       }
+      this.treeRawArr[0][PARENT] = "";
+
       console.log("treeRawArr");
       console.log(this.treeRawArr);
       var rootTaskNode = this.treeRawArr[0];

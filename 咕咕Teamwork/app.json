@@ -21,7 +21,8 @@
     "pages/page/myCommunity/topics/topics",
     "pages/tree/tree",
     "pages/page/help/help",
-    "pages/page/myReport/myReport"
+    "pages/page/myReport/myReport",
+    "pages/invitation/invitation"
   ],
   "window": {
     "backgroundTextStyle": "light",

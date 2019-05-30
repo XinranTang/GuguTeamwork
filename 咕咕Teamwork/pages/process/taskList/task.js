@@ -241,11 +241,11 @@ Page({
     })
   },
   sendCheckConfirm: function(e) {
-    var time = util.dateFormate(new Date());
+    var time = util.dateFormate(new Date(), 'YYYY-MM-DDThh:mm:ssZ');
     var reg = '.*?(?=-task)';
     var treeid = this.data.taskId.match(reg);
     var json = {
-      "TimeOut": time,
+      "Timeout": time,
       "TypeCode": 50,
       "Sender": this.data.user,
       "Receiver": this.data.pusher,
@@ -635,9 +635,9 @@ Page({
     var sender = this.data.user;
     var receiver = this.data.inviteWho;
     var nowtime = new Date();
-    var time = util.dateFormate(new Date());
+    var time = util.dateFormate(new Date(), 'YYYY-MM-DDThh:mm:ssZ');
     var json = {
-      "TimeOut": time,
+      "Timeout": time,
       "TypeCode": 100,
       "Sender": sender,
       "Receiver": receiver,
@@ -807,7 +807,7 @@ Page({
         }
         var msgs = res.data.Messages || [];
         for (var i = 0; i < msgs.length; i++) {
-          msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut);
+          msgs[i].Timeout = util.dateStrForm(msgs[i].Timeout);
         }
         wx.setStorage({
           key: 'Information',

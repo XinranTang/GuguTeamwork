@@ -1,0 +1,20 @@
+<!--invitation.wxml-->
+<!-- 任务邀请 -->
+<!-- 任务邀请 -->
+  <view>
+    <view class="modal-container">
+      <view class='modal-photo'>
+        <image class="userinfo-avatar" src="/images/image_gugu_boss.jpg" mode="cover"></image>
+      </view>
+
+      <view class="modal-content vertical" style='justify-content:space-between'>
+        <text style='align-self:center;font-size:30rpx'>任务邀请</text>
+        <text style="word-break:break-all">咕咕，openid为{{inviter}}的用户邀请您加入id为{{taskid}}的{{taskname}}任务。</text>
+        <view style=''>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="inviteConfirm">接受</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="inviteCancel">拒绝</button>
+          <button class="st-button-no-shadow st-buttom-tiny no-border" style="width:100%" bindtap="inviteIgnore">忽略</button>
+        </view>
+      </view>
+    </view>
+  </view>

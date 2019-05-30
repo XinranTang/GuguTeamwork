@@ -90,8 +90,8 @@
       <view class="horizontal" style="">
         <view class="btn" bindtap="onInitByTree">
           <text class="iconfont icon-refresh"></text>刷新</view>
-        <view class="btn" bindtap="onDoDel">
-          <text class="iconfont icon-delete"></text>执行删除</view>
+        <!-- <view class="btn" bindtap="onDoDel">
+          <text class="iconfont icon-delete"></text>执行删除</view> -->
         <view class="btn" bindtap="createTask">任务创建完成</view>
       </view>
       <view class="horizontal" style="">

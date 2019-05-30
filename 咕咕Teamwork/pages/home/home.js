@@ -679,7 +679,7 @@ Page({
         var msg = {
           "Title": "任务邀请被接受",
           "Pusher": json.Sender,
-          "Content": "恭喜,您在" + json.TimeOut + "发起的对" + json.ContentId + "的任务邀请被接受了,一起愉快地工作吧。",
+          "Content": "恭喜,您在" + json.Timeout + "发起的对" + json.ContentId + "的任务邀请被接受了,一起愉快地工作吧。",
           "NotRead": json.Receiver + ";",
           "FinalDeleteDate": "2050-05-30 00:00:00"
         }
@@ -710,7 +710,7 @@ Page({
         var msg = {
           "Title": "任务邀请被拒绝",
           "Pusher": json.Sender,
-          "Content": "咕咕,您在" + json.TimeOut + "发起的对" + json.ContentId + "的任务邀请被拒绝了。",
+          "Content": "咕咕,您在" + json.Timeout + "发起的对" + json.ContentId + "的任务邀请被拒绝了。",
           "NotRead": json.Receiver + ";",
           "FinalDeleteDate": "2050-05-30 00:00:00"
         }
@@ -760,7 +760,7 @@ Page({
         var msg = {
           "Title": "任务审批通过",
           "Pusher": json.Sender,
-          "Content": "恭喜,您在" + json.TimeOut + "发起的对" + json.ContentId + "任务的进度完成审批通过了。",
+          "Content": "恭喜,您在" + json.Timeout + "发起的对" + json.ContentId + "任务的进度完成审批通过了。",
           "NotRead": json.Receiver + ";",
           "FinalDeleteDate": "2050-05-30 00:00:00"
         };
@@ -794,7 +794,7 @@ Page({
         var msg = {
           "Title": "任务审批被驳回",
           "Pusher": json.Sender,
-          "Content": "很遗憾,您在" + json.TimeOut + "发起的对" + json.ContentId + "任务的进度完成审批被驳回了。",
+          "Content": "很遗憾,您在" + json.Timeout + "发起的对" + json.ContentId + "任务的进度完成审批被驳回了。",
           "NotRead": json.Receiver + ";",
           "FinalDeleteDate": "2050-05-30 00:00:00"
         };

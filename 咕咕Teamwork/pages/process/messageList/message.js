@@ -100,7 +100,7 @@ Page({
       method: 'GET',
       success(res) {
         console.log(currentMessage.MessageID + "已读");
-        currentMessage.Read.push(openid);
+        currentMessage.HaveRead.push(openid);
         wx.showToast({
           title: '已标记为已读',
         })

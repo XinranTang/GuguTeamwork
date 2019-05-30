@@ -208,7 +208,7 @@ Page({
             }
             var msgs = res.data.Messages || [];
             for(var i = 0; i < msgs.length;i++){
-              msgs[i].TimeOut = util.dateStrForm(msgs[i].TimeOut);
+              msgs[i].Timeout = util.dateStrForm(msgs[i].Timeout);
             }
             wx.setStorage({
               key: 'Information',
@@ -347,6 +347,12 @@ Page({
   toHelp:function(){
     wx.navigateTo({
       url: '../page/help/help',
+    })
+  },
+  toInvitation:function(){
+    
+    wx.navigateTo({
+      url: '../invitation/invitation',
     })
   },
   quit:function(){
