@@ -574,44 +574,173 @@ Page({
       dataType: JSON,
       success: function(res) {
         console.log("任务结点删除成功")
-        self.refreshForest();
-        self.setData({
-          isDel: false
-        })
-        if(index==0){
-          wx.navigateBack({
+        wx.request({
+          url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+          header: {
+            'content-type': "application/x-www-form-urlencoded"
+          },
+          method: 'POST',
+          data: {
+            OpenId: self.data.user
+          },
+          success(res1) {
+            console.log("成功2")
+            console.log(self.data.user);
+            //fuck time formate
+            var trees = res1.data || [];
+            for (var i = 0; i < trees.length; i++) {
+              var nodes = trees[i].Tree || [];
+              for (var j = 0; j < nodes.length; j++) {
+                var node = nodes[j];
+                node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
+                node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+              }
+            }
+            //fuck time formate end
+            console.log(res1.data)
+            wx.setStorage({
+              key: 'Forest',
+              data: res1.data,
+            })
+            wx.request({
+              url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+              header: {
+                'content-type': "application/x-www-form-urlencoded"
+              },
+              method: 'POST',
+              data: {
+                OpenId: self.data.user
+              },
+              success(res) {
+                
+                console.log("成功")
+                var tasks = res.data.Tasks || [];
+                for (var i = 0; i < tasks.length; i++) {
+                  tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
+                  tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
+                }
+                var msgs = res.data.Messages || [];
+                for (var i = 0; i < msgs.length; i++) {
+                  msgs[i].Timeout = util.dateStrForm(msgs[i].Timeout);
+                }
+                wx.setStorage({
+                  key: 'Information',
+                  data: res.data,
+                })
+                wx.setStorage({
+                  key: 'UserInfor',
+                  data: res.data,
+                })
+                app.globalData.tasks = res.data.Tasks;
+                app.globalData.messages = res.data.Messages;
+                console.log("跳转啦！！")
+                self.setData({
+                  isDel: false
+                })
+                CanvasDrag.onDelNode();
+                CanvasDrag.onDoDel();
+                wx.navigateBack({
 
-          })
-        }
-        CanvasDrag.onDelNode();
-        CanvasDrag.onDoDel();
+                })
+              }
+            })
+          }
+        })
+       
+        // if(index==0){
+        //   wx.navigateBack({
+
+        //   })
+        // }
+        
       }
     })
   },
-  onDoDel: function(e) {
-    var self = this;
-    CanvasDrag.onDoDel();
-    // var text_selected_node = JSON.parse(self.data.text_selected_node)
-    // console.log(text_selected_node)
-    var json = {
-      "TreeID": self.data.oneTaskTree.TreeId,
-      "TaskID": self.data.selected_node.Task.TaskID,
-      "Parent": self.data.selected_node.Task.Parent
-    };
-    wx.request({
-      url: 'https://www.fracturesr.xyz/gugu/deleteNode',
-      header: {
-        'content-type': "application/x-www-form-urlencoded"
-      },
-      method: 'POST',
-      data: JSON.stringify(json),
-      dataType: JSON,
-      success: function(res) {
-        console.log("任务结点删除成功")
-        self.refreshForest();
-      }
-    })
-  },
+  // onDoDel: function(e) {
+  //   var self = this;
+  //   CanvasDrag.onDoDel();
+  //   // var text_selected_node = JSON.parse(self.data.text_selected_node)
+  //   // console.log(text_selected_node)
+  //   var json = {
+  //     "TreeID": self.data.oneTaskTree.TreeId,
+  //     "TaskID": self.data.selected_node.Task.TaskID,
+  //     "Parent": self.data.selected_node.Task.Parent
+  //   };
+  //   wx.request({
+  //     url: 'https://www.fracturesr.xyz/gugu/deleteNode',
+  //     header: {
+  //       'content-type': "application/x-www-form-urlencoded"
+  //     },
+  //     method: 'POST',
+  //     data: JSON.stringify(json),
+  //     dataType: JSON,
+  //     success: function(res) {
+  //       console.log("任务结点删除成功")
+  //       wx.request({
+  //         url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
+  //         header: {
+  //           'content-type': "application/x-www-form-urlencoded"
+  //         },
+  //         method: 'POST',
+  //         data: {
+  //           OpenId: self.data.user
+  //         },
+  //         success(res1) {
+  //           console.log("成功2")
+  //           console.log(self.data.user);
+  //           //fuck time formate
+  //           var trees = res1.data || [];
+  //           for (var i = 0; i < trees.length; i++) {
+  //             var nodes = trees[i].Tree || [];
+  //             for (var j = 0; j < nodes.length; j++) {
+  //               var node = nodes[j];
+  //               node.Task.DeadLine = util.dateStrForm(node.Task.DeadLine);
+  //               node.Task.PushDate = util.dateStrForm(node.Task.PushDate);
+  //             }
+  //           }
+  //           //fuck time formate end
+  //           console.log(res1.data)
+  //           wx.setStorage({
+  //             key: 'Forest',
+  //             data: res1.data,
+  //           })
+  //           wx.request({
+  //             url: 'https://www.fracturesr.xyz/gugu/openIdEntry',
+  //             header: {
+  //               'content-type': "application/x-www-form-urlencoded"
+  //             },
+  //             method: 'POST',
+  //             data: {
+  //               OpenId: self.data.user
+  //             },
+  //             success(res) {
+  //               console.log("成功")
+  //               var tasks = res.data.Tasks || [];
+  //               for (var i = 0; i < tasks.length; i++) {
+  //                 tasks[i].DeadLine = util.dateStrForm(tasks[i].DeadLine);
+  //                 tasks[i].PushDate = util.dateStrForm(tasks[i].PushDate);
+  //               }
+  //               var msgs = res.data.Messages || [];
+  //               for (var i = 0; i < msgs.length; i++) {
+  //                 msgs[i].Timeout = util.dateStrForm(msgs[i].Timeout);
+  //               }
+  //               wx.setStorage({
+  //                 key: 'Information',
+  //                 data: res.data,
+  //               })
+  //               app.globalData.tasks = res.data.Tasks;
+  //               app.globalData.messages = res.data.Messages;
+  //               console.log("跳转啦！！")
+  //               wx.navigateBack({
+
+  //               })
+  //             }
+  //           })
+  //         }
+  //       })
+  //     }
+  //   })
+  // },
 
   //显示邀请好友
   onInvite: function(e) {
@@ -811,6 +940,10 @@ Page({
         }
         wx.setStorage({
           key: 'Information',
+          data: res.data,
+        })
+        wx.setStorage({
+          key: 'UserInfor',
           data: res.data,
         })
         app.globalData.tasks = res.data.Tasks;

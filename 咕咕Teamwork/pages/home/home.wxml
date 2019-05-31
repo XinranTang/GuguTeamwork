@@ -99,9 +99,9 @@
               <block wx:if="{{tasks!=null&tasks.length!=0}}">
                 <view class="st-radius-view-tiny" data-data="{{item.data}}" data-index="{{index}}" wx:for="{{tasks}}" wx:for-item="task" bindtap='toTask' style="">
                   <view>
-                    <view class='text-bold' style='font-size:26rpx'>{{task.Title}}</view>
-                    <view>发布者：{{tools.subPoint(task.Pusher)}}</view>
-                    <view>截止时间：{{task.DeadLine}}</view>
+                    <view class='text-bold' style='font-size:34rpx'>{{task.Title}}</view>
+                    <!-- <view>发布者：</view> <view class = "text-cut">{{tools.subPoint(task.Pusher)}}</view> -->
+                    <view>截止时间：</view><view>{{task.DeadLine}}</view>
                     <!-- <view slot="footer">尾部内容</view> -->
                   </view>
                 </view>

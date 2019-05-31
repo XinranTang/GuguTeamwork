@@ -482,7 +482,7 @@ Page({
             "Deadline": that.data.date + " " + that.data.time + ":00",
             "Urgency": "3"
           };
-          // 连接服务器    【这里的请求服务器，是直接给我添加了一棵树吗？？这里有一点】
+          // 连接服务器    
           wx.request({
             url: 'https://www.fracturesr.xyz/gugu/newProject',
             header: {
@@ -492,8 +492,6 @@ Page({
             data: JSON.stringify(json),
             dataType: JSON,
             success: function (res) {
-              // 【这里是测试代码，以后注意要删掉】
-              //  删掉了
               // wx.request({
               //   url: 'https://www.fracturesr.xyz/gugu/getManageTrees',
               //   header: {
@@ -614,6 +612,7 @@ Page({
         res.data.Tasks = arr;
         res.data.Manage = manage;
         app.globalData.tasks = arr;
+        console.log("global data")
         console.log(res.data.Tasks)
         wx.setStorage({
           key: 'UserInfor',
@@ -658,6 +657,10 @@ Page({
                 //fuck time formate end
                 wx.setStorage({
                   key: 'Information',
+                  data: res.data,
+                })
+                wx.setStorage({
+                  key: 'UserInfor',
                   data: res.data,
                 })
                 app.globalData.tasks = res.data.Tasks;

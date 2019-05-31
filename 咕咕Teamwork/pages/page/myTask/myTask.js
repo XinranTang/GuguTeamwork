@@ -42,27 +42,29 @@ Page({
     wx.getStorage({
       key: 'UserInfor',
       success: function(res) {
-        manage=res.data.Manage;
-        var arr = manage.split(";");
-        var t;
-        var a;
-        t = app.globalData.tasks;
-        console.log(t)
-        t.forEach(task => {
-          var flag = false;
-          arr.forEach(item => {
-            console.log(item)
-            if (item == task.TaskID) {
-              flag=true;
-            }             
-          })
-          if(!flag){
-            a = self.data.ctasks;
-            self.setData({
-              ctasks: a.concat(task)
+        if(app.globalData.tasks!=null){
+          manage = res.data.Manage;
+          var arr = manage.split(";");
+          var t;
+          var a;
+          t = app.globalData.tasks;
+          console.log(t)
+          t.forEach(task => {
+            var flag = false;
+            arr.forEach(item => {
+              console.log(item)
+              if (item == task.TaskID) {
+                flag = true;
+              }
             })
-          }
-        })
+            if (!flag) {
+              a = self.data.ctasks;
+              self.setData({
+                ctasks: a.concat(task)
+              })
+            }
+          })
+        }
         wx.getStorage({// 【这里这么写对吗】
           key: 'Forest',
           success: function(res) {

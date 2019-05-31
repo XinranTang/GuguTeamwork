@@ -96,37 +96,40 @@ Page({
     })
   },
   formSubmit: function(e){
-    app.globalData.personal ={};
     var self = this;
     let { name, sign, phone, mail,position } = e.detail.value;
-    if ((name == null || name.length == 0)&&self.data.noNeedToCheck==false){
+    console.log(name)
+    if ((name == undefined || name.length == 0)&&self.data.noNeedToCheck==false){
       wx.showToast({
         title: '请填写真实姓名',
         icon:'none'
       })
     }else{
-      if ((phone == null || phone.length == 0) && self.data.noNeedToCheck == false){
+      if ((phone == undefined || phone.length == 0) && self.data.noNeedToCheck == false){
         wx.showToast({
           title: '请填写电话',
           icon:'none'
         })
       }else{
-        if(name!=null&&name.length!=0){
+        if (name != undefined &&name.length!=0){
+          console
           app.globalData.personal.Name = name;
+        }else{
+          console.log("undifined name")
         }
-        if (sign != null && sign.length != 0){
+        if (sign != undefined && sign.length != 0){
           app.globalData.personal.Sign = sign;
        }
-        if (phone != null && phone.length != 0){
+        if (phone != undefined && phone.length != 0){
           app.globalData.personal.Phone = phone;
         }
-        if (mail != null && mail.length != 0){
+        if (mail != undefined && mail.length != 0){
           app.globalData.personal.Mail = mail;
         }
-        if (position != null && position.length != 0){ // TODO： 这里有一个bug 没想好怎么改
+        if (position != undefined && position.length != 0){ // TODO： 这里有一个bug 没想好怎么改
           app.globalData.personal.Position = self.data.region.join("") + position
         }
-        console.log(app.globalData.personal);
+        console.log("globalpersonal"+app.globalData.personal.Name);
         app.globalData.userInfo.Complete = true;
         this.setData({
           userInfo: app.globalData.personal,
@@ -137,19 +140,19 @@ Page({
      // 
         wx.request({
           url: 'https://www.fracturesr.xyz/gugu/setPersonal',
+          method: 'GET', 
           header: {
-            'content-type': "application/x-www-form-urlencoded"
+            'Content-Type': 'application/json'
           },
-          method: 'POST',
           data: {
             ID:app.globalData.openId,
-            Name:name,
+            Name: app.globalData.personal.Name,
             Sex:"",
             Ability:"",
-            Sign:sign,
-            Phone:phone,
-            Mail:mail,
-            Position:position,
+            Sign: app.globalData.personal.Sign,
+            Phone: app.globalData.personal.Phone,
+            Mail: app.globalData.personal.Mail,
+            Position: app.globalData.personal.Position,
           },
           success:function(e){
             wx.showToast({

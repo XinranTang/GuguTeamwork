@@ -255,6 +255,10 @@ App({
           })
         } else {
           console.log("fail to get infor")
+          wx.showModal({
+            title: '请授权并完善个人信息',
+            content: '请前往个人页面授权并完善信息~',
+          })
         }
       }
     })
@@ -289,10 +293,11 @@ App({
     });
   },
   globalData: {
+    
     socketOpen: false,
     openId: 'testopenid',
     userInfo: null,
-    personal: null,
+    personal: {},
     userInforComplete: false,
     windowHeight: 0,
     windowWidth: 0,

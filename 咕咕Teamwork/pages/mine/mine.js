@@ -247,6 +247,7 @@ Page({
                 })
               }
             })
+            console.log("给用户的openid"+openId)
             wx.request({
               url: 'https://www.fracturesr.xyz/gugu/personal',
               header: {
@@ -262,6 +263,20 @@ Page({
                 //如果这人没设置信息，获取到的是空字符串
                 if (res.data == null || res.data == "") {
                   res.data = {};
+                  wx.showModal({
+                    title: '完善个人信息',
+                    content: '请完善您的个人信息~',
+                    success(res) {
+                      if (res.confirm) {
+                        wx.navigateTo({
+                          url:"../page/myInfor/myInfor"
+                        })
+                      } else if (res.cancel) {
+                        console.log('用户点击取消')
+                      }
+                    }
+
+                  })
                 }
                 wx.setStorage({
                   key: 'Personal',

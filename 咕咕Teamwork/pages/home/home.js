@@ -118,33 +118,88 @@ Page({
     wx.getStorage({
       key: 'Forest',
       success: function (res) {
-        let eachItem = app.globalData.tasks;
-        console.log("eachItem");
-        console.log(eachItem);
-        let forests = res.data;
-        console.log("forests");
-        console.log(forests);
+        wx.getStorage({
+          key: 'UserInfor',
+          success: function(res) {
+            let eachItem = res.data.Tasks;
+            console.log("eachItem");
+            console.log(eachItem);
+            let forests = res.data;
+            console.log("forests");
+            console.log(forests);
 
-        let flag = false;
-        //这段什么意思？
-        // if (app.globalData.tasks.length != 0) {
-        //   for (var i = 0; i < eachItem.length; i++) {
-        //     flag = false;
-        //     if(forests!=null)
-        //     forests.forEach(each => {
-        //       if (eachItem[i].TaskID == each.TreeId) {
-        //         flag = true;
-        //       }
-        //     })
-        //     if (!flag) {
-        //       eachItem.splice(i, 1); // 将使后面的元素依次前移，数组长度减1
-        //       i--; // 如果不减，将漏掉一个元素
-        //     }
-        //   }
-        // }
+            let flag = false;
+            //这段什么意思？
+            // if (app.globalData.tasks.length != 0) {
+            //   for (var i = 0; i < eachItem.length; i++) {
+            //     flag = false;
+            //     if(forests!=null)
+            //     forests.forEach(each => {
+            //       if (eachItem[i].TaskID == each.TreeId) {
+            //         flag = true;
+            //       }
+            //     })
+            //     if (!flag) {
+            //       eachItem.splice(i, 1); // 将使后面的元素依次前移，数组长度减1
+            //       i--; // 如果不减，将漏掉一个元素
+            //     }
+            //   }
+            // }
+            self.setData({
+              messages: app.globalData.messages,
+              tasks: eachItem,
+              color: app.globalData.color,
+              hour: date.getHours(),
+              schedule: {
+                timestamp: Date.parse(new Date()) / 1000,
+                year: date.getFullYear(),
+                month: (date.getMonth() + 1) + "月",
+                day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+                hour: date.getHours(),
+                weekDay: show_day[date.getDay()],
+              },
+            })
+            let labLen = self.data.messages == null ? 0 : self.data.messages.length;
+            let labLenT = self.data.tasks == null ? 0 : self.data.tasks.length;
+            let colorArr = self.data.colorArr;
+            let colorLen = colorArr.length;
+            let randomColorArr = [];
+            // console.log("本地任务数量")
+            // console.log(self.data.tasks.length)
+            //判断执行
+            do {
+              let random = colorArr[Math.floor(Math.random() * colorLen)];
+              randomColorArr.push(random);
+              labLen--;
+            } while (labLen > 0)
+
+            self.setData({
+              randomColorArr: randomColorArr
+            });
+            randomColorArr = [];
+
+            do {
+              let random = colorArr[Math.floor(Math.random() * colorLen)];
+              randomColorArr.push(random);
+              labLenT--;
+            } while (labLenT > 0)
+            self.setData({
+              randomColorArrT: randomColorArr
+            });
+            // console.log(randomColorArr)
+
+            self.setData({
+              messages: app.globalData.messages,
+              tasks: app.globalData.tasks,
+              invitations: app.globalData.invitations,
+              checks: app.globalData.checks,
+            })
+          },
+        })
+       
+      },
+      fail:function(res){
         self.setData({
-          messages: app.globalData.messages,
-          tasks: eachItem,
           color: app.globalData.color,
           hour: date.getHours(),
           schedule: {
@@ -155,41 +210,6 @@ Page({
             hour: date.getHours(),
             weekDay: show_day[date.getDay()],
           },
-        })
-        let labLen = self.data.messages == null ? 0 : self.data.messages.length;
-        let labLenT = self.data.tasks == null ? 0 : self.data.tasks.length;
-        let colorArr = self.data.colorArr;
-        let colorLen = colorArr.length;
-        let randomColorArr = [];
-        // console.log("本地任务数量")
-        // console.log(self.data.tasks.length)
-        //判断执行
-        do {
-          let random = colorArr[Math.floor(Math.random() * colorLen)];
-          randomColorArr.push(random);
-          labLen--;
-        } while (labLen > 0)
-
-        self.setData({
-          randomColorArr: randomColorArr
-        });
-        randomColorArr = [];
-
-        do {
-          let random = colorArr[Math.floor(Math.random() * colorLen)];
-          randomColorArr.push(random);
-          labLenT--;
-        } while (labLenT > 0)
-        self.setData({
-          randomColorArrT: randomColorArr
-        });
-        // console.log(randomColorArr)
-
-        self.setData({
-          messages: app.globalData.messages,
-          tasks: app.globalData.tasks,
-          invitations: app.globalData.invitations,
-          checks:app.globalData.checks,
         })
       }
 
@@ -378,6 +398,7 @@ Page({
           },
           fail() {
             console.log("在授权后取得用户信息失败")
+            
           }
         })
       },
